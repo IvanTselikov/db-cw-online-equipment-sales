@@ -137,6 +137,13 @@ AS
     RETURN @error; -- 0 - успешное добавление, иначе - 1
   END;
   RETURN 1;
+
+CREATE INDEX IX_Deliveries_pickupPointNumber
+ON Deliveries (pickupPointNumber, deliveryTime);
+
+CREATE INDEX IX_ProductMovements_warehouseNumber_productCode
+ON ProductMovements (warehouseNumber, productCode);
+
   
 -- ПРОВЕРКА
 DECLARE @products AS ProductCount; -- табличная переменная для хранения товаров,
