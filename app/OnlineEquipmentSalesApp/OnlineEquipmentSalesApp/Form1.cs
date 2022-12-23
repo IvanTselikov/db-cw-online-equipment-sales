@@ -17,7 +17,21 @@ namespace OnlineEquipmentSalesApp
         public Form1()
         {
             InitializeComponent();
+            this.StartPosition = FormStartPosition.CenterScreen;
         }
 
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            if (this.databaseConnection.Login(tbPassword.Text))
+            {
+                Form2 f2 = new Form2(this);
+                f2.Show();
+                this.Hide();
+            }
+            else
+            {
+                MessageBox.Show("Неверный пароль!", "Ошибка", MessageBoxButtons.OK);
+            }
+        }
     }
 }

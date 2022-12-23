@@ -7,28 +7,43 @@ namespace OnlineEquipmentSalesApp
 {
     class DatabaseConnection
     {
-        SqlConnection sqlConnection = new SqlConnection(@"Data Source=LAPTOP-J4FHUBL5\SQLEXPRESS;" +
-                                                         "Initial Catalog:OnlineEquipmentSales;" +
-                                                         "Integrated Security=True");
+        private string serverName = @"LAPTOP-J4FHUBL5\SQLEXPRESS",
+                       dbName = "OnlineEquipmentSales",
+                       login = "Customer";
 
+        private SqlConnection sqlConnection;
 
-        public void openConnection()
+        public bool Login(string password)
         {
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
+            if (sqlConnection == null || sqlConnection.State == System.Data.ConnectionState.Closed)
             {
-                sqlConnection.Open();
+                string connectionString =
+                    $"Data Source={this.serverName};" +
+                    $"Initial Catalog={this.dbName};" +
+                    $"User Id={this.login};Password={password};" +
+                    "Integrated Security=False";
+
+                this.sqlConnection = new SqlConnection(connectionString);
+
+                try
+                {
+                    this.sqlConnection.Open();
+                    return true;
+                }
+                catch (SqlException failedLoginException) { }
             }
+            return false;
         }
 
-        public void closeConnection()
+        public void Logout()
         {
-            if (sqlConnection.State == System.Data.ConnectionState.Closed)
+            if (sqlConnection != null && sqlConnection.State == System.Data.ConnectionState.Open)
             {
                 sqlConnection.Close();
             }
         }
 
-        public SqlConnection getConnection()
+        public SqlConnection GetConnection()
         {
             return sqlConnection;
         }
