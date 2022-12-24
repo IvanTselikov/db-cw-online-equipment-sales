@@ -12,19 +12,33 @@ namespace OnlineEquipmentSalesApp
 {
     public partial class Form1 : Form
     {
-        DatabaseConnection databaseConnection = new DatabaseConnection();
+        internal DatabaseConnection DatabaseConnection = new DatabaseConnection();
 
         public Form1()
         {
             InitializeComponent();
+            Form2.MainForm = this;
             this.StartPosition = FormStartPosition.CenterScreen;
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            if (this.databaseConnection.Login(tbPassword.Text))
+            TryToLogIn();
+        }
+
+        private void tbPassword_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
             {
-                Form2 f2 = new Form2(this);
+                TryToLogIn();
+            }
+        }
+
+        private void TryToLogIn()
+        {
+            if (this.DatabaseConnection.Login(tbPassword.Text))
+            {
+                Form2 f2 = new Form2();
                 f2.Show();
                 this.Hide();
             }
@@ -32,6 +46,11 @@ namespace OnlineEquipmentSalesApp
             {
                 MessageBox.Show("Неверный пароль!", "Ошибка", MessageBoxButtons.OK);
             }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            this.DatabaseConnection.Logout();
         }
     }
 }

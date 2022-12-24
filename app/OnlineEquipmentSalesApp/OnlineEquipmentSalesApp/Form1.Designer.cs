@@ -74,6 +74,7 @@ namespace OnlineEquipmentSalesApp
             this.tbPassword.Size = new System.Drawing.Size(152, 33);
             this.tbPassword.TabIndex = 1;
             this.tbPassword.UseSystemPasswordChar = true;
+            this.tbPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbPassword_KeyPress);
             // 
             // btnLogin
             // 
@@ -96,8 +97,10 @@ namespace OnlineEquipmentSalesApp
             this.Controls.Add(this.tbLogin);
             this.Controls.Add(this.lblPassword);
             this.Controls.Add(this.lblLogin);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.Text = "Авторизация";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

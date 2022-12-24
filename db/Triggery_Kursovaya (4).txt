@@ -1,0 +1,293 @@
+--1
+USE OnlineEquipmentSales
+GO
+CREATE TRIGGER tr_ProductTypeChildControl ON ProductTypeCharacteristics
+INSTEAD OF INSERT, UPDATE
+AS
+	DECLARE @prTypeCode INT, @parentPrTypeCode INT, @charCode INT;
+	SELECT @prTypeCode = productTypeCode, @charCode = characteristicCode
+	FROM inserted
+
+	SELECT @parentPrTypeCode = parentTypeCode
+	FROM ProductTypes
+	WHERE code=@prTypeCode
+	
+	WHILE @parentPrTypeCode IS NOT NULL
+		BEGIN
+			
+			IF EXISTS (SELECT characteristicCode 
+					   FROM ProductTypeCharacteristics 
+					   WHERE characteristicCode = @charCode AND productTypeCode = @parentPrTypeCode)
+				BEGIN
+					RAISERROR('Характеристика дублирует характеристику родительского типа товара', 16, 1)
+					RETURN
+				END
+
+			SELECT @parentPrTypeCode = parentTypeCode
+			FROM ProductTypes
+			WHERE code = @parentPrTypeCode;
+		END
+	INSERT INTO ProductTypeCharacteristics
+	VALUES(@prTypeCode, @charCode)
+
+--4 --7
+USE OnlineEquipmentSales
+GO
+ALTER TRIGGER tr_MovementControl ON ProductMovements
+INSTEAD OF INSERT, UPDATE
+AS
+	DECLARE @supplier SMALLINT, @count INT, @order INT, @product INT;
+	
+	SELECT @supplier = supplierCode, @count = productCount, @order = orderNumber, @product = productCode
+	FROM inserted
+
+	IF @supplier IS NOT NULL -- проверяем поставщика
+	BEGIN
+		IF @count < 0
+		BEGIN
+			RAISERROR('Поставщик не может быть указан при отрицательном количестве товара', 16, 1)
+			RETURN
+		END
+
+		IF @order IS NOT NULL
+		BEGIN
+			RAISERROR('Поставщик не может быть указан при указанном номере заказа', 16, 1)
+			RETURN
+		END
+	END
+	
+	IF @supplier IS NULL AND @order IS NOT NULL -- пересчитываем сумму заказа
+	BEGIN
+		DECLARE @orderSum MONEY, @wsPrice MONEY, @wsCount INT, @price MONEY, @maxDiscount INT, @discount INT, @customer INT;
+
+		SELECT @price = retailPrice, @wsPrice = wholesalePrice, @wsCount = wholesaleQuantity, @maxDiscount = maxDiscountPercentage
+		FROM Products
+		WHERE code = @product
+
+		SELECT @customer = customerId, @orderSum = sum
+		FROM Orders
+		WHERE number = @order
+
+		SELECT @discount = discountPercentage FROM Customers WHERE id = @customer
+
+		IF (@discount > @maxDiscount)
+			SET @discount = @maxDiscount;
+		
+
+		DECLARE @addToSum MONEY;
+		SELECT @addToSum = 
+		CASE WHEN -productCount >= @wsCount THEN -productCount*@wsPrice*((100-@discount)/100.0)
+											ELSE -productCount*@price*((100-@discount)/100.0) END
+		FROM inserted
+		WHERE productCount<0
+
+		IF @addToSum IS NULL
+			SET @addToSum = 0
+
+		SELECT @orderSum = @addToSum + @orderSum;
+
+		UPDATE Orders
+		SET sum = @orderSum
+		WHERE number = @order
+	END
+
+	INSERT INTO ProductMovements
+	SELECT warehouseNumber, productCode, productCount, supplierCode, orderNumber, movementDate FROM inserted
+
+--5
+USE OnlineEquipmentSales
+GO
+CREATE TRIGGER tr_MovementProdCountControl ON ProductMovements
+AFTER INSERT, UPDATE, DELETE
+AS
+	DECLARE @countProdPerWarehouse INT, @prodCode INT, @whNumber SMALLINT, @trDate DATETIME;
+
+	SELECT @prodCode = productCode, @whNumber = warehouseNumber, @trDate = movementDate
+	FROM INSERTED 
+	
+	SELECT @countProdPerWarehouse = SUM(productCount)
+	FROM ProductMovements 
+	WHERE productCode = @prodCode AND warehouseNumber = @whNumber AND movementDate <= @trDate
+
+	IF @countProdPerWarehouse<0
+	BEGIN
+		RAISERROR('Движение не может быть создано. Не хватает товара на складе', 16, 1)
+		ROLLBACK TRAN
+	END
+
+--7 пересчёт стоимости заказа при удалении движения
+USE OnlineEquipmentSales
+GO
+ALTER TRIGGER tr_MovementDelControl ON ProductMovements
+AFTER DELETE
+AS
+	DECLARE @supplier SMALLINT, @count INT, @order INT, @product INT;
+	
+	SELECT @supplier = supplierCode, @count = productCount, @order = orderNumber, @product = productCode
+	FROM deleted
+		
+	IF @supplier IS NULL AND @order IS NOT NULL -- пересчитываем сумму заказа
+	BEGIN
+		DECLARE @orderSum MONEY, @wsPrice MONEY, @wsCount INT, @price MONEY, @maxDiscount INT, @discount INT, @customer INT;
+
+		SELECT @price = retailPrice, @wsPrice = wholesalePrice, @wsCount = wholesaleQuantity, @maxDiscount = maxDiscountPercentage
+		FROM Products
+		WHERE code = @product
+
+		SELECT @customer = customerId, @orderSum = sum
+		FROM Orders
+		WHERE number = @order
+
+		SELECT @discount = discountPercentage FROM Customers WHERE id = @customer
+
+		IF (@discount > @maxDiscount)
+			SET @discount = @maxDiscount;
+				
+		DECLARE @discardFromSum MONEY;
+		SELECT @discardFromSum = 
+		CASE WHEN -productCount >= @wsCount THEN -productCount*@wsPrice*((100-@discount)/100.0)
+											ELSE -productCount*@price*((100-@discount)/100.0) END
+		FROM deleted
+		WHERE productCount<0
+
+		IF @discardFromSum IS NULL
+			SET @discardFromSum = 0
+
+		SELECT @orderSum = @orderSum - @discardFromSum;
+				
+		UPDATE Orders
+		SET sum = @orderSum
+		WHERE number = @order
+	END
+
+--8 не работает
+USE OnlineEquipmentSales
+GO
+CREATE TRIGGER tr_CanceledOrderProducts ON Orders
+INSTEAD OF UPDATE 
+AS
+	DECLARE @transactionDate DATE, @status TINYINT, @order INT, @orderSum MONEY;
+	SET @transactionDate = GETDATE()
+	
+	SELECT @order = number, @status = statusCode, @orderSum = sum
+	FROM inserted
+	
+	IF @status = 12 -- статус "отменён
+	BEGIN
+		INSERT INTO ProductMovements
+		SELECT warehouseNumber, productCode, -productCount, NULL, orderNumber, @transactionDate
+		FROM ProductMovements
+	END
+
+	IF @status = 10 -- статус "готов к выдаче"
+	BEGIN
+		UPDATE Orders
+	SET statusCode = @status, deliveryDate = @transactionDate
+	RETURN
+	END
+
+	UPDATE Orders
+	SET statusCode = @status, sum = @orderSum
+
+--9 
+USE OnlineEquipmentSales
+GO
+CREATE TRIGGER tr_CanceledOrderProducts ON Customers
+INSTEAD OF UPDATE, INSERT 
+AS
+	DECLARE @dateOfB DATE	
+	SELECT @dateOfB = dateOfBirth 
+	FROM inserted
+
+	IF @dateOfB >= CAST(GETDATE() AS DATE)
+		RAISERROR('Дата рождения должна быть меньше текущей даты', 16, 1)
+
+	INSERT INTO Customers
+	SELECT firstName, secondName, patronymic, dateOfBirth, phoneNumber, sex, email, discountPercentage FROM inserted
+
+--17
+USE OnlineEquipmentSales;
+GO
+CREATE PROCEDURE sp_GetSalesPerType @dateStart DATE = '0001-01-01', @dateEnd DATE = '0001-01-01'
+AS
+	IF @dateEnd = '0001-01-01'
+		SET @dateEnd = GETDATE()
+
+	SELECT ProductTypes.name, -SUM(productCount), @dateStart AS PeriodStart, @dateEnd AS PeriodEnd
+	FROM Orders JOIN ProductMovements ON Orders.number = ProductMovements.orderNumber
+		JOIN Products ON   ProductMovements.productCode = Products.code 
+		JOIN ProductTypes ON ProductTypes.code = Products.productTypeCode
+	WHERE orderDate >= @dateStart AND orderDate <= @dateEnd AND statusCode = 11 -- только из полученных заказов
+	GROUP BY ProductTypes.name
+
+--21
+USE OnlineEquipmentSales;
+GO
+CREATE PROCEDURE sp_MaxRevenueMonth AS
+	WITH OrderSumsPerMonth 
+	AS (SELECT year, month, SUM(sum) revenuePerMonth
+		FROM (
+			SELECT sum, MONTH(deliveryDate) AS month, YEAR(deliveryDate) AS year
+			FROM Orders
+			WHERE statusCode=11) AS ordersSums -- статус "получен"
+		GROUP BY month, year)
+
+	SELECT month, year, revenuePerMonth
+	FROM OrderSumsPerMonth
+	WHERE revenuePerMonth = (SELECT MAX(revenuePerMonth) from OrderSumsPerMonth)
+
+--22
+USE OnlineEquipmentSales;
+GO
+CREATE PROCEDURE sp_AvgSumOfCanceledOrders AS
+	SELECT avg(sum) AS avgSumOfCanceledOrders
+	FROM Orders
+	WHERE statusCode = 12 -- "отменён"
+
+EXEC AvgSumOfCanceledOrders
+
+--25
+USE OnlineEquipmentSales;
+GO
+CREATE PROCEDURE sp_CustomerOrders @customerId INT, @dateStart DATE = '0001-01-01', @dateEnd DATE = '0001-01-01'
+AS
+	IF @dateEnd = '0001-01-01'
+		SET @dateEnd = GETDATE()
+	SELECT *
+	FROM Orders
+	WHERE orderDate >= @dateStart AND orderDate <= @dateEnd AND customerId = @customerId
+
+EXEC customerOrders 1,  '2022-01-15', '2022-02-12'
+
+CREATE INDEX orderDateIndex ON Orders (orderDate, customerId)
+
+--33
+USE OnlineEquipmentSales;
+GO
+CREATE PROCEDURE sp_AddCustomer @fName NVARCHAR(50), @sName NVARCHAR(50), @patronymic NVARCHAR(50) = NULL, 
+@dateOfBirth DATE = NULL, @phone varchar(20) = NULL, @sex TINYINT = 0, @email NVARCHAR(320), @discount TINYINT = 0
+AS
+	INSERT INTO Customers
+	VALUES (@fName, @sName, @patronymic, @dateOfBirth, @phone, @sex, @email, @discount)
+
+CREATE UNIQUE INDEX ix_EmailUnique ON Customers (email)
+
+--34
+USE OnlineEquipmentSales;
+GO
+CREATE PROCEDURE sp_AddProduct @name NVARCHAR(300), @warranty SMALLINT, @maxDiscount TINYINT, 
+@retPrice MONEY, @wsPrice MONEY, @wsCount INT, @typeCode SMALLINT, @maker SMALLINT
+AS
+	INSERT INTO Products
+	VALUES (@name, @warranty, @maxDiscount, @retPrice, @wsPrice, @wsCount, @typeCode, @maker)
+
+---
+USE OnlineEquipmentSales;
+GO
+CREATE PROCEDURE sp_AddCharacteristicValue @product INT, @characteristic INT, @value SQL_VARIANT
+AS
+	INSERT INTO ProductCharacteristics
+	VALUES (@product, @characteristic, @value)
+---
+
+
