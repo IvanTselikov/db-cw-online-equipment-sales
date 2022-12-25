@@ -1,6 +1,8 @@
 # db-cw-online-equipment-sales
 **Приложение**: Windows Forms .Net Core
+
 **СУБД**: MS SQL Server + SQL Server Management Studio
+
 **Пакеты для установки (NuGet)**: Microsoft.Data.SqlClient
 
 Для заполнения БД необходимо:
