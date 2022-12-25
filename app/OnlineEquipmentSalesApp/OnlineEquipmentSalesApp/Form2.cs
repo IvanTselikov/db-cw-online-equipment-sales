@@ -11,13 +11,17 @@ namespace OnlineEquipmentSalesApp
 {
     public partial class Form2 : Form
     {
-        enum OrderDisplayModes // какие заказы сейчас показываются
+        private enum OrderDisplayingModes
         {
             All,
             From,
             To,
             FromTo
         }
+
+        private OrderDisplayingModes currentMode;
+
+        private DateTime? dateStart = null, dateEnd = null;
 
         public static Form1 MainForm;
 
@@ -27,6 +31,11 @@ namespace OnlineEquipmentSalesApp
         }
 
         private void Form2_Load(object sender, EventArgs e)
+        {
+            InitOrdersDwg();
+        }
+
+        private void InitOrdersDwg()
         {
             SqlDataReader reader = MainForm.DatabaseConnection.GetCustomerOrders();
 
@@ -40,73 +49,83 @@ namespace OnlineEquipmentSalesApp
             dgwOrders.Columns.Add(reader.GetName(7), reader.GetName(7));
             dgwOrders.Columns.Add(reader.GetName(8), reader.GetName(8));
 
-            //if (reader.HasRows)
-            //{
-            //    while (reader.Read())
-            //    {
-            //        object id = reader.GetValue(0);
-            //        object name = reader.GetValue(1);
-            //        object age = reader.GetValue(2);
-            //        dgwOrders.Rows.Add(reader.GetValue(0),
-            //                           reader.GetValue(1),
-            //                           reader.GetValue(2),
-            //                           reader.GetValue(3),
-            //                           reader.GetValue(4),
-            //                           reader.GetValue(5),
-            //                           reader.GetValue(6),
-            //                           reader.GetValue(7),
-            //                           reader.GetValue(8));
-            //    }
-            //}
+            InsertRowsIntoOrdersDwg(reader);
+
+            currentMode = OrderDisplayingModes.All;
         }
 
-        private void ShowCustomerOrders()
+        private void InsertRowsIntoOrdersDwg(SqlDataReader reader)
         {
+            dgwOrders.Rows.Clear();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    dgwOrders.Rows.Add(reader.GetValue(0),
+                                       reader.GetValue(1),
+                                       reader.GetValue(2),
+                                       reader.GetValue(3),
+                                       reader.GetValue(4),
+                                       reader.GetValue(5),
+                                       reader.GetValue(6),
+                                       reader.GetValue(7),
+                                       reader.GetValue(8));
+                }
+            }
+            reader.Close();
+        }
 
+        private void rbOrdersInDates_CheckedChanged(object sender, EventArgs e)
+        {
+            pPeriodChoosing.Enabled = (sender as RadioButton).Checked;
+        }
+
+        private void cbOrdersStart_CheckedChanged(object sender, EventArgs e)
+        {
+            dtpOrdersStart.Enabled = (sender as CheckBox).Checked;
+        }
+
+        private void cbOrdersEnd_CheckedChanged(object sender, EventArgs e)
+        {
+            dtpOrdersEnd.Enabled = (sender as CheckBox).Checked;
+        }
+
+        private void btnSearchOrders_Click(object sender, EventArgs e)
+        {
+            DateTime? dateStart = null, dateEnd = null;
+
+            if (rbOrdersInDates.Checked)
+            {
+                if (cbOrdersStart.Checked)
+                {
+                    dateStart = dtpOrdersStart.Value;
+                }
+                if (cbOrdersEnd.Checked)
+                {
+                    dateEnd = dtpOrdersEnd.Value;
+                }
+            }
+            
+            // выполняем запрос, только если параметры поиска поменялись
+            if (dateStart != this.dateStart || dateEnd != this.dateEnd)
+            {
+                try
+                {
+                    SqlDataReader reader = MainForm.DatabaseConnection.GetCustomerOrders(dateStart, dateEnd);
+                    InsertRowsIntoOrdersDwg(reader);
+                    this.dateStart = dateStart;
+                    this.dateEnd = dateEnd;
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
+                }
+            }
         }
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
             MainForm.Close();
-        }
-
-        private void btnCreateOrder_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void rbOrdersInDates_CheckedChanged(object sender, EventArgs e)
-        {
-            RadioButton rb = sender as RadioButton;
-            if (rb.Checked)
-            {
-                dtpOrdersStart.Enabled = true;
-                dtpOrdersEnd.Enabled = true;
-                cbOrdersStart.Enabled = true;
-                cbOrdersEnd.Enabled = true;
-
-                if (cbOrdersStart.Checked)
-                {
-
-                }
-            }
-            else
-            {
-
-            }
-        }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckBox cb = sender as CheckBox;
-            if (cb.Checked)
-            {
-
-            }
-            else
-            {
-
-            }
         }
     }
 }
