@@ -180,15 +180,13 @@ CREATE INDEX IX_ProductMovements_warehouseNumber_productCode
 ON ProductMovements (warehouseNumber, productCode);
 
 -- ПРОВЕРКА
-DECLARE @products AS ProductCount; -- табличная переменная для хранения товаров,
-                                   -- которые нужно купить в рамках заказа
-INSERT INTO @products
-SELECT 2, 3
---UNION ALL
---SELECT 9, 1
---UNION ALL
---SELECT 1, 1;
+--DECLARE @products AS ProductCount; -- табличная переменная для хранения товаров,
+--                                   -- которые нужно купить в рамках заказа
+--INSERT INTO @products
+--SELECT 2, 3
+----UNION ALL
+----SELECT 9, 1
+----UNION ALL
+----SELECT 1, 1;
 
-EXEC sp_CreateOrder 4, 4, 1, @products -- вызов ХП для совершения заказа
-
---DBCC CHECKIDENT('Orders', RESEED, 0)
+--EXEC sp_CreateOrder 4, 4, 1, @products -- вызов ХП для совершения заказа
