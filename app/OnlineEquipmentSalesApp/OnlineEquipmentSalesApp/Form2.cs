@@ -11,16 +11,6 @@ namespace OnlineEquipmentSalesApp
 {
     public partial class Form2 : Form
     {
-        private enum OrderDisplayingModes
-        {
-            All,
-            From,
-            To,
-            FromTo
-        }
-
-        private OrderDisplayingModes currentMode;
-
         private DateTime? dateStart = null, dateEnd = null;
 
         public static Form1 MainForm;
@@ -32,44 +22,32 @@ namespace OnlineEquipmentSalesApp
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            InitOrdersDwg();
-        }
-
-        private void InitOrdersDwg()
-        {
             SqlDataReader reader = MainForm.DatabaseConnection.GetCustomerOrders();
+            FillDgw(dgwOrders, reader);
 
-            dgwOrders.Columns.Add(reader.GetName(0), reader.GetName(0));
-            dgwOrders.Columns.Add(reader.GetName(1), reader.GetName(1));
-            dgwOrders.Columns.Add(reader.GetName(2), reader.GetName(2));
-            dgwOrders.Columns.Add(reader.GetName(3), reader.GetName(3));
-            dgwOrders.Columns.Add(reader.GetName(4), reader.GetName(4));
-            dgwOrders.Columns.Add(reader.GetName(5), reader.GetName(5));
-            dgwOrders.Columns.Add(reader.GetName(6), reader.GetName(6));
-            dgwOrders.Columns.Add(reader.GetName(7), reader.GetName(7));
-            dgwOrders.Columns.Add(reader.GetName(8), reader.GetName(8));
-
-            InsertRowsIntoOrdersDwg(reader);
-
-            currentMode = OrderDisplayingModes.All;
+            // получаем заголовки таблицы
+            reader = MainForm.DatabaseConnection.GetOrderProducts();
+            FillDgw(dgwOrderProducts, reader);
         }
 
-        private void InsertRowsIntoOrdersDwg(SqlDataReader reader)
+        private void FillDgw(DataGridView dgw, SqlDataReader reader)
         {
-            dgwOrders.Rows.Clear();
+            if (dgw.Columns.Count < 1)
+            {
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    dgw.Columns.Add(reader.GetName(i), reader.GetName(i));
+                }
+            }
+
+            dgw.Rows.Clear();
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    dgwOrders.Rows.Add(reader.GetValue(0),
-                                       reader.GetValue(1),
-                                       reader.GetValue(2),
-                                       reader.GetValue(3),
-                                       reader.GetValue(4),
-                                       reader.GetValue(5),
-                                       reader.GetValue(6),
-                                       reader.GetValue(7),
-                                       reader.GetValue(8));
+                    object[] values = new object[reader.FieldCount];
+                    reader.GetValues(values);
+                    dgw.Rows.Add(values);
                 }
             }
             reader.Close();
@@ -112,7 +90,8 @@ namespace OnlineEquipmentSalesApp
                 try
                 {
                     SqlDataReader reader = MainForm.DatabaseConnection.GetCustomerOrders(dateStart, dateEnd);
-                    InsertRowsIntoOrdersDwg(reader);
+                    FillDgw(dgwOrders, reader);
+
                     this.dateStart = dateStart;
                     this.dateEnd = dateEnd;
                 }
@@ -120,6 +99,25 @@ namespace OnlineEquipmentSalesApp
                 {
                     MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
                 }
+            }
+        }
+
+        private int selectedRow = -1;
+
+        private void dgwOrders_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int selectedRow = e.RowIndex;
+
+            if (selectedRow >= 0 && selectedRow != this.selectedRow)
+            {
+                DataGridViewRow row = dgwOrders.Rows[selectedRow];
+
+                int orderNumber = (int)row.Cells[0].Value;
+
+                SqlDataReader reader = MainForm.DatabaseConnection.GetOrderProducts(orderNumber);
+                FillDgw(dgwOrderProducts, reader);
+
+                this.selectedRow = selectedRow;
             }
         }
 

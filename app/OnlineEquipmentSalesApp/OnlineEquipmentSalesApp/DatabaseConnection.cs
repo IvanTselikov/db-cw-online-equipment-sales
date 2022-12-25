@@ -121,5 +121,22 @@ namespace OnlineEquipmentSalesApp
 
             return (int)command.Parameters[customerIdString].Value;
         }
+
+        public SqlDataReader GetOrderProducts(int? orderNumber = null)
+        {
+            string spName = "sp_GetOrderProducts",
+                       param1 = "@orderNumber";
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter orderNumberParam = new SqlParameter
+            {
+                ParameterName = param1,
+                Value = orderNumber
+            };
+            command.Parameters.Add(orderNumberParam);
+
+            SqlDataReader reader = command.ExecuteReader();
+            return reader;
+        }
     }
 }
