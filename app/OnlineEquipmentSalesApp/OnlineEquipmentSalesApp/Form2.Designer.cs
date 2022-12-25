@@ -32,22 +32,26 @@ namespace OnlineEquipmentSalesApp
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpOrders = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.lblOrdersStart = new System.Windows.Forms.Label();
-            this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-            this.lblOrdersEnd = new System.Windows.Forms.Label();
-            this.dateTimePicker2 = new System.Windows.Forms.DateTimePicker();
+            this.pOrderDates = new System.Windows.Forms.Panel();
+            this.dtpOrdersStart = new System.Windows.Forms.DateTimePicker();
+            this.dtpOrdersEnd = new System.Windows.Forms.DateTimePicker();
             this.dgwOrders = new System.Windows.Forms.DataGridView();
             this.btnCancelOrder = new System.Windows.Forms.Button();
             this.lblOrderProducts = new System.Windows.Forms.Label();
             this.btnCreateOrder = new System.Windows.Forms.Button();
             this.dgwOrderProducts = new System.Windows.Forms.DataGridView();
             this.tpCPUSearch = new System.Windows.Forms.TabPage();
+            this.cbOrdersStart = new System.Windows.Forms.CheckBox();
+            this.cbOrdersEnd = new System.Windows.Forms.CheckBox();
+            this.rbAllOrders = new System.Windows.Forms.RadioButton();
+            this.rbOrdersInDates = new System.Windows.Forms.RadioButton();
             this.tabControl1.SuspendLayout();
             this.tpOrders.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.pOrderDates.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgwOrders)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgwOrderProducts)).BeginInit();
             this.SuspendLayout();
@@ -89,10 +93,7 @@ namespace OnlineEquipmentSalesApp
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.lblOrdersStart);
-            this.splitContainer1.Panel1.Controls.Add(this.dateTimePicker1);
-            this.splitContainer1.Panel1.Controls.Add(this.lblOrdersEnd);
-            this.splitContainer1.Panel1.Controls.Add(this.dateTimePicker2);
+            this.splitContainer1.Panel1.Controls.Add(this.pOrderDates);
             this.splitContainer1.Panel1.Controls.Add(this.dgwOrders);
             // 
             // splitContainer1.Panel2
@@ -105,37 +106,34 @@ namespace OnlineEquipmentSalesApp
             this.splitContainer1.SplitterDistance = 159;
             this.splitContainer1.TabIndex = 8;
             // 
-            // lblOrdersStart
+            // pOrderDates
             // 
-            this.lblOrdersStart.AutoSize = true;
-            this.lblOrdersStart.Location = new System.Drawing.Point(6, 10);
-            this.lblOrdersStart.Name = "lblOrdersStart";
-            this.lblOrdersStart.Size = new System.Drawing.Size(75, 21);
-            this.lblOrdersStart.TabIndex = 6;
-            this.lblOrdersStart.Text = "Заказы с:";
+            this.pOrderDates.Controls.Add(this.dtpOrdersEnd);
+            this.pOrderDates.Controls.Add(this.rbOrdersInDates);
+            this.pOrderDates.Controls.Add(this.rbAllOrders);
+            this.pOrderDates.Controls.Add(this.cbOrdersEnd);
+            this.pOrderDates.Controls.Add(this.cbOrdersStart);
+            this.pOrderDates.Controls.Add(this.dtpOrdersStart);
+            this.pOrderDates.Location = new System.Drawing.Point(9, 3);
+            this.pOrderDates.Name = "pOrderDates";
+            this.pOrderDates.Size = new System.Drawing.Size(786, 32);
+            this.pOrderDates.TabIndex = 9;
             // 
-            // dateTimePicker1
+            // dtpOrdersStart
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(87, 6);
-            this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(200, 29);
-            this.dateTimePicker1.TabIndex = 5;
+            this.dtpOrdersStart.Enabled = false;
+            this.dtpOrdersStart.Location = new System.Drawing.Point(215, 1);
+            this.dtpOrdersStart.Name = "dtpOrdersStart";
+            this.dtpOrdersStart.Size = new System.Drawing.Size(200, 29);
+            this.dtpOrdersStart.TabIndex = 5;
             // 
-            // lblOrdersEnd
+            // dtpOrdersEnd
             // 
-            this.lblOrdersEnd.AutoSize = true;
-            this.lblOrdersEnd.Location = new System.Drawing.Point(293, 10);
-            this.lblOrdersEnd.Name = "lblOrdersEnd";
-            this.lblOrdersEnd.Size = new System.Drawing.Size(31, 21);
-            this.lblOrdersEnd.TabIndex = 7;
-            this.lblOrdersEnd.Text = "до:";
-            // 
-            // dateTimePicker2
-            // 
-            this.dateTimePicker2.Location = new System.Drawing.Point(330, 6);
-            this.dateTimePicker2.Name = "dateTimePicker2";
-            this.dateTimePicker2.Size = new System.Drawing.Size(200, 29);
-            this.dateTimePicker2.TabIndex = 8;
+            this.dtpOrdersEnd.Enabled = false;
+            this.dtpOrdersEnd.Location = new System.Drawing.Point(477, 1);
+            this.dtpOrdersEnd.Name = "dtpOrdersEnd";
+            this.dtpOrdersEnd.Size = new System.Drawing.Size(200, 29);
+            this.dtpOrdersEnd.TabIndex = 8;
             // 
             // dgwOrders
             // 
@@ -212,6 +210,52 @@ namespace OnlineEquipmentSalesApp
             this.tpCPUSearch.Text = "Поиск копьютеров по процессорам";
             this.tpCPUSearch.UseVisualStyleBackColor = true;
             // 
+            // cbOrdersStart
+            // 
+            this.cbOrdersStart.AutoSize = true;
+            this.cbOrdersStart.Enabled = false;
+            this.cbOrdersStart.Location = new System.Drawing.Point(171, 5);
+            this.cbOrdersStart.Name = "cbOrdersStart";
+            this.cbOrdersStart.Size = new System.Drawing.Size(39, 25);
+            this.cbOrdersStart.TabIndex = 1;
+            this.cbOrdersStart.Text = "c:";
+            this.cbOrdersStart.UseVisualStyleBackColor = true;
+            this.cbOrdersStart.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // cbOrdersEnd
+            // 
+            this.cbOrdersEnd.AutoSize = true;
+            this.cbOrdersEnd.Enabled = false;
+            this.cbOrdersEnd.Location = new System.Drawing.Point(421, 5);
+            this.cbOrdersEnd.Name = "cbOrdersEnd";
+            this.cbOrdersEnd.Size = new System.Drawing.Size(50, 25);
+            this.cbOrdersEnd.TabIndex = 2;
+            this.cbOrdersEnd.Text = "по:";
+            this.cbOrdersEnd.UseVisualStyleBackColor = true;
+            // 
+            // rbAllOrders
+            // 
+            this.rbAllOrders.AutoSize = true;
+            this.rbAllOrders.Checked = true;
+            this.rbAllOrders.Location = new System.Drawing.Point(3, 3);
+            this.rbAllOrders.Name = "rbAllOrders";
+            this.rbAllOrders.Size = new System.Drawing.Size(51, 25);
+            this.rbAllOrders.TabIndex = 0;
+            this.rbAllOrders.TabStop = true;
+            this.rbAllOrders.Text = "все";
+            this.rbAllOrders.UseVisualStyleBackColor = true;
+            // 
+            // rbOrdersInDates
+            // 
+            this.rbOrdersInDates.AutoSize = true;
+            this.rbOrdersInDates.Location = new System.Drawing.Point(60, 4);
+            this.rbOrdersInDates.Name = "rbOrdersInDates";
+            this.rbOrdersInDates.Size = new System.Drawing.Size(93, 25);
+            this.rbOrdersInDates.TabIndex = 1;
+            this.rbOrdersInDates.Text = "в период";
+            this.rbOrdersInDates.UseVisualStyleBackColor = true;
+            this.rbOrdersInDates.CheckedChanged += new System.EventHandler(this.rbOrdersInDates_CheckedChanged);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -226,11 +270,12 @@ namespace OnlineEquipmentSalesApp
             this.tabControl1.ResumeLayout(false);
             this.tpOrders.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.pOrderDates.ResumeLayout(false);
+            this.pOrderDates.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgwOrders)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgwOrderProducts)).EndInit();
             this.ResumeLayout(false);
@@ -247,10 +292,13 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.Label lblOrderProducts;
         private System.Windows.Forms.Button btnCancelOrder;
         private System.Windows.Forms.Button btnCreateOrder;
-        private System.Windows.Forms.DateTimePicker dateTimePicker1;
-        private System.Windows.Forms.Label lblOrdersStart;
-        private System.Windows.Forms.Label lblOrdersEnd;
-        private System.Windows.Forms.DateTimePicker dateTimePicker2;
+        private System.Windows.Forms.DateTimePicker dtpOrdersStart;
+        private System.Windows.Forms.DateTimePicker dtpOrdersEnd;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Panel pOrderDates;
+        private System.Windows.Forms.CheckBox cbOrdersEnd;
+        private System.Windows.Forms.CheckBox cbOrdersStart;
+        private System.Windows.Forms.RadioButton rbOrdersInDates;
+        private System.Windows.Forms.RadioButton rbAllOrders;
     }
 }

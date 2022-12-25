@@ -31,6 +31,13 @@ AS
     SET @dateStart = (SELECT MIN(orderDate) FROM Orders);
   IF @dateEnd IS NULL
     SET @dateEnd = GETDATE();
+  IF @dateStart = @dateEnd -- заказы только за указанный день
+    SET @dateEnd = DATEADD(dd, 1, @dateEnd);
+  IF @dateEnd < @dateStart
+  BEGIN
+    RAISERROR('Дата конца рассматриваемого интервала не может быть меньше даты начала!', 16, 10);
+    RETURN;
+  END;
   SELECT [Номер заказа], [Сумма, руб.], [Дата заказа],
          [Дата доставки], [Менеджер], [Телефон менеджера],
          [Пункт выдачи], [Статус], [Способ оплаты]

@@ -49,23 +49,46 @@ namespace OnlineEquipmentSalesApp
             return sqlConnection;
         }
 
-        public SqlDataReader GetCustomerOrders()
+        public SqlDataReader GetCustomerOrders(DateTime? dateStart = null, DateTime? dateEnd = null)
         {
             if (sqlConnection != null && sqlConnection.State == System.Data.ConnectionState.Open)
             {
                 int customerId = GetCustomerId();
                 string spName = "sp_CustomerOrders",
-                       param = "@customerId";
+                       param1 = "@customerId",
+                       param2 = "@dateStart",
+                       param3 = "@dateEnd";
 
                 SqlCommand command = new SqlCommand(spName, this.sqlConnection);
                 command.CommandType = CommandType.StoredProcedure;
                 SqlParameter customerIdParam = new SqlParameter
                 {
-                    ParameterName = param,
+                    ParameterName = param1,
                     Value = customerId
                 };
                 command.Parameters.Add(customerIdParam);
-                return command.ExecuteReader();
+
+                if (dateStart != null)
+                {
+                    SqlParameter dateStartParam = new SqlParameter
+                    {
+                        ParameterName = param2,
+                        Value = dateStart
+                    };
+                    command.Parameters.Add(dateStartParam);
+                }
+                if (dateEnd != null)
+                {
+                    SqlParameter dateEndParam = new SqlParameter
+                    {
+                        ParameterName = param3,
+                        Value = dateEnd
+                    };
+                    command.Parameters.Add(dateEndParam);
+                }
+
+                SqlDataReader reader = command.ExecuteReader();
+                return reader;
             }
             else
             {

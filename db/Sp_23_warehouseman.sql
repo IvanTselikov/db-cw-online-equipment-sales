@@ -1,7 +1,7 @@
 USE OnlineEquipmentSales;
 GO
 
-CREATE PROC sp_GetWarehouseAvgWorkload
+ALTER PROC sp_GetWarehouseAvgWorkload
   @warehouseNumber SMALLINT,
   @startDate DATETIME = NULL,
   @endDate DATETIME = NULL,
@@ -15,6 +15,13 @@ AS
     SELECT @startDate = MAX(movementDate)
     FROM ProductMovements
     WHERE warehouseNumber = @warehouseNumber;
+  IF @startDate = @endDate -- загруженность только за указанный день
+    SET @endDate = DATEADD(dd, 1, @endDate);
+  IF @endDate < @startDate
+  BEGIN
+    RAISERROR('Дата конца рассматриваемого интервала не может быть меньше даты начала!', 16, 10);
+    RETURN;
+  END;
   -- считаем загрузку склада в каждый день интервала
   WITH dates AS
     (SELECT @startDate dt

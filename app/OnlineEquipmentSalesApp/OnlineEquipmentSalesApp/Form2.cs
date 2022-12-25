@@ -11,6 +11,14 @@ namespace OnlineEquipmentSalesApp
 {
     public partial class Form2 : Form
     {
+        enum OrderDisplayModes // какие заказы сейчас показываются
+        {
+            All,
+            From,
+            To,
+            FromTo
+        }
+
         public static Form1 MainForm;
 
         public Form2()
@@ -32,24 +40,29 @@ namespace OnlineEquipmentSalesApp
             dgwOrders.Columns.Add(reader.GetName(7), reader.GetName(7));
             dgwOrders.Columns.Add(reader.GetName(8), reader.GetName(8));
 
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    object id = reader.GetValue(0);
-                    object name = reader.GetValue(1);
-                    object age = reader.GetValue(2);
-                    dgwOrders.Rows.Add(reader.GetValue(0),
-                                       reader.GetValue(1),
-                                       reader.GetValue(2),
-                                       reader.GetValue(3),
-                                       reader.GetValue(4),
-                                       reader.GetValue(5),
-                                       reader.GetValue(6),
-                                       reader.GetValue(7),
-                                       reader.GetValue(8));
-                }
-            }
+            //if (reader.HasRows)
+            //{
+            //    while (reader.Read())
+            //    {
+            //        object id = reader.GetValue(0);
+            //        object name = reader.GetValue(1);
+            //        object age = reader.GetValue(2);
+            //        dgwOrders.Rows.Add(reader.GetValue(0),
+            //                           reader.GetValue(1),
+            //                           reader.GetValue(2),
+            //                           reader.GetValue(3),
+            //                           reader.GetValue(4),
+            //                           reader.GetValue(5),
+            //                           reader.GetValue(6),
+            //                           reader.GetValue(7),
+            //                           reader.GetValue(8));
+            //    }
+            //}
+        }
+
+        private void ShowCustomerOrders()
+        {
+
         }
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
@@ -60,6 +73,40 @@ namespace OnlineEquipmentSalesApp
         private void btnCreateOrder_Click(object sender, EventArgs e)
         {
             
+        }
+
+        private void rbOrdersInDates_CheckedChanged(object sender, EventArgs e)
+        {
+            RadioButton rb = sender as RadioButton;
+            if (rb.Checked)
+            {
+                dtpOrdersStart.Enabled = true;
+                dtpOrdersEnd.Enabled = true;
+                cbOrdersStart.Enabled = true;
+                cbOrdersEnd.Enabled = true;
+
+                if (cbOrdersStart.Checked)
+                {
+
+                }
+            }
+            else
+            {
+
+            }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox cb = sender as CheckBox;
+            if (cb.Checked)
+            {
+
+            }
+            else
+            {
+
+            }
         }
     }
 }
