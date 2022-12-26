@@ -5,5 +5,5 @@ CREATE PROC sp_GetBoredCustomers
   @threshold DATETIME
 AS
   SELECT *
-  FROM Customers
-  WHERE NOT EXISTS (SELECT * FROM Orders WHERE orderDate >= @threshold);
+  FROM Customers c
+  WHERE NOT EXISTS (SELECT * FROM Orders o WHERE c.id = o.customerId AND orderDate >= @threshold)
