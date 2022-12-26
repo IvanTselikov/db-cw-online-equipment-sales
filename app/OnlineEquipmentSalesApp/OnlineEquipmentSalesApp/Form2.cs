@@ -22,11 +22,12 @@ namespace OnlineEquipmentSalesApp
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            SqlDataReader reader = MainForm.DatabaseConnection.GetCustomerOrders();
+            // выводим заказы
+            SqlDataReader reader = Form1.DatabaseConnection.GetCustomerOrders();
             FillDgv(dgvOrders, reader);
 
-            // получаем заголовки таблицы
-            reader = MainForm.DatabaseConnection.GetOrderProducts();
+            // выводим заголовки таблицы с содержимым заказа
+            reader = Form1.DatabaseConnection.GetOrderProducts();
             FillDgv(dgvOrderProducts, reader);
         }
 
@@ -89,7 +90,7 @@ namespace OnlineEquipmentSalesApp
             {
                 try
                 {
-                    SqlDataReader reader = MainForm.DatabaseConnection.GetCustomerOrders(dateStart, dateEnd);
+                    SqlDataReader reader = Form1.DatabaseConnection.GetCustomerOrders(dateStart, dateEnd);
                     FillDgv(dgvOrders, reader);
 
                     this.dateStart = dateStart;
@@ -114,8 +115,10 @@ namespace OnlineEquipmentSalesApp
 
                 int orderNumber = (int)row.Cells[0].Value;
 
-                SqlDataReader reader = MainForm.DatabaseConnection.GetOrderProducts(orderNumber);
+                SqlDataReader reader = Form1.DatabaseConnection.GetOrderProducts(orderNumber);
                 FillDgv(dgvOrderProducts, reader);
+
+                lblOrderProducts.Text = $"Содержимое заказа №{orderNumber}:";
 
                 this.selectedRowIndex = selectedRowIndex;
             }
@@ -131,21 +134,31 @@ namespace OnlineEquipmentSalesApp
             {
                 int rowIndex = dgvOrders.CurrentCell.RowIndex;
                 int orderNumber = (int)dgvOrders.Rows[rowIndex].Cells[0].Value;
-                MessageBox.Show(orderNumber.ToString());
-                try
+                DialogResult dialogResult = MessageBox.Show($"Вы действительно хотите отменить заказ №{orderNumber}?",
+                                                             "Отмена заказа", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
                 {
-                    MainForm.DatabaseConnection.CancelOrder(orderNumber);
-                    MessageBox.Show("Заказ успешно отменён!", "Готово", MessageBoxButtons.OK);
+                    try
+                    {
+                        Form1.DatabaseConnection.CancelOrder(orderNumber);
+                        MessageBox.Show("Заказ успешно отменён!", "Готово", MessageBoxButtons.OK);
 
-                    // обновляем таблицу с заказами
-                    SqlDataReader reader = MainForm.DatabaseConnection.GetCustomerOrders();
-                    FillDgv(dgvOrders, reader);
-                }
-                catch (SqlException ex)
-                {
-                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
+                        // обновляем таблицу с заказами
+                        SqlDataReader reader = Form1.DatabaseConnection.GetCustomerOrders();
+                        FillDgv(dgvOrders, reader);
+                    }
+                    catch (SqlException ex)
+                    {
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
+                    }
                 }
             }
+        }
+
+        private void btnCreateOrder_Click(object sender, EventArgs e)
+        {
+            Form3 f3 = new Form3();
+            f3.ShowDialog();
         }
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)

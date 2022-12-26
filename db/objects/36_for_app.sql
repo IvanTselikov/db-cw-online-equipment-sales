@@ -199,3 +199,83 @@ SET orderDate = CONVERT(DATETIME, '2022-10-10 00:19:19.673', 102),
     employeeId = 3,
     statusCode = 11
 WHERE number = (SELECT MAX(number) FROM Orders);
+GO
+
+-- ХП для получения списка всех типов товаров
+CREATE PROC sp_GetProductTypes
+AS
+  SELECT code [Код типа], [name] [Название типа]
+  FROM ProductTypes;
+GO
+
+GRANT EXECUTE ON sp_GetProductTypes TO Customer;
+GO
+
+-- представление "товар - тип товара"
+--CREATE VIEW ProductTypesNames
+--AS
+--  SELECT p.[name] [Название товара],
+--         pt.[name] [Тип товара]
+--  FROM Products p JOIN ProductTypes pt
+--    ON p.productTypeCode = pt.code;
+--GO
+
+-- ХП для получения списка всех названий товаров указанного типа
+CREATE PROC sp_GetProductsOfType
+  @typeCode SMALLINT = NULL
+AS
+  IF @typeCode IS NULL OR @typeCode = 9 -- "Товар", обобщающий тип
+    SELECT code, [name]
+    FROM Products;
+  ELSE
+    SELECT code, [name]
+    FROM Products
+    WHERE productTypeCode = @typeCode;
+GO
+
+GRANT EXECUTE ON sp_GetProductsOfType TO Customer;
+GO
+
+-- ХП для получения адресов всех пунктов выдачи
+ALTER PROC sp_GetPickupPointsAddresses
+AS
+  SELECT pp.number, c.[name] + ', ' + a.street + ', ' + a.building ppAddress
+  FROM PickupPoints pp JOIN Addresses a ON pp.addressId = a.id
+    JOIN Communities c ON a.communityCode = c.code;
+GO
+
+GRANT EXECUTE ON sp_GetPickupPointsAddresses TO Customer;
+GO
+
+-- ХП для получения названий способов оплаты
+CREATE PROC sp_GetPaymentMethods
+AS
+  SELECT code, [name]
+  FROM PaymentMethods;
+GO
+
+GRANT EXECUTE ON sp_GetPaymentMethods TO Customer;
+GO
+
+-- ХП для получения количества товаров на складах, из которых доступна доставка
+-- в указанный пункт выдачи
+CREATE PROC sp_GetPickupPointProductCount
+  @productCode INT,
+  @pickupPointNumber SMALLINT = NULL, -- по умолчанию - на всех ПВ
+  @productCount INT OUTPUT
+AS
+  IF @pickupPointNumber IS NULL
+    SELECT @productCount = SUM(productCount)
+    FROM ProductMovements
+    WHERE productCode = @productCode;
+  ELSE
+    SELECT @productCount = SUM(pm.productCount)
+    FROM Deliveries d JOIN ProductMovements pm
+      ON d.pickupPointNumber = @pickupPointNumber AND pm.productCode = @productCode
+        AND pm.warehouseNumber = d.warehouseNumber;
+  IF @productCount IS NULL
+    SET @productCount = 0;
+GO
+
+GRANT EXECUTE ON sp_GetPickupPointProductCount TO Customer;
+GO

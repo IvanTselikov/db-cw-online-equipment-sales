@@ -8,21 +8,21 @@ namespace OnlineEquipmentSalesApp
 {
     class DatabaseConnection
     {
-        private string serverName = @"LAPTOP-J4FHUBL5\SQLEXPRESS",
-                       dbName = "OnlineEquipmentSales",
+        private string dbName = "OnlineEquipmentSales",
                        login = "Customer";
 
         private SqlConnection sqlConnection;
 
-        public bool Login(string password)
+        public bool Login(string serverName, string password)
         {
             if (sqlConnection == null || sqlConnection.State == System.Data.ConnectionState.Closed)
             {
                 string connectionString =
-                    $"Data Source={this.serverName};" +
+                    $"Data Source={serverName};" +
                     $"Initial Catalog={this.dbName};" +
                     $"User Id={this.login};Password={password};" +
-                    "Integrated Security=False";
+                    "Integrated Security=False;" +
+                    "Connect Timeout=3";
 
                 this.sqlConnection = new SqlConnection(connectionString);
 
@@ -51,7 +51,7 @@ namespace OnlineEquipmentSalesApp
 
         public SqlDataReader GetCustomerOrders(DateTime? dateStart = null, DateTime? dateEnd = null)
         {
-            if (sqlConnection != null && sqlConnection.State == System.Data.ConnectionState.Open)
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
                 int customerId = GetCustomerId();
                 string spName = "sp_CustomerOrders",
@@ -152,6 +152,84 @@ namespace OnlineEquipmentSalesApp
             };
             command.Parameters.Add(orderNumberParam);
             command.ExecuteNonQuery();
+        }
+
+        public SqlDataReader GetProductTypes()
+        {
+            string spName = "sp_GetProductTypes";
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            SqlDataReader reader = command.ExecuteReader();
+            return reader;
+        }
+
+        public SqlDataReader GetProductsOfType(int? typeCode = null)
+        {
+            string spName = "sp_GetProductsOfType",
+                   param1 = "@typeCode";
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter typeNameParam = new SqlParameter
+            {
+                ParameterName = param1,
+                Value = typeCode
+            };
+            command.Parameters.Add(typeNameParam);
+            SqlDataReader reader = command.ExecuteReader();
+            return reader;
+        }
+
+        public SqlDataReader GetPickupPointsAddresses()
+        {
+            string spName = "sp_GetPickupPointsAddresses";
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            SqlDataReader reader = command.ExecuteReader();
+            return reader;
+        }
+
+        public SqlDataReader GetPaymentMethods()
+        {
+            string spName = "sp_GetPaymentMethods";
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            SqlDataReader reader = command.ExecuteReader();
+            return reader;
+        }
+
+        public int GetPickupPointProductCount(int productCode, int? pickupPointNumber = null)
+        {
+            string spName = "sp_GetPickupPointProductCount",
+                   param1 = "@productCode ",
+                   param2 = "@pickupPointNumber",
+                   param3 = "@productCount";
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+
+            SqlParameter productCodeParam = new SqlParameter
+            {
+                ParameterName = param1,
+                Value = productCode
+            };
+
+            SqlParameter pickupPointNumberParam = new SqlParameter
+            {
+                ParameterName = param2,
+                Value = pickupPointNumber
+            };
+
+            SqlParameter productCountParam = new SqlParameter
+            {
+                ParameterName = param3,
+            };
+            productCountParam.Direction = ParameterDirection.Output;
+
+            command.Parameters.Add(productCodeParam);
+            command.Parameters.Add(pickupPointNumberParam);
+            command.Parameters.Add(productCountParam);
+
+            command.ExecuteNonQuery();
+            return (int)command.Parameters[param3].Value;
         }
     }
 }

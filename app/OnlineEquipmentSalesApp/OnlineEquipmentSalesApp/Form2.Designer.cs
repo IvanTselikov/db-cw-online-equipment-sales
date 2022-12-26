@@ -81,7 +81,7 @@ namespace OnlineEquipmentSalesApp
             this.tpOrders.Padding = new System.Windows.Forms.Padding(3);
             this.tpOrders.Size = new System.Drawing.Size(874, 407);
             this.tpOrders.TabIndex = 0;
-            this.tpOrders.Text = "Заказы";
+            this.tpOrders.Text = "Просмотр заказов";
             this.tpOrders.UseVisualStyleBackColor = true;
             // 
             // splitContainer1
@@ -89,7 +89,7 @@ namespace OnlineEquipmentSalesApp
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.Cursor = System.Windows.Forms.Cursors.HSplit;
+            this.splitContainer1.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.splitContainer1.Location = new System.Drawing.Point(6, 6);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -239,9 +239,9 @@ namespace OnlineEquipmentSalesApp
             this.lblOrderProducts.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.lblOrderProducts.Location = new System.Drawing.Point(6, 10);
             this.lblOrderProducts.Name = "lblOrderProducts";
-            this.lblOrderProducts.Size = new System.Drawing.Size(157, 21);
+            this.lblOrderProducts.Size = new System.Drawing.Size(282, 21);
             this.lblOrderProducts.TabIndex = 2;
-            this.lblOrderProducts.Text = "Содержимое заказа:";
+            this.lblOrderProducts.Text = "Содержимое заказа (выберите заказ):";
             // 
             // btnCreateOrder
             // 
@@ -253,6 +253,7 @@ namespace OnlineEquipmentSalesApp
             this.btnCreateOrder.TabIndex = 3;
             this.btnCreateOrder.Text = "Оформить заказ...";
             this.btnCreateOrder.UseVisualStyleBackColor = true;
+            this.btnCreateOrder.Click += new System.EventHandler(this.btnCreateOrder_Click);
             // 
             // dgvOrderProducts
             // 
@@ -317,7 +318,6 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.DataGridView dgvOrderProducts;
         private System.Windows.Forms.Label lblOrderProducts;
         private System.Windows.Forms.Button btnCancelOrder;
-        private System.Windows.Forms.Button btnCreateOrder;
         private System.Windows.Forms.DateTimePicker dtpOrdersStart;
         private System.Windows.Forms.DateTimePicker dtpOrdersEnd;
         private System.Windows.Forms.SplitContainer splitContainer1;
@@ -328,5 +328,6 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.RadioButton rbAllOrders;
         private System.Windows.Forms.Button btnSearchOrders;
         private System.Windows.Forms.Panel pPeriodChoosing;
+        private System.Windows.Forms.Button btnCreateOrder;
     }
 }

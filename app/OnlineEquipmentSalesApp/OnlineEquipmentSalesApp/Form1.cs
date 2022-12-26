@@ -12,7 +12,7 @@ namespace OnlineEquipmentSalesApp
 {
     public partial class Form1 : Form
     {
-        internal DatabaseConnection DatabaseConnection = new DatabaseConnection();
+        internal static DatabaseConnection DatabaseConnection = new DatabaseConnection();
 
         public Form1()
         {
@@ -36,7 +36,7 @@ namespace OnlineEquipmentSalesApp
 
         private void TryToLogIn()
         {
-            if (this.DatabaseConnection.Login(tbPassword.Text))
+            if (DatabaseConnection.Login(tbServerName.Text, tbPassword.Text))
             {
                 Form2 f2 = new Form2();
                 f2.Show();
@@ -44,13 +44,13 @@ namespace OnlineEquipmentSalesApp
             }
             else
             {
-                MessageBox.Show("Неверный пароль!", "Ошибка", MessageBoxButtons.OK);
+                MessageBox.Show("Неправильное имя сервера или пароль!", "Ошибка", MessageBoxButtons.OK);
             }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.DatabaseConnection.Logout();
+            DatabaseConnection.Logout();
         }
     }
 }
