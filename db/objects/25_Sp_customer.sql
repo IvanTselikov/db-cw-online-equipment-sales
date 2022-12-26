@@ -29,7 +29,7 @@ CREATE PROC sp_CustomerOrders
   @dateEnd DATETIME = NULL
 AS
   IF @dateStart IS NULL
-    SET @dateStart = (SELECT MIN(orderDate) FROM Orders);
+    SET @dateStart = (SELECT DATEDIFF(dd, 1, MIN(orderDate)) FROM Orders);
   IF @dateEnd IS NULL
     SET @dateEnd = GETDATE();
   IF @dateStart = @dateEnd -- заказы только за указанный день
@@ -49,7 +49,7 @@ AS
 GO
 
 -- проверка
---DECLARE @customerId INT = 1,
+--DECLARE @customerId INT = 4,
 --        @start DATETIME = CONVERT(DATETIME, '15.01.2022', 104),
 --        @end DATETIME = CONVERT(DATETIME, '21.12.2022', 104);
 
