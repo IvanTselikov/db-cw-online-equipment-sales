@@ -138,5 +138,20 @@ namespace OnlineEquipmentSalesApp
             SqlDataReader reader = command.ExecuteReader();
             return reader;
         }
+
+        public void CancelOrder(int orderNumber)
+        {
+            string spName = "sp_CancelOrder",
+                   param1 = "@orderNumber";
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter orderNumberParam = new SqlParameter
+            {
+                ParameterName = param1,
+                Value = orderNumber
+            };
+            command.Parameters.Add(orderNumberParam);
+            command.ExecuteNonQuery();
+        }
     }
 }

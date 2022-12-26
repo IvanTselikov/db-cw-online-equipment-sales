@@ -41,11 +41,11 @@ namespace OnlineEquipmentSalesApp
             this.btnSearchOrders = new System.Windows.Forms.Button();
             this.rbOrdersInDates = new System.Windows.Forms.RadioButton();
             this.rbAllOrders = new System.Windows.Forms.RadioButton();
-            this.dgwOrders = new System.Windows.Forms.DataGridView();
+            this.dgvOrders = new System.Windows.Forms.DataGridView();
             this.btnCancelOrder = new System.Windows.Forms.Button();
             this.lblOrderProducts = new System.Windows.Forms.Label();
             this.btnCreateOrder = new System.Windows.Forms.Button();
-            this.dgwOrderProducts = new System.Windows.Forms.DataGridView();
+            this.dgvOrderProducts = new System.Windows.Forms.DataGridView();
             this.tpCPUSearch = new System.Windows.Forms.TabPage();
             this.tabControl1.SuspendLayout();
             this.tpOrders.SuspendLayout();
@@ -55,8 +55,8 @@ namespace OnlineEquipmentSalesApp
             this.splitContainer1.SuspendLayout();
             this.pOrderDates.SuspendLayout();
             this.pPeriodChoosing.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgwOrders)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgwOrderProducts)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOrders)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOrderProducts)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -97,14 +97,14 @@ namespace OnlineEquipmentSalesApp
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.pOrderDates);
-            this.splitContainer1.Panel1.Controls.Add(this.dgwOrders);
+            this.splitContainer1.Panel1.Controls.Add(this.dgvOrders);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.btnCancelOrder);
             this.splitContainer1.Panel2.Controls.Add(this.lblOrderProducts);
             this.splitContainer1.Panel2.Controls.Add(this.btnCreateOrder);
-            this.splitContainer1.Panel2.Controls.Add(this.dgwOrderProducts);
+            this.splitContainer1.Panel2.Controls.Add(this.dgvOrderProducts);
             this.splitContainer1.Size = new System.Drawing.Size(862, 395);
             this.splitContainer1.SplitterDistance = 172;
             this.splitContainer1.TabIndex = 8;
@@ -204,27 +204,26 @@ namespace OnlineEquipmentSalesApp
             this.rbAllOrders.Text = "все";
             this.rbAllOrders.UseVisualStyleBackColor = true;
             // 
-            // dgwOrders
+            // dgvOrders
             // 
-            this.dgwOrders.AllowUserToAddRows = false;
-            this.dgwOrders.AllowUserToDeleteRows = false;
-            this.dgwOrders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.dgvOrders.AllowUserToAddRows = false;
+            this.dgvOrders.AllowUserToDeleteRows = false;
+            this.dgvOrders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgwOrders.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgwOrders.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgwOrders.Location = new System.Drawing.Point(9, 53);
-            this.dgwOrders.Name = "dgwOrders";
-            this.dgwOrders.ReadOnly = true;
-            this.dgwOrders.RowTemplate.Height = 25;
-            this.dgwOrders.Size = new System.Drawing.Size(844, 116);
-            this.dgwOrders.TabIndex = 1;
-            this.dgwOrders.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgwOrders_CellClick);
+            this.dgvOrders.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvOrders.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvOrders.Location = new System.Drawing.Point(9, 53);
+            this.dgvOrders.Name = "dgvOrders";
+            this.dgvOrders.ReadOnly = true;
+            this.dgvOrders.RowTemplate.Height = 25;
+            this.dgvOrders.Size = new System.Drawing.Size(844, 116);
+            this.dgvOrders.TabIndex = 1;
+            this.dgvOrders.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvOrders_CellClick);
             // 
             // btnCancelOrder
             // 
             this.btnCancelOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCancelOrder.Enabled = false;
             this.btnCancelOrder.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.btnCancelOrder.Location = new System.Drawing.Point(212, 183);
             this.btnCancelOrder.Name = "btnCancelOrder";
@@ -232,6 +231,7 @@ namespace OnlineEquipmentSalesApp
             this.btnCancelOrder.TabIndex = 4;
             this.btnCancelOrder.Text = "Отменить заказ...";
             this.btnCancelOrder.UseVisualStyleBackColor = true;
+            this.btnCancelOrder.Click += new System.EventHandler(this.btnCancelOrder_Click);
             // 
             // lblOrderProducts
             // 
@@ -254,21 +254,21 @@ namespace OnlineEquipmentSalesApp
             this.btnCreateOrder.Text = "Оформить заказ...";
             this.btnCreateOrder.UseVisualStyleBackColor = true;
             // 
-            // dgwOrderProducts
+            // dgvOrderProducts
             // 
-            this.dgwOrderProducts.AllowUserToAddRows = false;
-            this.dgwOrderProducts.AllowUserToDeleteRows = false;
-            this.dgwOrderProducts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.dgvOrderProducts.AllowUserToAddRows = false;
+            this.dgvOrderProducts.AllowUserToDeleteRows = false;
+            this.dgvOrderProducts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgwOrderProducts.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgwOrderProducts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgwOrderProducts.Location = new System.Drawing.Point(9, 34);
-            this.dgwOrderProducts.Name = "dgwOrderProducts";
-            this.dgwOrderProducts.ReadOnly = true;
-            this.dgwOrderProducts.RowTemplate.Height = 25;
-            this.dgwOrderProducts.Size = new System.Drawing.Size(844, 133);
-            this.dgwOrderProducts.TabIndex = 0;
+            this.dgvOrderProducts.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvOrderProducts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvOrderProducts.Location = new System.Drawing.Point(9, 34);
+            this.dgvOrderProducts.Name = "dgvOrderProducts";
+            this.dgvOrderProducts.ReadOnly = true;
+            this.dgvOrderProducts.RowTemplate.Height = 25;
+            this.dgvOrderProducts.Size = new System.Drawing.Size(844, 133);
+            this.dgvOrderProducts.TabIndex = 0;
             // 
             // tpCPUSearch
             // 
@@ -302,8 +302,8 @@ namespace OnlineEquipmentSalesApp
             this.pOrderDates.PerformLayout();
             this.pPeriodChoosing.ResumeLayout(false);
             this.pPeriodChoosing.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgwOrders)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgwOrderProducts)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOrders)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvOrderProducts)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -313,8 +313,8 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tpOrders;
         private System.Windows.Forms.TabPage tpCPUSearch;
-        private System.Windows.Forms.DataGridView dgwOrders;
-        private System.Windows.Forms.DataGridView dgwOrderProducts;
+        private System.Windows.Forms.DataGridView dgvOrders;
+        private System.Windows.Forms.DataGridView dgvOrderProducts;
         private System.Windows.Forms.Label lblOrderProducts;
         private System.Windows.Forms.Button btnCancelOrder;
         private System.Windows.Forms.Button btnCreateOrder;

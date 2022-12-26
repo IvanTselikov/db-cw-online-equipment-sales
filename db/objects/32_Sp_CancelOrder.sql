@@ -24,5 +24,5 @@ AS
     RETURN 1;
   END;
   UPDATE Orders
-  SET statusCode = @currentOrderStatus
+  SET statusCode = 12
   WHERE number = @orderNumber;

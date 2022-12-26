@@ -23,31 +23,31 @@ namespace OnlineEquipmentSalesApp
         private void Form2_Load(object sender, EventArgs e)
         {
             SqlDataReader reader = MainForm.DatabaseConnection.GetCustomerOrders();
-            FillDgw(dgwOrders, reader);
+            FillDgv(dgvOrders, reader);
 
             // получаем заголовки таблицы
             reader = MainForm.DatabaseConnection.GetOrderProducts();
-            FillDgw(dgwOrderProducts, reader);
+            FillDgv(dgvOrderProducts, reader);
         }
 
-        private void FillDgw(DataGridView dgw, SqlDataReader reader)
+        private void FillDgv(DataGridView dgv, SqlDataReader reader)
         {
-            if (dgw.Columns.Count < 1)
+            if (dgv.Columns.Count < 1)
             {
                 for (int i = 0; i < reader.FieldCount; i++)
                 {
-                    dgw.Columns.Add(reader.GetName(i), reader.GetName(i));
+                    dgv.Columns.Add(reader.GetName(i), reader.GetName(i));
                 }
             }
 
-            dgw.Rows.Clear();
+            dgv.Rows.Clear();
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
                     object[] values = new object[reader.FieldCount];
                     reader.GetValues(values);
-                    dgw.Rows.Add(values);
+                    dgv.Rows.Add(values);
                 }
             }
             reader.Close();
@@ -90,7 +90,7 @@ namespace OnlineEquipmentSalesApp
                 try
                 {
                     SqlDataReader reader = MainForm.DatabaseConnection.GetCustomerOrders(dateStart, dateEnd);
-                    FillDgw(dgwOrders, reader);
+                    FillDgv(dgvOrders, reader);
 
                     this.dateStart = dateStart;
                     this.dateEnd = dateEnd;
@@ -102,22 +102,49 @@ namespace OnlineEquipmentSalesApp
             }
         }
 
-        private int selectedRow = -1;
+        private int selectedRowIndex = -1;
 
-        private void dgwOrders_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvOrders_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            int selectedRow = e.RowIndex;
+            int selectedRowIndex = e.RowIndex;
 
-            if (selectedRow >= 0 && selectedRow != this.selectedRow)
+            if (selectedRowIndex >= 0 && selectedRowIndex != this.selectedRowIndex)
             {
-                DataGridViewRow row = dgwOrders.Rows[selectedRow];
+                DataGridViewRow row = dgvOrders.Rows[selectedRowIndex];
 
                 int orderNumber = (int)row.Cells[0].Value;
 
                 SqlDataReader reader = MainForm.DatabaseConnection.GetOrderProducts(orderNumber);
-                FillDgw(dgwOrderProducts, reader);
+                FillDgv(dgvOrderProducts, reader);
 
-                this.selectedRow = selectedRow;
+                this.selectedRowIndex = selectedRowIndex;
+            }
+        }
+
+        private void btnCancelOrder_Click(object sender, EventArgs e)
+        {
+            if (dgvOrders.CurrentCell == null)
+            {
+                MessageBox.Show("Выберите заказ для отмены!", "Ошибка", MessageBoxButtons.OK);
+            }
+            else
+            {
+                int rowIndex = dgvOrders.CurrentCell.RowIndex;
+                int orderNumber = (int)dgvOrders.Rows[rowIndex].Cells[0].Value;
+                MessageBox.Show(orderNumber.ToString());
+                try
+                {
+                    MainForm.DatabaseConnection.CancelOrder(orderNumber);
+                    MessageBox.Show("Заказ успешно отменён!", "Готово", MessageBoxButtons.OK);
+
+                    // обновляем таблицу с заказами
+                    SqlDataReader reader = MainForm.DatabaseConnection.GetCustomerOrders();
+                    FillDgv(dgvOrders, reader);
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
+                }
             }
         }
 
