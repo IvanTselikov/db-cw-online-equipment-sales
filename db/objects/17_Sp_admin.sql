@@ -6,7 +6,7 @@ AS
 	IF @dateEnd = '0001-01-01'
 		SET @dateEnd = GETDATE()
 
-	SELECT ProductTypes.name, -SUM(productCount), @dateStart AS PeriodStart, @dateEnd AS PeriodEnd
+	SELECT ProductTypes.name, -SUM(productCount) AS productCount, @dateStart AS periodStart, @dateEnd AS periodEnd
 	FROM Orders JOIN ProductMovements ON Orders.number = ProductMovements.orderNumber
 		JOIN Products ON   ProductMovements.productCode = Products.code 
 		JOIN ProductTypes ON ProductTypes.code = Products.productTypeCode
