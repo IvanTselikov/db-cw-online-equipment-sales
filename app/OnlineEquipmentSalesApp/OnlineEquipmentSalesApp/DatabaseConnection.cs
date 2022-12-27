@@ -282,5 +282,97 @@ namespace OnlineEquipmentSalesApp
             command.ExecuteNonQuery();
             return command.Parameters[param2].Value.ToString();
         }
+
+        public SqlDataReader GetCharacteristicsOfType(short typeCode)
+        {
+            string spName = "sp_GetCharacteristicsOfType",
+                   param1 = "@typeCode";
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            SqlParameter typeCodeParam = new SqlParameter
+            {
+                ParameterName = param1,
+                Value = typeCode,
+                SqlDbType = SqlDbType.SmallInt
+            };
+            command.Parameters.Add(typeCodeParam);
+
+            SqlDataReader reader = command.ExecuteReader();
+            return reader;
+        }
+
+        public SqlDataReader FindProductsByCharacteristic(short typeCode,
+                                                          short characteristicCode,
+                                                          object characteristicValue)
+        {
+            string spName = "sp_FindProductByCharacteristic",
+                   param1 = "@typeCode",
+                   param2 = "@characteristic",
+                   param3 = "@value";
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            SqlParameter typeCodeParam = new SqlParameter
+            {
+                ParameterName = param1,
+                Value = typeCode,
+                SqlDbType = SqlDbType.SmallInt
+            };
+            SqlParameter characteristicCodeParam = new SqlParameter
+            {
+                ParameterName = param2,
+                Value = characteristicCode,
+                SqlDbType = SqlDbType.SmallInt                
+            };
+            SqlParameter characteristicValueParam = new SqlParameter
+            {
+                ParameterName = param3,
+                Value = characteristicValue,
+                SqlDbType = SqlDbType.Variant
+            };
+
+            command.Parameters.Add(typeCodeParam);
+            command.Parameters.Add(characteristicCodeParam);
+            command.Parameters.Add(characteristicValueParam);
+
+            SqlDataReader reader = command.ExecuteReader();
+            return reader;
+        }
+    
+        public byte GetCharacteristicDataType(short characteristicCode)
+        {
+            string spName = "sp_GetCharacteristicDataType",
+                   param1 = "@characteristicCode",
+                   param2 = "@dataTypeCode";
+
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            SqlParameter characteristicCodeParam = new SqlParameter
+            {
+                ParameterName = param1,
+                Value = characteristicCode,
+                SqlDbType = SqlDbType.SmallInt
+            };
+
+            SqlParameter dataTypeCodeParam = new SqlParameter
+            {
+                ParameterName = param2,
+                SqlDbType = SqlDbType.TinyInt,
+                Direction = ParameterDirection.Output
+            };
+
+            command.Parameters.Add(characteristicCodeParam);
+            command.Parameters.Add(dataTypeCodeParam);
+
+            command.ExecuteNonQuery();
+            return (byte)command.Parameters[param2].Value;
+        }
     }
 }

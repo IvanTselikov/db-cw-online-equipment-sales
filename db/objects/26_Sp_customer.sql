@@ -1,11 +1,12 @@
 USE OnlineEquipmentSales;
 GO
 
-CREATE PROCEDURE sp_FindProductByCharacteristic @characteristic INT, @value SQL_VARIANT
+ALTER PROCEDURE sp_FindProductByCharacteristic
+  @typeCode SMALLINT, @characteristic SMALLINT, @value SQL_VARIANT
 AS
-  SELECT *
-  FROM Products
-  WHERE code IN (SELECT productCode
-                 FROM ProductCharacteristics
-                 WHERE characteristicCode = @characteristic
-                   AND characteristicValue = @value)
+  SELECT pfc.*
+  FROM Products p JOIN ProductCharacteristics pc ON p.code = pc.productCode
+    JOIN ProductsForCustomers pfc ON p.code  = pfc.[Код товара]
+  WHERE p.productTypeCode = @typeCode
+    AND pc.characteristicCode = @characteristic
+    AND pc.characteristicValue = @value;

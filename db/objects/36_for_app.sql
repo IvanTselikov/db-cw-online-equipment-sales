@@ -314,3 +314,43 @@ GO
 
 GRANT EXECUTE ON sp_GetProductOrderInfo TO Customer;
 GO
+
+-- ХП для получения всех характеристик указанного типа
+CREATE PROC sp_GetCharacteristicsOfType
+  @typeCode SMALLINT
+AS
+  DECLARE @characteristics AS TABLE(
+    code SMALLINT,
+    [name] NVARCHAR(100)
+  );
+  WHILE @typeCode IS NOT NULL
+  BEGIN
+    INSERT INTO @characteristics
+    SELECT c.code, c.[name] + ', ' + u.[name]
+    FROM ProductTypeCharacteristics ptc JOIN Characteristics c
+      ON ptc.characteristicCode = c.code
+      JOIN Units u ON c.unitCode = u.code
+    WHERE productTypeCode = @typeCode;
+
+    SELECT @typeCode = parentTypeCode
+    FROM ProductTypes
+    WHERE code = @typeCode;
+  END;
+  SELECT *
+  FROM @characteristics;
+GO
+
+GRANT EXECUTE ON sp_GetCharacteristicsOfType TO Customer;
+GO
+
+CREATE PROC sp_GetCharacteristicDataType
+  @characteristicCode SMALLINT,
+  @dataTypeCode TINYINT OUTPUT
+AS
+  SELECT @dataTypeCode = dataTypeCode
+  FROM Characteristics
+  WHERE code = @characteristicCode;
+GO
+
+GRANT EXECUTE ON sp_GetCharacteristicDataType TO Customer;
+GO

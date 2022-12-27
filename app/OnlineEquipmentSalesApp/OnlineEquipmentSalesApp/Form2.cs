@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace OnlineEquipmentSalesApp
 {
@@ -20,8 +21,26 @@ namespace OnlineEquipmentSalesApp
             InitializeComponent();
         }
 
+        private class KeyValueComboBoxItem
+        {
+            public int Key { get; }
+            public string Value { get; }
+
+            public KeyValueComboBoxItem(int key, string value)
+            {
+                this.Key = key;
+                this.Value = value;
+            }
+
+            public override string ToString()
+            {
+                return this.Value;
+            }
+        }
+
         private void Form2_Load(object sender, EventArgs e)
         {
+            // для вкладки "Просмотр заказов"
             // выводим заказы
             SqlDataReader reader = Form1.DatabaseConnection.GetCustomerOrders();
             FillDgv(dgvOrders, reader);
@@ -29,6 +48,18 @@ namespace OnlineEquipmentSalesApp
             // выводим заголовки таблицы с содержимым заказа
             reader = Form1.DatabaseConnection.GetOrderProducts();
             FillDgv(dgvOrderProducts, reader);
+
+
+            // для вкладки "Поиск товаров по характеристикам"
+            // заполняем элементы ComboBox
+            reader = Form1.DatabaseConnection.GetProductTypes();
+            FillComboBoxItems(cbProductTypeSearch, reader);
+            // по умолчанию - все товары
+            short defaultProductType = Form1.DatabaseConnection.GetDefaultProductType();
+            cbProductTypeSearch.SelectedItem = cbProductTypeSearch.Items
+                .Cast<KeyValueComboBoxItem>()
+                .Where(item => item.Key == defaultProductType)
+                .ToArray()[0];
         }
 
         private void FillDgv(DataGridView dgv, SqlDataReader reader)
@@ -52,6 +83,47 @@ namespace OnlineEquipmentSalesApp
                 }
             }
             reader.Close();
+        }
+
+        private void FillComboBoxItems(ComboBox cb, SqlDataReader reader)
+        {
+            KeyValueComboBoxItem selectedItem = cb.SelectedItem as KeyValueComboBoxItem;
+            cb.Items.Clear();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    KeyValueComboBoxItem item = new KeyValueComboBoxItem(Convert.ToInt32(reader.GetValue(0)),
+                                                             reader.GetValue(1).ToString());
+                    cb.Items.Add(item);
+                }
+            }
+            reader.Close();
+
+            if (selectedItem != null)
+            {
+                // чтобы выбранный элемент не пришлось выбирать заново
+                KeyValueComboBoxItem[] copiesOfSelected = cb.Items.Cast<KeyValueComboBoxItem>()
+                                                          .Where(item => item.Key == selectedItem.Key)
+                                                          .ToArray();
+                if (copiesOfSelected.Length > 0)
+                {
+                    cb.SelectedItem = copiesOfSelected[0];
+                }
+            }
+
+            // создаём подсказки для ComboBox для ускорения поиска
+            AutoCompleteStringCollection values = new AutoCompleteStringCollection();
+            string[] comboboxValues = new string[cb.Items.Count];
+            for (int i = 0; i < cb.Items.Count; i++)
+            {
+                comboboxValues[i] = cb.Items[i].ToString();
+            }
+
+            values.AddRange(comboboxValues);
+            cb.AutoCompleteCustomSource = values;
+            cb.AutoCompleteMode = AutoCompleteMode.Suggest;
+            cb.AutoCompleteSource = AutoCompleteSource.CustomSource;
         }
 
         private void rbOrdersInDates_CheckedChanged(object sender, EventArgs e)
@@ -159,6 +231,77 @@ namespace OnlineEquipmentSalesApp
         {
             Form3 f3 = new Form3();
             f3.ShowDialog();
+        }
+
+        private int selectedTypeSearchIndex = -1;
+
+        private void cbProductTypeSearch_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cb = sender as ComboBox;
+            int selectedTypeIndex = cb.SelectedIndex;
+            if (selectedTypeIndex != this.selectedTypeSearchIndex)
+            {
+                // изменяем содержимое ComboBox на список характеристик указанного типа
+                SqlDataReader reader = Form1.DatabaseConnection.GetCharacteristicsOfType(
+                    Convert.ToInt16((cb.SelectedItem as KeyValueComboBoxItem).Key));
+                FillComboBoxItems(cbCharacteristicName, reader);
+                this.selectedTypeSearchIndex = selectedTypeIndex;
+            }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            if (cbProductTypeSearch.SelectedItem == null)
+            {
+                MessageBox.Show("Выберите тип товара!", "Ошибка", MessageBoxButtons.OK);
+            }
+            else if (cbCharacteristicName.SelectedItem == null)
+            {
+                MessageBox.Show("Выберите характеристику, соответствующую указанному типу товара!", "Ошибка", MessageBoxButtons.OK);
+            }
+            else
+            {
+                short productTypeCode = (short)(cbProductTypeSearch.SelectedItem as KeyValueComboBoxItem).Key;
+                short characteristicCode = (short)(cbCharacteristicName.SelectedItem as KeyValueComboBoxItem).Key;
+                byte dataTypeCode = Form1.DatabaseConnection.GetCharacteristicDataType(characteristicCode);
+                object characteristicValue = null;
+                switch (dataTypeCode)
+                {
+                    case 3:
+                        if (double.TryParse(tbCharacteristicValue.Text.Replace(".", ","), out double valueDouble))
+                            characteristicValue = valueDouble;
+                        else
+                            MessageBox.Show("Ожидалось вещественное число!", "Ошибка", MessageBoxButtons.OK);
+                        break;
+                    case 4:
+                        if (short.TryParse(tbCharacteristicValue.Text, out short valueShort))
+                            characteristicValue = valueShort;
+                        else
+                            MessageBox.Show("Ожидалось целое число!", "Ошибка", MessageBoxButtons.OK);
+                        break;
+                    case 5:
+                        if (int.TryParse(tbCharacteristicValue.Text, out int valueInt))
+                            characteristicValue = valueInt;
+                        else
+                            MessageBox.Show("Ожидалось целое число!", "Ошибка", MessageBoxButtons.OK);
+                        break;
+                    case 1:
+                    case 2:
+                        characteristicValue = tbCharacteristicValue.Text;
+                        break;
+                };
+                if (characteristicValue != null)
+                {
+                    SqlDataReader reader = Form1.DatabaseConnection.FindProductsByCharacteristic(
+                        productTypeCode, characteristicCode, characteristicValue
+                    );
+                    FillDgv(dgvProductByCharacteristics, reader);
+                    if (dgvProductByCharacteristics.Rows.Count < 1)
+                    {
+                        MessageBox.Show("Ничего не найдено!", "Результат поиска", MessageBoxButtons.OK);
+                    }
+                }
+            }
         }
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)

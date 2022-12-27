@@ -31,7 +31,7 @@ namespace OnlineEquipmentSalesApp
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpOrders = new System.Windows.Forms.TabPage();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.spOrders = new System.Windows.Forms.SplitContainer();
             this.pOrderDates = new System.Windows.Forms.Panel();
             this.pPeriodChoosing = new System.Windows.Forms.Panel();
             this.cbOrdersStart = new System.Windows.Forms.CheckBox();
@@ -65,8 +65,6 @@ namespace OnlineEquipmentSalesApp
             this.tbProductSum = new System.Windows.Forms.TextBox();
             this.lblProductDiscount = new System.Windows.Forms.Label();
             this.lblProductSum = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.lblProductPrice = new System.Windows.Forms.Label();
             this.nudProductCount = new System.Windows.Forms.NumericUpDown();
             this.cbProductName = new System.Windows.Forms.ComboBox();
             this.btnSaveChanges = new System.Windows.Forms.Button();
@@ -75,18 +73,28 @@ namespace OnlineEquipmentSalesApp
             this.lblProductName = new System.Windows.Forms.Label();
             this.lblProductType = new System.Windows.Forms.Label();
             this.gbActions = new System.Windows.Forms.GroupBox();
-            this.btnCancel = new System.Windows.Forms.Button();
             this.btnFinishOrderCreating = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.btnRemoveItem = new System.Windows.Forms.Button();
             this.btnAddItem = new System.Windows.Forms.Button();
-            this.tpCPUSearch = new System.Windows.Forms.TabPage();
+            this.tpSearch = new System.Windows.Forms.TabPage();
+            this.spSearch = new System.Windows.Forms.SplitContainer();
+            this.gbSearchSettings = new System.Windows.Forms.GroupBox();
+            this.cbProductTypeSearch = new System.Windows.Forms.ComboBox();
+            this.lblProductTypeSearch = new System.Windows.Forms.Label();
+            this.lblCharacteristicValue = new System.Windows.Forms.Label();
+            this.tbCharacteristicValue = new System.Windows.Forms.TextBox();
+            this.lblCharacteristicName = new System.Windows.Forms.Label();
+            this.btnSearch = new System.Windows.Forms.Button();
+            this.cbCharacteristicName = new System.Windows.Forms.ComboBox();
+            this.gbSearchResults = new System.Windows.Forms.GroupBox();
+            this.dgvProductByCharacteristics = new System.Windows.Forms.DataGridView();
             this.tabControl1.SuspendLayout();
             this.tpOrders.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.spOrders)).BeginInit();
+            this.spOrders.Panel1.SuspendLayout();
+            this.spOrders.Panel2.SuspendLayout();
+            this.spOrders.SuspendLayout();
             this.pOrderDates.SuspendLayout();
             this.pPeriodChoosing.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrders)).BeginInit();
@@ -106,6 +114,14 @@ namespace OnlineEquipmentSalesApp
             this.gbBasketItem.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudProductCount)).BeginInit();
             this.gbActions.SuspendLayout();
+            this.tpSearch.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.spSearch)).BeginInit();
+            this.spSearch.Panel1.SuspendLayout();
+            this.spSearch.Panel2.SuspendLayout();
+            this.spSearch.SuspendLayout();
+            this.gbSearchSettings.SuspendLayout();
+            this.gbSearchResults.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvProductByCharacteristics)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -115,49 +131,49 @@ namespace OnlineEquipmentSalesApp
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tpOrders);
             this.tabControl1.Controls.Add(this.tpCreateOrder);
-            this.tabControl1.Controls.Add(this.tpCPUSearch);
+            this.tabControl1.Controls.Add(this.tpSearch);
             this.tabControl1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(882, 729);
+            this.tabControl1.Size = new System.Drawing.Size(882, 690);
             this.tabControl1.TabIndex = 0;
             // 
             // tpOrders
             // 
-            this.tpOrders.Controls.Add(this.splitContainer1);
+            this.tpOrders.Controls.Add(this.spOrders);
             this.tpOrders.Location = new System.Drawing.Point(4, 30);
             this.tpOrders.Name = "tpOrders";
             this.tpOrders.Padding = new System.Windows.Forms.Padding(3);
-            this.tpOrders.Size = new System.Drawing.Size(874, 695);
+            this.tpOrders.Size = new System.Drawing.Size(874, 656);
             this.tpOrders.TabIndex = 0;
             this.tpOrders.Text = "Просмотр заказов";
             this.tpOrders.UseVisualStyleBackColor = true;
             // 
-            // splitContainer1
+            // spOrders
             // 
-            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.spOrders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.splitContainer1.Location = new System.Drawing.Point(6, 6);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.spOrders.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.spOrders.Location = new System.Drawing.Point(6, 6);
+            this.spOrders.Name = "spOrders";
+            this.spOrders.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // splitContainer1.Panel1
+            // spOrders.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.pOrderDates);
-            this.splitContainer1.Panel1.Controls.Add(this.dgvOrders);
+            this.spOrders.Panel1.Controls.Add(this.pOrderDates);
+            this.spOrders.Panel1.Controls.Add(this.dgvOrders);
             // 
-            // splitContainer1.Panel2
+            // spOrders.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.btnCancelOrder);
-            this.splitContainer1.Panel2.Controls.Add(this.lblOrderProducts);
-            this.splitContainer1.Panel2.Controls.Add(this.btnCreateOrder);
-            this.splitContainer1.Panel2.Controls.Add(this.dgvOrderProducts);
-            this.splitContainer1.Size = new System.Drawing.Size(862, 499);
-            this.splitContainer1.SplitterDistance = 216;
-            this.splitContainer1.TabIndex = 8;
+            this.spOrders.Panel2.Controls.Add(this.btnCancelOrder);
+            this.spOrders.Panel2.Controls.Add(this.lblOrderProducts);
+            this.spOrders.Panel2.Controls.Add(this.btnCreateOrder);
+            this.spOrders.Panel2.Controls.Add(this.dgvOrderProducts);
+            this.spOrders.Size = new System.Drawing.Size(862, 644);
+            this.spOrders.SplitterDistance = 278;
+            this.spOrders.TabIndex = 8;
             // 
             // pOrderDates
             // 
@@ -267,7 +283,7 @@ namespace OnlineEquipmentSalesApp
             this.dgvOrders.Name = "dgvOrders";
             this.dgvOrders.ReadOnly = true;
             this.dgvOrders.RowTemplate.Height = 25;
-            this.dgvOrders.Size = new System.Drawing.Size(844, 171);
+            this.dgvOrders.Size = new System.Drawing.Size(844, 233);
             this.dgvOrders.TabIndex = 1;
             this.dgvOrders.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvOrders_CellClick);
             // 
@@ -275,7 +291,7 @@ namespace OnlineEquipmentSalesApp
             // 
             this.btnCancelOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCancelOrder.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnCancelOrder.Location = new System.Drawing.Point(212, 272);
+            this.btnCancelOrder.Location = new System.Drawing.Point(212, 326);
             this.btnCancelOrder.Name = "btnCancelOrder";
             this.btnCancelOrder.Size = new System.Drawing.Size(200, 33);
             this.btnCancelOrder.TabIndex = 4;
@@ -297,7 +313,7 @@ namespace OnlineEquipmentSalesApp
             // 
             this.btnCreateOrder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCreateOrder.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnCreateOrder.Location = new System.Drawing.Point(6, 272);
+            this.btnCreateOrder.Location = new System.Drawing.Point(6, 326);
             this.btnCreateOrder.Name = "btnCreateOrder";
             this.btnCreateOrder.Size = new System.Drawing.Size(200, 33);
             this.btnCreateOrder.TabIndex = 3;
@@ -318,7 +334,7 @@ namespace OnlineEquipmentSalesApp
             this.dgvOrderProducts.Name = "dgvOrderProducts";
             this.dgvOrderProducts.ReadOnly = true;
             this.dgvOrderProducts.RowTemplate.Height = 25;
-            this.dgvOrderProducts.Size = new System.Drawing.Size(844, 222);
+            this.dgvOrderProducts.Size = new System.Drawing.Size(844, 286);
             this.dgvOrderProducts.TabIndex = 0;
             // 
             // tpCreateOrder
@@ -326,7 +342,7 @@ namespace OnlineEquipmentSalesApp
             this.tpCreateOrder.Controls.Add(this.scMain);
             this.tpCreateOrder.Location = new System.Drawing.Point(4, 30);
             this.tpCreateOrder.Name = "tpCreateOrder";
-            this.tpCreateOrder.Size = new System.Drawing.Size(874, 695);
+            this.tpCreateOrder.Size = new System.Drawing.Size(874, 656);
             this.tpCreateOrder.TabIndex = 2;
             this.tpCreateOrder.Text = "Оформить заказ";
             this.tpCreateOrder.UseVisualStyleBackColor = true;
@@ -348,8 +364,8 @@ namespace OnlineEquipmentSalesApp
             // scMain.Panel2
             // 
             this.scMain.Panel2.Controls.Add(this.scSettings);
-            this.scMain.Size = new System.Drawing.Size(868, 654);
-            this.scMain.SplitterDistance = 247;
+            this.scMain.Size = new System.Drawing.Size(868, 615);
+            this.scMain.SplitterDistance = 232;
             this.scMain.TabIndex = 6;
             // 
             // gbBasket
@@ -361,7 +377,7 @@ namespace OnlineEquipmentSalesApp
             this.gbBasket.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.gbBasket.Location = new System.Drawing.Point(3, 3);
             this.gbBasket.Name = "gbBasket";
-            this.gbBasket.Size = new System.Drawing.Size(862, 241);
+            this.gbBasket.Size = new System.Drawing.Size(862, 226);
             this.gbBasket.TabIndex = 4;
             this.gbBasket.TabStop = false;
             this.gbBasket.Text = "Корзина";
@@ -379,7 +395,7 @@ namespace OnlineEquipmentSalesApp
             this.dgvBasket.Name = "dgvBasket";
             this.dgvBasket.ReadOnly = true;
             this.dgvBasket.RowTemplate.Height = 25;
-            this.dgvBasket.Size = new System.Drawing.Size(847, 207);
+            this.dgvBasket.Size = new System.Drawing.Size(847, 192);
             this.dgvBasket.TabIndex = 0;
             // 
             // scSettings
@@ -401,7 +417,7 @@ namespace OnlineEquipmentSalesApp
             // 
             this.scSettings.Panel2.AutoScroll = true;
             this.scSettings.Panel2.Controls.Add(this.gbActions);
-            this.scSettings.Size = new System.Drawing.Size(865, 392);
+            this.scSettings.Size = new System.Drawing.Size(865, 368);
             this.scSettings.SplitterDistance = 591;
             this.scSettings.TabIndex = 3;
             // 
@@ -504,8 +520,6 @@ namespace OnlineEquipmentSalesApp
             this.gbBasketItem.Controls.Add(this.tbProductSum);
             this.gbBasketItem.Controls.Add(this.lblProductDiscount);
             this.gbBasketItem.Controls.Add(this.lblProductSum);
-            this.gbBasketItem.Controls.Add(this.textBox1);
-            this.gbBasketItem.Controls.Add(this.lblProductPrice);
             this.gbBasketItem.Controls.Add(this.nudProductCount);
             this.gbBasketItem.Controls.Add(this.cbProductName);
             this.gbBasketItem.Controls.Add(this.btnSaveChanges);
@@ -524,7 +538,7 @@ namespace OnlineEquipmentSalesApp
             // tbProductDiscount
             // 
             this.tbProductDiscount.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.tbProductDiscount.Location = new System.Drawing.Point(390, 190);
+            this.tbProductDiscount.Location = new System.Drawing.Point(390, 149);
             this.tbProductDiscount.Name = "tbProductDiscount";
             this.tbProductDiscount.ReadOnly = true;
             this.tbProductDiscount.Size = new System.Drawing.Size(75, 29);
@@ -534,7 +548,7 @@ namespace OnlineEquipmentSalesApp
             // tbProductSum
             // 
             this.tbProductSum.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.tbProductSum.Location = new System.Drawing.Point(155, 190);
+            this.tbProductSum.Location = new System.Drawing.Point(155, 149);
             this.tbProductSum.Name = "tbProductSum";
             this.tbProductSum.ReadOnly = true;
             this.tbProductSum.Size = new System.Drawing.Size(75, 29);
@@ -545,7 +559,7 @@ namespace OnlineEquipmentSalesApp
             // 
             this.lblProductDiscount.AutoSize = true;
             this.lblProductDiscount.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblProductDiscount.Location = new System.Drawing.Point(251, 193);
+            this.lblProductDiscount.Location = new System.Drawing.Point(251, 152);
             this.lblProductDiscount.Name = "lblProductDiscount";
             this.lblProductDiscount.Size = new System.Drawing.Size(121, 21);
             this.lblProductDiscount.TabIndex = 15;
@@ -555,34 +569,16 @@ namespace OnlineEquipmentSalesApp
             // 
             this.lblProductSum.AutoSize = true;
             this.lblProductSum.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblProductSum.Location = new System.Drawing.Point(5, 193);
+            this.lblProductSum.Location = new System.Drawing.Point(5, 152);
             this.lblProductSum.Name = "lblProductSum";
             this.lblProductSum.Size = new System.Drawing.Size(126, 21);
             this.lblProductSum.TabIndex = 14;
             this.lblProductSum.Text = "Стоимость, руб.:";
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(155, 111);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(75, 29);
-            this.textBox1.TabIndex = 13;
-            // 
-            // lblProductPrice
-            // 
-            this.lblProductPrice.AutoSize = true;
-            this.lblProductPrice.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblProductPrice.Location = new System.Drawing.Point(6, 107);
-            this.lblProductPrice.Name = "lblProductPrice";
-            this.lblProductPrice.Size = new System.Drawing.Size(86, 21);
-            this.lblProductPrice.TabIndex = 7;
-            this.lblProductPrice.Text = "Цена, руб.:";
-            // 
             // nudProductCount
             // 
             this.nudProductCount.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.nudProductCount.Location = new System.Drawing.Point(155, 150);
+            this.nudProductCount.Location = new System.Drawing.Point(155, 109);
             this.nudProductCount.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -614,7 +610,7 @@ namespace OnlineEquipmentSalesApp
             // btnSaveChanges
             // 
             this.btnSaveChanges.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnSaveChanges.Location = new System.Drawing.Point(305, 148);
+            this.btnSaveChanges.Location = new System.Drawing.Point(305, 107);
             this.btnSaveChanges.Name = "btnSaveChanges";
             this.btnSaveChanges.Size = new System.Drawing.Size(214, 33);
             this.btnSaveChanges.TabIndex = 2;
@@ -634,7 +630,7 @@ namespace OnlineEquipmentSalesApp
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(6, 152);
+            this.label1.Location = new System.Drawing.Point(6, 111);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(96, 21);
             this.label1.TabIndex = 2;
@@ -662,7 +658,6 @@ namespace OnlineEquipmentSalesApp
             // 
             // gbActions
             // 
-            this.gbActions.Controls.Add(this.btnCancel);
             this.gbActions.Controls.Add(this.btnFinishOrderCreating);
             this.gbActions.Controls.Add(this.button1);
             this.gbActions.Controls.Add(this.btnRemoveItem);
@@ -675,20 +670,10 @@ namespace OnlineEquipmentSalesApp
             this.gbActions.TabStop = false;
             this.gbActions.Text = "Действия:";
             // 
-            // btnCancel
-            // 
-            this.btnCancel.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnCancel.Location = new System.Drawing.Point(6, 146);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(214, 33);
-            this.btnCancel.TabIndex = 5;
-            this.btnCancel.Text = "Отменить оформление";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            // 
             // btnFinishOrderCreating
             // 
             this.btnFinishOrderCreating.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnFinishOrderCreating.Location = new System.Drawing.Point(7, 307);
+            this.btnFinishOrderCreating.Location = new System.Drawing.Point(7, 279);
             this.btnFinishOrderCreating.Name = "btnFinishOrderCreating";
             this.btnFinishOrderCreating.Size = new System.Drawing.Size(214, 73);
             this.btnFinishOrderCreating.TabIndex = 4;
@@ -725,15 +710,155 @@ namespace OnlineEquipmentSalesApp
             this.btnAddItem.Text = "Добавить новый товар";
             this.btnAddItem.UseVisualStyleBackColor = true;
             // 
-            // tpCPUSearch
+            // tpSearch
             // 
-            this.tpCPUSearch.Location = new System.Drawing.Point(4, 30);
-            this.tpCPUSearch.Name = "tpCPUSearch";
-            this.tpCPUSearch.Padding = new System.Windows.Forms.Padding(3);
-            this.tpCPUSearch.Size = new System.Drawing.Size(874, 695);
-            this.tpCPUSearch.TabIndex = 1;
-            this.tpCPUSearch.Text = "Поиск копьютеров по процессорам";
-            this.tpCPUSearch.UseVisualStyleBackColor = true;
+            this.tpSearch.Controls.Add(this.spSearch);
+            this.tpSearch.Location = new System.Drawing.Point(4, 30);
+            this.tpSearch.Name = "tpSearch";
+            this.tpSearch.Padding = new System.Windows.Forms.Padding(3);
+            this.tpSearch.Size = new System.Drawing.Size(874, 656);
+            this.tpSearch.TabIndex = 1;
+            this.tpSearch.Text = "Поиск товаров по характеристикам";
+            this.tpSearch.UseVisualStyleBackColor = true;
+            // 
+            // spSearch
+            // 
+            this.spSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.spSearch.Cursor = System.Windows.Forms.Cursors.HSplit;
+            this.spSearch.Location = new System.Drawing.Point(6, 6);
+            this.spSearch.Name = "spSearch";
+            this.spSearch.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // spSearch.Panel1
+            // 
+            this.spSearch.Panel1.Controls.Add(this.gbSearchSettings);
+            // 
+            // spSearch.Panel2
+            // 
+            this.spSearch.Panel2.Controls.Add(this.gbSearchResults);
+            this.spSearch.Size = new System.Drawing.Size(862, 644);
+            this.spSearch.SplitterDistance = 258;
+            this.spSearch.TabIndex = 7;
+            // 
+            // gbSearchSettings
+            // 
+            this.gbSearchSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbSearchSettings.Controls.Add(this.cbProductTypeSearch);
+            this.gbSearchSettings.Controls.Add(this.lblProductTypeSearch);
+            this.gbSearchSettings.Controls.Add(this.lblCharacteristicValue);
+            this.gbSearchSettings.Controls.Add(this.tbCharacteristicValue);
+            this.gbSearchSettings.Controls.Add(this.lblCharacteristicName);
+            this.gbSearchSettings.Controls.Add(this.btnSearch);
+            this.gbSearchSettings.Controls.Add(this.cbCharacteristicName);
+            this.gbSearchSettings.Location = new System.Drawing.Point(3, 3);
+            this.gbSearchSettings.Name = "gbSearchSettings";
+            this.gbSearchSettings.Size = new System.Drawing.Size(856, 252);
+            this.gbSearchSettings.TabIndex = 7;
+            this.gbSearchSettings.TabStop = false;
+            this.gbSearchSettings.Text = "Параметры поиска:";
+            // 
+            // cbProductTypeSearch
+            // 
+            this.cbProductTypeSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbProductTypeSearch.FormattingEnabled = true;
+            this.cbProductTypeSearch.Location = new System.Drawing.Point(223, 28);
+            this.cbProductTypeSearch.Name = "cbProductTypeSearch";
+            this.cbProductTypeSearch.Size = new System.Drawing.Size(627, 29);
+            this.cbProductTypeSearch.TabIndex = 1;
+            this.cbProductTypeSearch.SelectedIndexChanged += new System.EventHandler(this.cbProductTypeSearch_SelectedIndexChanged);
+            // 
+            // lblProductTypeSearch
+            // 
+            this.lblProductTypeSearch.AutoSize = true;
+            this.lblProductTypeSearch.Location = new System.Drawing.Point(12, 36);
+            this.lblProductTypeSearch.Name = "lblProductTypeSearch";
+            this.lblProductTypeSearch.Size = new System.Drawing.Size(92, 21);
+            this.lblProductTypeSearch.TabIndex = 0;
+            this.lblProductTypeSearch.Text = "Тип товара:";
+            // 
+            // lblCharacteristicValue
+            // 
+            this.lblCharacteristicValue.AutoSize = true;
+            this.lblCharacteristicValue.Location = new System.Drawing.Point(12, 139);
+            this.lblCharacteristicValue.Name = "lblCharacteristicValue";
+            this.lblCharacteristicValue.Size = new System.Drawing.Size(199, 21);
+            this.lblCharacteristicValue.TabIndex = 4;
+            this.lblCharacteristicValue.Text = "Значение характеристики:";
+            // 
+            // tbCharacteristicValue
+            // 
+            this.tbCharacteristicValue.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbCharacteristicValue.Location = new System.Drawing.Point(223, 136);
+            this.tbCharacteristicValue.Name = "tbCharacteristicValue";
+            this.tbCharacteristicValue.Size = new System.Drawing.Size(627, 29);
+            this.tbCharacteristicValue.TabIndex = 5;
+            // 
+            // lblCharacteristicName
+            // 
+            this.lblCharacteristicName.AutoSize = true;
+            this.lblCharacteristicName.Location = new System.Drawing.Point(12, 81);
+            this.lblCharacteristicName.Name = "lblCharacteristicName";
+            this.lblCharacteristicName.Size = new System.Drawing.Size(127, 21);
+            this.lblCharacteristicName.TabIndex = 2;
+            this.lblCharacteristicName.Text = "Характеристика:";
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSearch.Location = new System.Drawing.Point(365, 190);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(127, 43);
+            this.btnSearch.TabIndex = 6;
+            this.btnSearch.Text = "Найти";
+            this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // cbCharacteristicName
+            // 
+            this.cbCharacteristicName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbCharacteristicName.FormattingEnabled = true;
+            this.cbCharacteristicName.Location = new System.Drawing.Point(223, 78);
+            this.cbCharacteristicName.Name = "cbCharacteristicName";
+            this.cbCharacteristicName.Size = new System.Drawing.Size(627, 29);
+            this.cbCharacteristicName.TabIndex = 3;
+            // 
+            // gbSearchResults
+            // 
+            this.gbSearchResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbSearchResults.Controls.Add(this.dgvProductByCharacteristics);
+            this.gbSearchResults.Location = new System.Drawing.Point(3, 14);
+            this.gbSearchResults.Name = "gbSearchResults";
+            this.gbSearchResults.Size = new System.Drawing.Size(856, 365);
+            this.gbSearchResults.TabIndex = 1;
+            this.gbSearchResults.TabStop = false;
+            this.gbSearchResults.Text = "Результаты поиска:";
+            // 
+            // dgvProductByCharacteristics
+            // 
+            this.dgvProductByCharacteristics.AllowUserToAddRows = false;
+            this.dgvProductByCharacteristics.AllowUserToDeleteRows = false;
+            this.dgvProductByCharacteristics.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvProductByCharacteristics.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvProductByCharacteristics.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvProductByCharacteristics.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.dgvProductByCharacteristics.Location = new System.Drawing.Point(12, 28);
+            this.dgvProductByCharacteristics.Name = "dgvProductByCharacteristics";
+            this.dgvProductByCharacteristics.ReadOnly = true;
+            this.dgvProductByCharacteristics.RowTemplate.Height = 25;
+            this.dgvProductByCharacteristics.Size = new System.Drawing.Size(838, 337);
+            this.dgvProductByCharacteristics.TabIndex = 0;
             // 
             // Form2
             // 
@@ -748,11 +873,11 @@ namespace OnlineEquipmentSalesApp
             this.Load += new System.EventHandler(this.Form2_Load);
             this.tabControl1.ResumeLayout(false);
             this.tpOrders.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
+            this.spOrders.Panel1.ResumeLayout(false);
+            this.spOrders.Panel2.ResumeLayout(false);
+            this.spOrders.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.spOrders)).EndInit();
+            this.spOrders.ResumeLayout(false);
             this.pOrderDates.ResumeLayout(false);
             this.pOrderDates.PerformLayout();
             this.pPeriodChoosing.ResumeLayout(false);
@@ -776,6 +901,15 @@ namespace OnlineEquipmentSalesApp
             this.gbBasketItem.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudProductCount)).EndInit();
             this.gbActions.ResumeLayout(false);
+            this.tpSearch.ResumeLayout(false);
+            this.spSearch.Panel1.ResumeLayout(false);
+            this.spSearch.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.spSearch)).EndInit();
+            this.spSearch.ResumeLayout(false);
+            this.gbSearchSettings.ResumeLayout(false);
+            this.gbSearchSettings.PerformLayout();
+            this.gbSearchResults.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvProductByCharacteristics)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -784,14 +918,14 @@ namespace OnlineEquipmentSalesApp
 
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tpOrders;
-        private System.Windows.Forms.TabPage tpCPUSearch;
+        private System.Windows.Forms.TabPage tpSearch;
         private System.Windows.Forms.DataGridView dgvOrders;
         private System.Windows.Forms.DataGridView dgvOrderProducts;
         private System.Windows.Forms.Label lblOrderProducts;
         private System.Windows.Forms.Button btnCancelOrder;
         private System.Windows.Forms.DateTimePicker dtpOrdersStart;
         private System.Windows.Forms.DateTimePicker dtpOrdersEnd;
-        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.SplitContainer spOrders;
         private System.Windows.Forms.Panel pOrderDates;
         private System.Windows.Forms.CheckBox cbOrdersEnd;
         private System.Windows.Forms.CheckBox cbOrdersStart;
@@ -819,8 +953,6 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.TextBox tbProductSum;
         private System.Windows.Forms.Label lblProductDiscount;
         private System.Windows.Forms.Label lblProductSum;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label lblProductPrice;
         private System.Windows.Forms.NumericUpDown nudProductCount;
         private System.Windows.Forms.ComboBox cbProductName;
         private System.Windows.Forms.Button btnSaveChanges;
@@ -829,10 +961,20 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.Label lblProductName;
         private System.Windows.Forms.Label lblProductType;
         private System.Windows.Forms.GroupBox gbActions;
-        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnFinishOrderCreating;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button btnRemoveItem;
         private System.Windows.Forms.Button btnAddItem;
+        private System.Windows.Forms.SplitContainer spSearch;
+        private System.Windows.Forms.Label lblProductTypeSearch;
+        private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.Label lblCharacteristicName;
+        private System.Windows.Forms.Label lblCharacteristicValue;
+        private System.Windows.Forms.TextBox tbCharacteristicValue;
+        private System.Windows.Forms.ComboBox cbProductTypeSearch;
+        private System.Windows.Forms.ComboBox cbCharacteristicName;
+        private System.Windows.Forms.DataGridView dgvProductByCharacteristics;
+        private System.Windows.Forms.GroupBox gbSearchSettings;
+        private System.Windows.Forms.GroupBox gbSearchResults;
     }
 }
