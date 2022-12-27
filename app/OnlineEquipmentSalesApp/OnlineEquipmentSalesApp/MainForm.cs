@@ -10,15 +10,15 @@ using System.Linq;
 
 namespace OnlineEquipmentSalesApp
 {
-    public partial class Form2 : Form
+    public partial class MainForm : Form
     {
         private DateTime? dateStart = null, dateEnd = null;
+        private AuthorizationForm parent;
 
-        public static Form1 MainForm;
-
-        public Form2()
+        public MainForm(AuthorizationForm parent)
         {
             InitializeComponent();
+            this.parent = parent;
         }
 
         private class KeyValueComboBoxItem
@@ -42,20 +42,20 @@ namespace OnlineEquipmentSalesApp
         {
             // для вкладки "Просмотр заказов"
             // выводим заказы
-            SqlDataReader reader = Form1.DatabaseConnection.GetCustomerOrders();
+            SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetCustomerOrders();
             FillDgv(dgvOrders, reader);
 
             // выводим заголовки таблицы с содержимым заказа
-            reader = Form1.DatabaseConnection.GetOrderProducts();
+            reader = AuthorizationForm.DatabaseConnection.GetOrderProducts();
             FillDgv(dgvOrderProducts, reader);
 
 
             // для вкладки "Поиск товаров по характеристикам"
             // заполняем элементы ComboBox
-            reader = Form1.DatabaseConnection.GetProductTypes();
+            reader = AuthorizationForm.DatabaseConnection.GetProductTypes();
             FillComboBoxItems(cbProductTypeSearch, reader);
             // по умолчанию - все товары
-            short defaultProductType = Form1.DatabaseConnection.GetDefaultProductType();
+            short defaultProductType = AuthorizationForm.DatabaseConnection.GetDefaultProductType();
             cbProductTypeSearch.SelectedItem = cbProductTypeSearch.Items
                 .Cast<KeyValueComboBoxItem>()
                 .Where(item => item.Key == defaultProductType)
@@ -162,7 +162,7 @@ namespace OnlineEquipmentSalesApp
             {
                 try
                 {
-                    SqlDataReader reader = Form1.DatabaseConnection.GetCustomerOrders(dateStart, dateEnd);
+                    SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetCustomerOrders(dateStart, dateEnd);
                     FillDgv(dgvOrders, reader);
 
                     this.dateStart = dateStart;
@@ -187,7 +187,7 @@ namespace OnlineEquipmentSalesApp
 
                 int orderNumber = (int)row.Cells[0].Value;
 
-                SqlDataReader reader = Form1.DatabaseConnection.GetOrderProducts(orderNumber);
+                SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetOrderProducts(orderNumber);
                 FillDgv(dgvOrderProducts, reader);
 
                 lblOrderProducts.Text = $"Содержимое заказа №{orderNumber}:";
@@ -212,11 +212,11 @@ namespace OnlineEquipmentSalesApp
                 {
                     try
                     {
-                        Form1.DatabaseConnection.CancelOrder(orderNumber);
+                        AuthorizationForm.DatabaseConnection.CancelOrder(orderNumber);
                         MessageBox.Show("Заказ успешно отменён!", "Готово", MessageBoxButtons.OK);
 
                         // обновляем таблицу с заказами
-                        SqlDataReader reader = Form1.DatabaseConnection.GetCustomerOrders();
+                        SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetCustomerOrders();
                         FillDgv(dgvOrders, reader);
                     }
                     catch (SqlException ex)
@@ -242,7 +242,7 @@ namespace OnlineEquipmentSalesApp
             if (selectedTypeIndex != this.selectedTypeSearchIndex)
             {
                 // изменяем содержимое ComboBox на список характеристик указанного типа
-                SqlDataReader reader = Form1.DatabaseConnection.GetCharacteristicsOfType(
+                SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetCharacteristicsOfType(
                     Convert.ToInt16((cb.SelectedItem as KeyValueComboBoxItem).Key));
                 FillComboBoxItems(cbCharacteristicName, reader);
                 this.selectedTypeSearchIndex = selectedTypeIndex;
@@ -263,7 +263,7 @@ namespace OnlineEquipmentSalesApp
             {
                 short productTypeCode = (short)(cbProductTypeSearch.SelectedItem as KeyValueComboBoxItem).Key;
                 short characteristicCode = (short)(cbCharacteristicName.SelectedItem as KeyValueComboBoxItem).Key;
-                byte dataTypeCode = Form1.DatabaseConnection.GetCharacteristicDataType(characteristicCode);
+                byte dataTypeCode = AuthorizationForm.DatabaseConnection.GetCharacteristicDataType(characteristicCode);
                 object characteristicValue = null;
                 switch (dataTypeCode)
                 {
@@ -292,7 +292,7 @@ namespace OnlineEquipmentSalesApp
                 };
                 if (characteristicValue != null)
                 {
-                    SqlDataReader reader = Form1.DatabaseConnection.FindProductsByCharacteristic(
+                    SqlDataReader reader = AuthorizationForm.DatabaseConnection.FindProductsByCharacteristic(
                         productTypeCode, characteristicCode, characteristicValue
                     );
                     FillDgv(dgvProductByCharacteristics, reader);
@@ -306,7 +306,7 @@ namespace OnlineEquipmentSalesApp
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
-            MainForm.Close();
+            parent.Close();
         }
     }
 }

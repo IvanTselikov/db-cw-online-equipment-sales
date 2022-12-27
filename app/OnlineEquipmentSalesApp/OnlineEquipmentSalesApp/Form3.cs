@@ -34,22 +34,22 @@ namespace OnlineEquipmentSalesApp
             InitializeComponent();
 
             // заполняем элементы ComboBox
-            SqlDataReader reader = Form1.DatabaseConnection.GetProductTypes();
+            SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetProductTypes();
             FillComboBoxItems(cbProductType, reader);
             // по умолчанию - все товары
-            int defaultProductType = Form1.DatabaseConnection.GetDefaultProductType();
+            int defaultProductType = AuthorizationForm.DatabaseConnection.GetDefaultProductType();
             cbProductType.SelectedItem = cbProductType.Items
                 .Cast<KeyValueCbItem>()
                 .Where(item => item.Key == defaultProductType)
                 .ToArray()[0];
 
-            reader = Form1.DatabaseConnection.GetProductsOfType();
+            reader = AuthorizationForm.DatabaseConnection.GetProductsOfType();
             FillComboBoxItems(cbProductName, reader);
 
-            reader = Form1.DatabaseConnection.GetPickupPointsAddresses();
+            reader = AuthorizationForm.DatabaseConnection.GetPickupPointsAddresses();
             FillComboBoxItems(cbPickupPoint, reader);
 
-            reader = Form1.DatabaseConnection.GetPaymentMethods();
+            reader = AuthorizationForm.DatabaseConnection.GetPaymentMethods();
             FillComboBoxItems(cbPaymentMethod, reader);
 
             // инициализация таблицы с корзиной
@@ -99,7 +99,7 @@ namespace OnlineEquipmentSalesApp
             if (selectedTypeIndex != this.selectedTypeIndex)
             {
                 // изменяем содержимое ComboBox на список товаров указанного типа
-                SqlDataReader reader = Form1.DatabaseConnection.GetProductsOfType(
+                SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetProductsOfType(
                     (cb.SelectedItem as KeyValueCbItem).Key);
                 FillComboBoxItems(cbProductName, reader);
                 this.selectedTypeIndex = selectedTypeIndex;
@@ -118,11 +118,11 @@ namespace OnlineEquipmentSalesApp
                 {
                     pickupPointCode = (short)(cbPickupPoint.SelectedItem as KeyValueCbItem).Key;
                 }
-                int countAvailable = Form1.DatabaseConnection.GetPickupPointProductCount(
+                int countAvailable = AuthorizationForm.DatabaseConnection.GetPickupPointProductCount(
                     productCode, pickupPointCode
                 );
 
-                string typeName = Form1.DatabaseConnection.GetTypeOfProduct(productCode);
+                string typeName = AuthorizationForm.DatabaseConnection.GetTypeOfProduct(productCode);
                 string productName = (cbProductName.SelectedItem as KeyValueCbItem).Value;
                 int countDesired = (int)nudProductCount.Value;
 

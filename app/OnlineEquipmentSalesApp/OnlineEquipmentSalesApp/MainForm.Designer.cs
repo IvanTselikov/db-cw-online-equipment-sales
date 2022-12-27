@@ -1,7 +1,7 @@
 ﻿
 namespace OnlineEquipmentSalesApp
 {
-    partial class Form2
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,7 @@ namespace OnlineEquipmentSalesApp
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpOrders = new System.Windows.Forms.TabPage();
-            this.spOrders = new System.Windows.Forms.SplitContainer();
+            this.scOrders = new System.Windows.Forms.SplitContainer();
             this.pOrderDates = new System.Windows.Forms.Panel();
             this.pPeriodChoosing = new System.Windows.Forms.Panel();
             this.cbOrdersStart = new System.Windows.Forms.CheckBox();
@@ -52,11 +52,7 @@ namespace OnlineEquipmentSalesApp
             this.dgvBasket = new System.Windows.Forms.DataGridView();
             this.scSettings = new System.Windows.Forms.SplitContainer();
             this.scOrderItemSettings = new System.Windows.Forms.SplitContainer();
-            this.gbOrderSettings = new System.Windows.Forms.GroupBox();
-            this.cbPaymentMethod = new System.Windows.Forms.ComboBox();
-            this.cbPickupPoint = new System.Windows.Forms.ComboBox();
-            this.lblPaymentMethod = new System.Windows.Forms.Label();
-            this.lblPickupPoint = new System.Windows.Forms.Label();
+            this.scOrderAndProductSettings = new System.Windows.Forms.SplitContainer();
             this.gbBasketItem = new System.Windows.Forms.GroupBox();
             this.tbProductDiscount = new System.Windows.Forms.TextBox();
             this.tbProductSum = new System.Windows.Forms.TextBox();
@@ -66,22 +62,27 @@ namespace OnlineEquipmentSalesApp
             this.cbProductName = new System.Windows.Forms.ComboBox();
             this.btnSaveChanges = new System.Windows.Forms.Button();
             this.cbProductType = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblProductCount = new System.Windows.Forms.Label();
             this.lblProductName = new System.Windows.Forms.Label();
             this.lblProductType = new System.Windows.Forms.Label();
+            this.gbOrderSettings = new System.Windows.Forms.GroupBox();
+            this.cbPaymentMethod = new System.Windows.Forms.ComboBox();
+            this.cbPickupPoint = new System.Windows.Forms.ComboBox();
+            this.lblPaymentMethod = new System.Windows.Forms.Label();
+            this.lblPickupPoint = new System.Windows.Forms.Label();
             this.gbProductInfo = new System.Windows.Forms.GroupBox();
             this.dgvProductInfo = new System.Windows.Forms.DataGridView();
             this.gbActions = new System.Windows.Forms.GroupBox();
             this.tbOrderDiscount = new System.Windows.Forms.TextBox();
             this.btnFinishOrderCreating = new System.Windows.Forms.Button();
             this.lblOrderDiscount = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnEmptyTrash = new System.Windows.Forms.Button();
             this.tbOrderSum = new System.Windows.Forms.TextBox();
             this.btnRemoveItem = new System.Windows.Forms.Button();
             this.lblOrderSum = new System.Windows.Forms.Label();
             this.btnAddItem = new System.Windows.Forms.Button();
             this.tpSearch = new System.Windows.Forms.TabPage();
-            this.spSearch = new System.Windows.Forms.SplitContainer();
+            this.scSearch = new System.Windows.Forms.SplitContainer();
             this.gbSearchSettings = new System.Windows.Forms.GroupBox();
             this.cbProductTypeSearch = new System.Windows.Forms.ComboBox();
             this.lblProductTypeSearch = new System.Windows.Forms.Label();
@@ -94,10 +95,10 @@ namespace OnlineEquipmentSalesApp
             this.dgvProductByCharacteristics = new System.Windows.Forms.DataGridView();
             this.tabControl1.SuspendLayout();
             this.tpOrders.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.spOrders)).BeginInit();
-            this.spOrders.Panel1.SuspendLayout();
-            this.spOrders.Panel2.SuspendLayout();
-            this.spOrders.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scOrders)).BeginInit();
+            this.scOrders.Panel1.SuspendLayout();
+            this.scOrders.Panel2.SuspendLayout();
+            this.scOrders.SuspendLayout();
             this.pOrderDates.SuspendLayout();
             this.pPeriodChoosing.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvOrders)).BeginInit();
@@ -117,17 +118,21 @@ namespace OnlineEquipmentSalesApp
             this.scOrderItemSettings.Panel1.SuspendLayout();
             this.scOrderItemSettings.Panel2.SuspendLayout();
             this.scOrderItemSettings.SuspendLayout();
-            this.gbOrderSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scOrderAndProductSettings)).BeginInit();
+            this.scOrderAndProductSettings.Panel1.SuspendLayout();
+            this.scOrderAndProductSettings.Panel2.SuspendLayout();
+            this.scOrderAndProductSettings.SuspendLayout();
             this.gbBasketItem.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudProductCount)).BeginInit();
+            this.gbOrderSettings.SuspendLayout();
             this.gbProductInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductInfo)).BeginInit();
             this.gbActions.SuspendLayout();
             this.tpSearch.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.spSearch)).BeginInit();
-            this.spSearch.Panel1.SuspendLayout();
-            this.spSearch.Panel2.SuspendLayout();
-            this.spSearch.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scSearch)).BeginInit();
+            this.scSearch.Panel1.SuspendLayout();
+            this.scSearch.Panel2.SuspendLayout();
+            this.scSearch.SuspendLayout();
             this.gbSearchSettings.SuspendLayout();
             this.gbSearchResults.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductByCharacteristics)).BeginInit();
@@ -150,7 +155,7 @@ namespace OnlineEquipmentSalesApp
             // 
             // tpOrders
             // 
-            this.tpOrders.Controls.Add(this.spOrders);
+            this.tpOrders.Controls.Add(this.scOrders);
             this.tpOrders.Location = new System.Drawing.Point(4, 30);
             this.tpOrders.Name = "tpOrders";
             this.tpOrders.Padding = new System.Windows.Forms.Padding(3);
@@ -159,30 +164,32 @@ namespace OnlineEquipmentSalesApp
             this.tpOrders.Text = "Просмотр заказов";
             this.tpOrders.UseVisualStyleBackColor = true;
             // 
-            // spOrders
+            // scOrders
             // 
-            this.spOrders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.scOrders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.spOrders.Cursor = System.Windows.Forms.Cursors.HSplit;
-            this.spOrders.Location = new System.Drawing.Point(6, 6);
-            this.spOrders.Name = "spOrders";
-            this.spOrders.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.scOrders.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.scOrders.Location = new System.Drawing.Point(6, 6);
+            this.scOrders.Name = "scOrders";
+            this.scOrders.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // spOrders.Panel1
+            // scOrders.Panel1
             // 
-            this.spOrders.Panel1.Controls.Add(this.pOrderDates);
-            this.spOrders.Panel1.Controls.Add(this.dgvOrders);
+            this.scOrders.Panel1.Controls.Add(this.pOrderDates);
+            this.scOrders.Panel1.Controls.Add(this.dgvOrders);
+            this.scOrders.Panel1.Cursor = System.Windows.Forms.Cursors.Arrow;
             // 
-            // spOrders.Panel2
+            // scOrders.Panel2
             // 
-            this.spOrders.Panel2.Controls.Add(this.btnCancelOrder);
-            this.spOrders.Panel2.Controls.Add(this.lblOrderProducts);
-            this.spOrders.Panel2.Controls.Add(this.btnCreateOrder);
-            this.spOrders.Panel2.Controls.Add(this.dgvOrderProducts);
-            this.spOrders.Size = new System.Drawing.Size(1140, 644);
-            this.spOrders.SplitterDistance = 278;
-            this.spOrders.TabIndex = 8;
+            this.scOrders.Panel2.Controls.Add(this.btnCancelOrder);
+            this.scOrders.Panel2.Controls.Add(this.lblOrderProducts);
+            this.scOrders.Panel2.Controls.Add(this.btnCreateOrder);
+            this.scOrders.Panel2.Controls.Add(this.dgvOrderProducts);
+            this.scOrders.Panel2.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.scOrders.Size = new System.Drawing.Size(1140, 644);
+            this.scOrders.SplitterDistance = 278;
+            this.scOrders.TabIndex = 8;
             // 
             // pOrderDates
             // 
@@ -288,6 +295,7 @@ namespace OnlineEquipmentSalesApp
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvOrders.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvOrders.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvOrders.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.dgvOrders.Location = new System.Drawing.Point(9, 53);
             this.dgvOrders.Name = "dgvOrders";
             this.dgvOrders.ReadOnly = true;
@@ -339,6 +347,7 @@ namespace OnlineEquipmentSalesApp
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvOrderProducts.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvOrderProducts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvOrderProducts.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.dgvOrderProducts.Location = new System.Drawing.Point(9, 34);
             this.dgvOrderProducts.Name = "dgvOrderProducts";
             this.dgvOrderProducts.ReadOnly = true;
@@ -412,7 +421,7 @@ namespace OnlineEquipmentSalesApp
             this.scSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.scSettings.Cursor = System.Windows.Forms.Cursors.VSplit;
+            this.scSettings.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.scSettings.Location = new System.Drawing.Point(0, 3);
             this.scSettings.Name = "scSettings";
             // 
@@ -433,14 +442,13 @@ namespace OnlineEquipmentSalesApp
             this.scOrderItemSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.scOrderItemSettings.Cursor = System.Windows.Forms.Cursors.VSplit;
+            this.scOrderItemSettings.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.scOrderItemSettings.Location = new System.Drawing.Point(3, 3);
             this.scOrderItemSettings.Name = "scOrderItemSettings";
             // 
             // scOrderItemSettings.Panel1
             // 
-            this.scOrderItemSettings.Panel1.Controls.Add(this.gbOrderSettings);
-            this.scOrderItemSettings.Panel1.Controls.Add(this.gbBasketItem);
+            this.scOrderItemSettings.Panel1.Controls.Add(this.scOrderAndProductSettings);
             this.scOrderItemSettings.Panel1.Cursor = System.Windows.Forms.Cursors.Arrow;
             // 
             // scOrderItemSettings.Panel2
@@ -450,67 +458,31 @@ namespace OnlineEquipmentSalesApp
             this.scOrderItemSettings.SplitterDistance = 484;
             this.scOrderItemSettings.TabIndex = 4;
             // 
-            // gbOrderSettings
+            // scOrderAndProductSettings
             // 
-            this.gbOrderSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.scOrderAndProductSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbOrderSettings.Controls.Add(this.cbPaymentMethod);
-            this.gbOrderSettings.Controls.Add(this.cbPickupPoint);
-            this.gbOrderSettings.Controls.Add(this.lblPaymentMethod);
-            this.gbOrderSettings.Controls.Add(this.lblPickupPoint);
-            this.gbOrderSettings.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.gbOrderSettings.Location = new System.Drawing.Point(3, 234);
-            this.gbOrderSettings.Name = "gbOrderSettings";
-            this.gbOrderSettings.Size = new System.Drawing.Size(472, 140);
-            this.gbOrderSettings.TabIndex = 7;
-            this.gbOrderSettings.TabStop = false;
-            this.gbOrderSettings.Text = "Заказ:";
+            this.scOrderAndProductSettings.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.scOrderAndProductSettings.Location = new System.Drawing.Point(3, 3);
+            this.scOrderAndProductSettings.Name = "scOrderAndProductSettings";
+            this.scOrderAndProductSettings.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // cbPaymentMethod
+            // scOrderAndProductSettings.Panel1
             // 
-            this.cbPaymentMethod.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbPaymentMethod.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.cbPaymentMethod.FormattingEnabled = true;
-            this.cbPaymentMethod.Location = new System.Drawing.Point(155, 74);
-            this.cbPaymentMethod.Name = "cbPaymentMethod";
-            this.cbPaymentMethod.Size = new System.Drawing.Size(311, 29);
-            this.cbPaymentMethod.TabIndex = 7;
+            this.scOrderAndProductSettings.Panel1.Controls.Add(this.gbBasketItem);
             // 
-            // cbPickupPoint
+            // scOrderAndProductSettings.Panel2
             // 
-            this.cbPickupPoint.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbPickupPoint.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.cbPickupPoint.FormattingEnabled = true;
-            this.cbPickupPoint.Location = new System.Drawing.Point(155, 27);
-            this.cbPickupPoint.Name = "cbPickupPoint";
-            this.cbPickupPoint.Size = new System.Drawing.Size(311, 29);
-            this.cbPickupPoint.TabIndex = 6;
-            // 
-            // lblPaymentMethod
-            // 
-            this.lblPaymentMethod.AutoSize = true;
-            this.lblPaymentMethod.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblPaymentMethod.Location = new System.Drawing.Point(9, 74);
-            this.lblPaymentMethod.Name = "lblPaymentMethod";
-            this.lblPaymentMethod.Size = new System.Drawing.Size(122, 21);
-            this.lblPaymentMethod.TabIndex = 1;
-            this.lblPaymentMethod.Text = "Способ оплаты:";
-            // 
-            // lblPickupPoint
-            // 
-            this.lblPickupPoint.AutoSize = true;
-            this.lblPickupPoint.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblPickupPoint.Location = new System.Drawing.Point(9, 30);
-            this.lblPickupPoint.Name = "lblPickupPoint";
-            this.lblPickupPoint.Size = new System.Drawing.Size(114, 21);
-            this.lblPickupPoint.TabIndex = 0;
-            this.lblPickupPoint.Text = "Пункт выдачи:";
+            this.scOrderAndProductSettings.Panel2.Controls.Add(this.gbOrderSettings);
+            this.scOrderAndProductSettings.Size = new System.Drawing.Size(478, 371);
+            this.scOrderAndProductSettings.SplitterDistance = 231;
+            this.scOrderAndProductSettings.TabIndex = 0;
             // 
             // gbBasketItem
             // 
-            this.gbBasketItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.gbBasketItem.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gbBasketItem.Controls.Add(this.tbProductDiscount);
             this.gbBasketItem.Controls.Add(this.tbProductSum);
@@ -520,14 +492,15 @@ namespace OnlineEquipmentSalesApp
             this.gbBasketItem.Controls.Add(this.cbProductName);
             this.gbBasketItem.Controls.Add(this.btnSaveChanges);
             this.gbBasketItem.Controls.Add(this.cbProductType);
-            this.gbBasketItem.Controls.Add(this.label1);
+            this.gbBasketItem.Controls.Add(this.lblProductCount);
             this.gbBasketItem.Controls.Add(this.lblProductName);
             this.gbBasketItem.Controls.Add(this.lblProductType);
+            this.gbBasketItem.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.gbBasketItem.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.gbBasketItem.Location = new System.Drawing.Point(3, 3);
             this.gbBasketItem.Name = "gbBasketItem";
-            this.gbBasketItem.Size = new System.Drawing.Size(478, 225);
-            this.gbBasketItem.TabIndex = 6;
+            this.gbBasketItem.Size = new System.Drawing.Size(472, 219);
+            this.gbBasketItem.TabIndex = 9;
             this.gbBasketItem.TabStop = false;
             this.gbBasketItem.Text = "Элемент корзины:";
             // 
@@ -535,7 +508,7 @@ namespace OnlineEquipmentSalesApp
             // 
             this.tbProductDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbProductDiscount.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.tbProductDiscount.Location = new System.Drawing.Point(397, 149);
+            this.tbProductDiscount.Location = new System.Drawing.Point(385, 152);
             this.tbProductDiscount.Name = "tbProductDiscount";
             this.tbProductDiscount.ReadOnly = true;
             this.tbProductDiscount.Size = new System.Drawing.Size(75, 29);
@@ -557,7 +530,7 @@ namespace OnlineEquipmentSalesApp
             this.lblProductDiscount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblProductDiscount.AutoSize = true;
             this.lblProductDiscount.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.lblProductDiscount.Location = new System.Drawing.Point(270, 152);
+            this.lblProductDiscount.Location = new System.Drawing.Point(258, 155);
             this.lblProductDiscount.Name = "lblProductDiscount";
             this.lblProductDiscount.Size = new System.Drawing.Size(121, 21);
             this.lblProductDiscount.TabIndex = 15;
@@ -604,16 +577,16 @@ namespace OnlineEquipmentSalesApp
             this.cbProductName.FormattingEnabled = true;
             this.cbProductName.Location = new System.Drawing.Point(155, 68);
             this.cbProductName.Name = "cbProductName";
-            this.cbProductName.Size = new System.Drawing.Size(317, 29);
+            this.cbProductName.Size = new System.Drawing.Size(305, 29);
             this.cbProductName.TabIndex = 4;
             // 
             // btnSaveChanges
             // 
             this.btnSaveChanges.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSaveChanges.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnSaveChanges.Location = new System.Drawing.Point(252, 107);
+            this.btnSaveChanges.Location = new System.Drawing.Point(258, 105);
             this.btnSaveChanges.Name = "btnSaveChanges";
-            this.btnSaveChanges.Size = new System.Drawing.Size(220, 33);
+            this.btnSaveChanges.Size = new System.Drawing.Size(202, 33);
             this.btnSaveChanges.TabIndex = 2;
             this.btnSaveChanges.Text = "Сохранить изменения";
             this.btnSaveChanges.UseVisualStyleBackColor = true;
@@ -626,18 +599,18 @@ namespace OnlineEquipmentSalesApp
             this.cbProductType.FormattingEnabled = true;
             this.cbProductType.Location = new System.Drawing.Point(155, 26);
             this.cbProductType.Name = "cbProductType";
-            this.cbProductType.Size = new System.Drawing.Size(317, 29);
+            this.cbProductType.Size = new System.Drawing.Size(305, 29);
             this.cbProductType.TabIndex = 3;
             // 
-            // label1
+            // lblProductCount
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(6, 111);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(96, 21);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Количество:";
+            this.lblProductCount.AutoSize = true;
+            this.lblProductCount.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblProductCount.Location = new System.Drawing.Point(6, 111);
+            this.lblProductCount.Name = "lblProductCount";
+            this.lblProductCount.Size = new System.Drawing.Size(96, 21);
+            this.lblProductCount.TabIndex = 2;
+            this.lblProductCount.Text = "Количество:";
             // 
             // lblProductName
             // 
@@ -658,6 +631,66 @@ namespace OnlineEquipmentSalesApp
             this.lblProductType.Size = new System.Drawing.Size(92, 21);
             this.lblProductType.TabIndex = 0;
             this.lblProductType.Text = "Тип товара:";
+            // 
+            // gbOrderSettings
+            // 
+            this.gbOrderSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbOrderSettings.Controls.Add(this.cbPaymentMethod);
+            this.gbOrderSettings.Controls.Add(this.cbPickupPoint);
+            this.gbOrderSettings.Controls.Add(this.lblPaymentMethod);
+            this.gbOrderSettings.Controls.Add(this.lblPickupPoint);
+            this.gbOrderSettings.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.gbOrderSettings.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.gbOrderSettings.Location = new System.Drawing.Point(3, 3);
+            this.gbOrderSettings.Name = "gbOrderSettings";
+            this.gbOrderSettings.Size = new System.Drawing.Size(467, 127);
+            this.gbOrderSettings.TabIndex = 10;
+            this.gbOrderSettings.TabStop = false;
+            this.gbOrderSettings.Text = "Заказ:";
+            // 
+            // cbPaymentMethod
+            // 
+            this.cbPaymentMethod.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbPaymentMethod.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.cbPaymentMethod.FormattingEnabled = true;
+            this.cbPaymentMethod.Location = new System.Drawing.Point(155, 74);
+            this.cbPaymentMethod.Name = "cbPaymentMethod";
+            this.cbPaymentMethod.Size = new System.Drawing.Size(306, 29);
+            this.cbPaymentMethod.TabIndex = 7;
+            // 
+            // cbPickupPoint
+            // 
+            this.cbPickupPoint.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbPickupPoint.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.cbPickupPoint.FormattingEnabled = true;
+            this.cbPickupPoint.Location = new System.Drawing.Point(155, 27);
+            this.cbPickupPoint.Name = "cbPickupPoint";
+            this.cbPickupPoint.Size = new System.Drawing.Size(306, 29);
+            this.cbPickupPoint.TabIndex = 6;
+            // 
+            // lblPaymentMethod
+            // 
+            this.lblPaymentMethod.AutoSize = true;
+            this.lblPaymentMethod.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblPaymentMethod.Location = new System.Drawing.Point(9, 74);
+            this.lblPaymentMethod.Name = "lblPaymentMethod";
+            this.lblPaymentMethod.Size = new System.Drawing.Size(122, 21);
+            this.lblPaymentMethod.TabIndex = 1;
+            this.lblPaymentMethod.Text = "Способ оплаты:";
+            // 
+            // lblPickupPoint
+            // 
+            this.lblPickupPoint.AutoSize = true;
+            this.lblPickupPoint.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblPickupPoint.Location = new System.Drawing.Point(9, 30);
+            this.lblPickupPoint.Name = "lblPickupPoint";
+            this.lblPickupPoint.Size = new System.Drawing.Size(114, 21);
+            this.lblPickupPoint.TabIndex = 0;
+            this.lblPickupPoint.Text = "Пункт выдачи:";
             // 
             // gbProductInfo
             // 
@@ -681,6 +714,7 @@ namespace OnlineEquipmentSalesApp
             this.dgvProductInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvProductInfo.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvProductInfo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvProductInfo.Location = new System.Drawing.Point(6, 26);
             this.dgvProductInfo.Name = "dgvProductInfo";
@@ -697,7 +731,7 @@ namespace OnlineEquipmentSalesApp
             this.gbActions.Controls.Add(this.tbOrderDiscount);
             this.gbActions.Controls.Add(this.btnFinishOrderCreating);
             this.gbActions.Controls.Add(this.lblOrderDiscount);
-            this.gbActions.Controls.Add(this.button1);
+            this.gbActions.Controls.Add(this.btnEmptyTrash);
             this.gbActions.Controls.Add(this.tbOrderSum);
             this.gbActions.Controls.Add(this.btnRemoveItem);
             this.gbActions.Controls.Add(this.lblOrderSum);
@@ -740,17 +774,17 @@ namespace OnlineEquipmentSalesApp
             this.lblOrderDiscount.TabIndex = 13;
             this.lblOrderDiscount.Text = "С уч. скидки, %:";
             // 
-            // button1
+            // btnEmptyTrash
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.btnEmptyTrash.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.button1.Location = new System.Drawing.Point(6, 107);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(214, 33);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Очистить корзину";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnEmptyTrash.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btnEmptyTrash.Location = new System.Drawing.Point(6, 107);
+            this.btnEmptyTrash.Name = "btnEmptyTrash";
+            this.btnEmptyTrash.Size = new System.Drawing.Size(214, 33);
+            this.btnEmptyTrash.TabIndex = 3;
+            this.btnEmptyTrash.Text = "Очистить корзину";
+            this.btnEmptyTrash.UseVisualStyleBackColor = true;
             // 
             // tbOrderSum
             // 
@@ -798,7 +832,7 @@ namespace OnlineEquipmentSalesApp
             // 
             // tpSearch
             // 
-            this.tpSearch.Controls.Add(this.spSearch);
+            this.tpSearch.Controls.Add(this.scSearch);
             this.tpSearch.Location = new System.Drawing.Point(4, 30);
             this.tpSearch.Name = "tpSearch";
             this.tpSearch.Padding = new System.Windows.Forms.Padding(3);
@@ -807,26 +841,26 @@ namespace OnlineEquipmentSalesApp
             this.tpSearch.Text = "Поиск товаров по характеристикам";
             this.tpSearch.UseVisualStyleBackColor = true;
             // 
-            // spSearch
+            // scSearch
             // 
-            this.spSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.scSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.spSearch.Cursor = System.Windows.Forms.Cursors.HSplit;
-            this.spSearch.Location = new System.Drawing.Point(6, 6);
-            this.spSearch.Name = "spSearch";
-            this.spSearch.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.scSearch.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.scSearch.Location = new System.Drawing.Point(6, 6);
+            this.scSearch.Name = "scSearch";
+            this.scSearch.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // spSearch.Panel1
+            // scSearch.Panel1
             // 
-            this.spSearch.Panel1.Controls.Add(this.gbSearchSettings);
+            this.scSearch.Panel1.Controls.Add(this.gbSearchSettings);
             // 
-            // spSearch.Panel2
+            // scSearch.Panel2
             // 
-            this.spSearch.Panel2.Controls.Add(this.gbSearchResults);
-            this.spSearch.Size = new System.Drawing.Size(927, 644);
-            this.spSearch.SplitterDistance = 258;
-            this.spSearch.TabIndex = 7;
+            this.scSearch.Panel2.Controls.Add(this.gbSearchResults);
+            this.scSearch.Size = new System.Drawing.Size(1140, 644);
+            this.scSearch.SplitterDistance = 258;
+            this.scSearch.TabIndex = 7;
             // 
             // gbSearchSettings
             // 
@@ -840,9 +874,10 @@ namespace OnlineEquipmentSalesApp
             this.gbSearchSettings.Controls.Add(this.lblCharacteristicName);
             this.gbSearchSettings.Controls.Add(this.btnSearch);
             this.gbSearchSettings.Controls.Add(this.cbCharacteristicName);
+            this.gbSearchSettings.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.gbSearchSettings.Location = new System.Drawing.Point(3, 3);
             this.gbSearchSettings.Name = "gbSearchSettings";
-            this.gbSearchSettings.Size = new System.Drawing.Size(921, 252);
+            this.gbSearchSettings.Size = new System.Drawing.Size(1134, 252);
             this.gbSearchSettings.TabIndex = 7;
             this.gbSearchSettings.TabStop = false;
             this.gbSearchSettings.Text = "Параметры поиска:";
@@ -854,7 +889,7 @@ namespace OnlineEquipmentSalesApp
             this.cbProductTypeSearch.FormattingEnabled = true;
             this.cbProductTypeSearch.Location = new System.Drawing.Point(223, 28);
             this.cbProductTypeSearch.Name = "cbProductTypeSearch";
-            this.cbProductTypeSearch.Size = new System.Drawing.Size(692, 29);
+            this.cbProductTypeSearch.Size = new System.Drawing.Size(905, 29);
             this.cbProductTypeSearch.TabIndex = 1;
             this.cbProductTypeSearch.SelectedIndexChanged += new System.EventHandler(this.cbProductTypeSearch_SelectedIndexChanged);
             // 
@@ -882,7 +917,7 @@ namespace OnlineEquipmentSalesApp
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbCharacteristicValue.Location = new System.Drawing.Point(223, 136);
             this.tbCharacteristicValue.Name = "tbCharacteristicValue";
-            this.tbCharacteristicValue.Size = new System.Drawing.Size(692, 29);
+            this.tbCharacteristicValue.Size = new System.Drawing.Size(905, 29);
             this.tbCharacteristicValue.TabIndex = 5;
             // 
             // lblCharacteristicName
@@ -898,9 +933,9 @@ namespace OnlineEquipmentSalesApp
             // 
             this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSearch.Location = new System.Drawing.Point(365, 190);
+            this.btnSearch.Location = new System.Drawing.Point(506, 193);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(192, 43);
+            this.btnSearch.Size = new System.Drawing.Size(120, 43);
             this.btnSearch.TabIndex = 6;
             this.btnSearch.Text = "Найти";
             this.btnSearch.UseVisualStyleBackColor = true;
@@ -913,7 +948,7 @@ namespace OnlineEquipmentSalesApp
             this.cbCharacteristicName.FormattingEnabled = true;
             this.cbCharacteristicName.Location = new System.Drawing.Point(223, 78);
             this.cbCharacteristicName.Name = "cbCharacteristicName";
-            this.cbCharacteristicName.Size = new System.Drawing.Size(692, 29);
+            this.cbCharacteristicName.Size = new System.Drawing.Size(905, 29);
             this.cbCharacteristicName.TabIndex = 3;
             // 
             // gbSearchResults
@@ -922,9 +957,10 @@ namespace OnlineEquipmentSalesApp
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gbSearchResults.Controls.Add(this.dgvProductByCharacteristics);
+            this.gbSearchResults.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.gbSearchResults.Location = new System.Drawing.Point(3, 14);
             this.gbSearchResults.Name = "gbSearchResults";
-            this.gbSearchResults.Size = new System.Drawing.Size(921, 365);
+            this.gbSearchResults.Size = new System.Drawing.Size(1134, 365);
             this.gbSearchResults.TabIndex = 1;
             this.gbSearchResults.TabStop = false;
             this.gbSearchResults.Text = "Результаты поиска:";
@@ -943,16 +979,16 @@ namespace OnlineEquipmentSalesApp
             this.dgvProductByCharacteristics.Name = "dgvProductByCharacteristics";
             this.dgvProductByCharacteristics.ReadOnly = true;
             this.dgvProductByCharacteristics.RowTemplate.Height = 25;
-            this.dgvProductByCharacteristics.Size = new System.Drawing.Size(903, 337);
+            this.dgvProductByCharacteristics.Size = new System.Drawing.Size(1116, 337);
             this.dgvProductByCharacteristics.TabIndex = 0;
             // 
-            // Form2
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 711);
             this.Controls.Add(this.tabControl1);
-            this.Name = "Form2";
+            this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
             this.Text = "Интернет-магазин компьютерной техники";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
@@ -960,11 +996,11 @@ namespace OnlineEquipmentSalesApp
             this.Load += new System.EventHandler(this.Form2_Load);
             this.tabControl1.ResumeLayout(false);
             this.tpOrders.ResumeLayout(false);
-            this.spOrders.Panel1.ResumeLayout(false);
-            this.spOrders.Panel2.ResumeLayout(false);
-            this.spOrders.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.spOrders)).EndInit();
-            this.spOrders.ResumeLayout(false);
+            this.scOrders.Panel1.ResumeLayout(false);
+            this.scOrders.Panel2.ResumeLayout(false);
+            this.scOrders.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scOrders)).EndInit();
+            this.scOrders.ResumeLayout(false);
             this.pOrderDates.ResumeLayout(false);
             this.pOrderDates.PerformLayout();
             this.pPeriodChoosing.ResumeLayout(false);
@@ -986,20 +1022,24 @@ namespace OnlineEquipmentSalesApp
             this.scOrderItemSettings.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.scOrderItemSettings)).EndInit();
             this.scOrderItemSettings.ResumeLayout(false);
-            this.gbOrderSettings.ResumeLayout(false);
-            this.gbOrderSettings.PerformLayout();
+            this.scOrderAndProductSettings.Panel1.ResumeLayout(false);
+            this.scOrderAndProductSettings.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.scOrderAndProductSettings)).EndInit();
+            this.scOrderAndProductSettings.ResumeLayout(false);
             this.gbBasketItem.ResumeLayout(false);
             this.gbBasketItem.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudProductCount)).EndInit();
+            this.gbOrderSettings.ResumeLayout(false);
+            this.gbOrderSettings.PerformLayout();
             this.gbProductInfo.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductInfo)).EndInit();
             this.gbActions.ResumeLayout(false);
             this.gbActions.PerformLayout();
             this.tpSearch.ResumeLayout(false);
-            this.spSearch.Panel1.ResumeLayout(false);
-            this.spSearch.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.spSearch)).EndInit();
-            this.spSearch.ResumeLayout(false);
+            this.scSearch.Panel1.ResumeLayout(false);
+            this.scSearch.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.scSearch)).EndInit();
+            this.scSearch.ResumeLayout(false);
             this.gbSearchSettings.ResumeLayout(false);
             this.gbSearchSettings.PerformLayout();
             this.gbSearchResults.ResumeLayout(false);
@@ -1019,7 +1059,7 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.Button btnCancelOrder;
         private System.Windows.Forms.DateTimePicker dtpOrdersStart;
         private System.Windows.Forms.DateTimePicker dtpOrdersEnd;
-        private System.Windows.Forms.SplitContainer spOrders;
+        private System.Windows.Forms.SplitContainer scOrders;
         private System.Windows.Forms.Panel pOrderDates;
         private System.Windows.Forms.CheckBox cbOrdersEnd;
         private System.Windows.Forms.CheckBox cbOrdersStart;
@@ -1039,10 +1079,10 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.Label lblOrderSum;
         private System.Windows.Forms.GroupBox gbActions;
         private System.Windows.Forms.Button btnFinishOrderCreating;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnEmptyTrash;
         private System.Windows.Forms.Button btnRemoveItem;
         private System.Windows.Forms.Button btnAddItem;
-        private System.Windows.Forms.SplitContainer spSearch;
+        private System.Windows.Forms.SplitContainer scSearch;
         private System.Windows.Forms.Label lblProductTypeSearch;
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.Label lblCharacteristicName;
@@ -1056,11 +1096,7 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.SplitContainer scOrderItemSettings;
         private System.Windows.Forms.GroupBox gbProductInfo;
         private System.Windows.Forms.DataGridView dgvProductInfo;
-        private System.Windows.Forms.GroupBox gbOrderSettings;
-        private System.Windows.Forms.ComboBox cbPaymentMethod;
-        private System.Windows.Forms.ComboBox cbPickupPoint;
-        private System.Windows.Forms.Label lblPaymentMethod;
-        private System.Windows.Forms.Label lblPickupPoint;
+        private System.Windows.Forms.SplitContainer scOrderAndProductSettings;
         private System.Windows.Forms.GroupBox gbBasketItem;
         private System.Windows.Forms.TextBox tbProductDiscount;
         private System.Windows.Forms.TextBox tbProductSum;
@@ -1070,8 +1106,13 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.ComboBox cbProductName;
         private System.Windows.Forms.Button btnSaveChanges;
         private System.Windows.Forms.ComboBox cbProductType;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblProductCount;
         private System.Windows.Forms.Label lblProductName;
         private System.Windows.Forms.Label lblProductType;
+        private System.Windows.Forms.GroupBox gbOrderSettings;
+        private System.Windows.Forms.ComboBox cbPaymentMethod;
+        private System.Windows.Forms.ComboBox cbPickupPoint;
+        private System.Windows.Forms.Label lblPaymentMethod;
+        private System.Windows.Forms.Label lblPickupPoint;
     }
 }
