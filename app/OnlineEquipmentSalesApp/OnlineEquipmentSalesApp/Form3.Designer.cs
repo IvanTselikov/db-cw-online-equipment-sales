@@ -30,6 +30,12 @@ namespace OnlineEquipmentSalesApp
         private void InitializeComponent()
         {
             this.gbBasketItem = new System.Windows.Forms.GroupBox();
+            this.tbProductDiscount = new System.Windows.Forms.TextBox();
+            this.tbProductSum = new System.Windows.Forms.TextBox();
+            this.lblProductDiscount = new System.Windows.Forms.Label();
+            this.lblProductSum = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lblProductPrice = new System.Windows.Forms.Label();
             this.nudProductCount = new System.Windows.Forms.NumericUpDown();
             this.cbProductName = new System.Windows.Forms.ComboBox();
             this.btnSaveChanges = new System.Windows.Forms.Button();
@@ -39,6 +45,10 @@ namespace OnlineEquipmentSalesApp
             this.lblProductType = new System.Windows.Forms.Label();
             this.scSettings = new System.Windows.Forms.SplitContainer();
             this.gbOrderSettings = new System.Windows.Forms.GroupBox();
+            this.tbOrderDiscount = new System.Windows.Forms.TextBox();
+            this.lblOrderDiscount = new System.Windows.Forms.Label();
+            this.tbOrderSum = new System.Windows.Forms.TextBox();
+            this.lblOrderSum = new System.Windows.Forms.Label();
             this.cbPaymentMethod = new System.Windows.Forms.ComboBox();
             this.cbPickupPoint = new System.Windows.Forms.ComboBox();
             this.lblPaymentMethod = new System.Windows.Forms.Label();
@@ -70,6 +80,12 @@ namespace OnlineEquipmentSalesApp
             // 
             // gbBasketItem
             // 
+            this.gbBasketItem.Controls.Add(this.tbProductDiscount);
+            this.gbBasketItem.Controls.Add(this.tbProductSum);
+            this.gbBasketItem.Controls.Add(this.lblProductDiscount);
+            this.gbBasketItem.Controls.Add(this.lblProductSum);
+            this.gbBasketItem.Controls.Add(this.textBox1);
+            this.gbBasketItem.Controls.Add(this.lblProductPrice);
             this.gbBasketItem.Controls.Add(this.nudProductCount);
             this.gbBasketItem.Controls.Add(this.cbProductName);
             this.gbBasketItem.Controls.Add(this.btnSaveChanges);
@@ -80,15 +96,73 @@ namespace OnlineEquipmentSalesApp
             this.gbBasketItem.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.gbBasketItem.Location = new System.Drawing.Point(3, 3);
             this.gbBasketItem.Name = "gbBasketItem";
-            this.gbBasketItem.Size = new System.Drawing.Size(525, 163);
+            this.gbBasketItem.Size = new System.Drawing.Size(525, 225);
             this.gbBasketItem.TabIndex = 2;
             this.gbBasketItem.TabStop = false;
             this.gbBasketItem.Text = "Элемент корзины:";
             // 
+            // tbProductDiscount
+            // 
+            this.tbProductDiscount.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.tbProductDiscount.Location = new System.Drawing.Point(390, 190);
+            this.tbProductDiscount.Name = "tbProductDiscount";
+            this.tbProductDiscount.ReadOnly = true;
+            this.tbProductDiscount.Size = new System.Drawing.Size(75, 29);
+            this.tbProductDiscount.TabIndex = 16;
+            this.tbProductDiscount.Text = "0";
+            // 
+            // tbProductSum
+            // 
+            this.tbProductSum.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.tbProductSum.Location = new System.Drawing.Point(155, 190);
+            this.tbProductSum.Name = "tbProductSum";
+            this.tbProductSum.ReadOnly = true;
+            this.tbProductSum.Size = new System.Drawing.Size(75, 29);
+            this.tbProductSum.TabIndex = 15;
+            this.tbProductSum.Text = "0";
+            // 
+            // lblProductDiscount
+            // 
+            this.lblProductDiscount.AutoSize = true;
+            this.lblProductDiscount.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblProductDiscount.Location = new System.Drawing.Point(251, 193);
+            this.lblProductDiscount.Name = "lblProductDiscount";
+            this.lblProductDiscount.Size = new System.Drawing.Size(121, 21);
+            this.lblProductDiscount.TabIndex = 15;
+            this.lblProductDiscount.Text = "С уч. скидки, %:";
+            // 
+            // lblProductSum
+            // 
+            this.lblProductSum.AutoSize = true;
+            this.lblProductSum.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblProductSum.Location = new System.Drawing.Point(5, 193);
+            this.lblProductSum.Name = "lblProductSum";
+            this.lblProductSum.Size = new System.Drawing.Size(126, 21);
+            this.lblProductSum.TabIndex = 14;
+            this.lblProductSum.Text = "Стоимость, руб.:";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(155, 111);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(75, 29);
+            this.textBox1.TabIndex = 13;
+            // 
+            // lblProductPrice
+            // 
+            this.lblProductPrice.AutoSize = true;
+            this.lblProductPrice.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.lblProductPrice.Location = new System.Drawing.Point(6, 107);
+            this.lblProductPrice.Name = "lblProductPrice";
+            this.lblProductPrice.Size = new System.Drawing.Size(86, 21);
+            this.lblProductPrice.TabIndex = 7;
+            this.lblProductPrice.Text = "Цена, руб.:";
+            // 
             // nudProductCount
             // 
             this.nudProductCount.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.nudProductCount.Location = new System.Drawing.Point(155, 113);
+            this.nudProductCount.Location = new System.Drawing.Point(155, 150);
             this.nudProductCount.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -120,7 +194,7 @@ namespace OnlineEquipmentSalesApp
             // btnSaveChanges
             // 
             this.btnSaveChanges.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnSaveChanges.Location = new System.Drawing.Point(305, 111);
+            this.btnSaveChanges.Location = new System.Drawing.Point(305, 148);
             this.btnSaveChanges.Name = "btnSaveChanges";
             this.btnSaveChanges.Size = new System.Drawing.Size(214, 33);
             this.btnSaveChanges.TabIndex = 2;
@@ -142,7 +216,7 @@ namespace OnlineEquipmentSalesApp
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(6, 113);
+            this.label1.Location = new System.Drawing.Point(6, 152);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(96, 21);
             this.label1.TabIndex = 2;
@@ -184,23 +258,64 @@ namespace OnlineEquipmentSalesApp
             // 
             this.scSettings.Panel2.AutoScroll = true;
             this.scSettings.Panel2.Controls.Add(this.gbActions);
-            this.scSettings.Size = new System.Drawing.Size(776, 296);
+            this.scSettings.Size = new System.Drawing.Size(776, 392);
             this.scSettings.SplitterDistance = 531;
             this.scSettings.TabIndex = 3;
             // 
             // gbOrderSettings
             // 
+            this.gbOrderSettings.Controls.Add(this.tbOrderDiscount);
+            this.gbOrderSettings.Controls.Add(this.lblOrderDiscount);
+            this.gbOrderSettings.Controls.Add(this.tbOrderSum);
+            this.gbOrderSettings.Controls.Add(this.lblOrderSum);
             this.gbOrderSettings.Controls.Add(this.cbPaymentMethod);
             this.gbOrderSettings.Controls.Add(this.cbPickupPoint);
             this.gbOrderSettings.Controls.Add(this.lblPaymentMethod);
             this.gbOrderSettings.Controls.Add(this.lblPickupPoint);
             this.gbOrderSettings.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.gbOrderSettings.Location = new System.Drawing.Point(3, 172);
+            this.gbOrderSettings.Location = new System.Drawing.Point(3, 234);
             this.gbOrderSettings.Name = "gbOrderSettings";
-            this.gbOrderSettings.Size = new System.Drawing.Size(525, 121);
+            this.gbOrderSettings.Size = new System.Drawing.Size(525, 155);
             this.gbOrderSettings.TabIndex = 3;
             this.gbOrderSettings.TabStop = false;
             this.gbOrderSettings.Text = "Заказ:";
+            // 
+            // tbOrderDiscount
+            // 
+            this.tbOrderDiscount.Location = new System.Drawing.Point(390, 118);
+            this.tbOrderDiscount.Name = "tbOrderDiscount";
+            this.tbOrderDiscount.ReadOnly = true;
+            this.tbOrderDiscount.Size = new System.Drawing.Size(75, 29);
+            this.tbOrderDiscount.TabIndex = 14;
+            this.tbOrderDiscount.Text = "0";
+            // 
+            // lblOrderDiscount
+            // 
+            this.lblOrderDiscount.AutoSize = true;
+            this.lblOrderDiscount.Location = new System.Drawing.Point(251, 121);
+            this.lblOrderDiscount.Name = "lblOrderDiscount";
+            this.lblOrderDiscount.Size = new System.Drawing.Size(133, 21);
+            this.lblOrderDiscount.TabIndex = 13;
+            this.lblOrderDiscount.Text = "С уч. скидки, %:";
+            // 
+            // tbOrderSum
+            // 
+            this.tbOrderSum.Location = new System.Drawing.Point(155, 118);
+            this.tbOrderSum.Name = "tbOrderSum";
+            this.tbOrderSum.ReadOnly = true;
+            this.tbOrderSum.Size = new System.Drawing.Size(75, 29);
+            this.tbOrderSum.TabIndex = 11;
+            this.tbOrderSum.Text = "0";
+            // 
+            // lblOrderSum
+            // 
+            this.lblOrderSum.AutoSize = true;
+            this.lblOrderSum.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblOrderSum.Location = new System.Drawing.Point(9, 118);
+            this.lblOrderSum.Name = "lblOrderSum";
+            this.lblOrderSum.Size = new System.Drawing.Size(107, 21);
+            this.lblOrderSum.TabIndex = 10;
+            this.lblOrderSum.Text = "Сумма, руб.:";
             // 
             // cbPaymentMethod
             // 
@@ -250,7 +365,7 @@ namespace OnlineEquipmentSalesApp
             this.gbActions.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.gbActions.Location = new System.Drawing.Point(3, 3);
             this.gbActions.Name = "gbActions";
-            this.gbActions.Size = new System.Drawing.Size(232, 290);
+            this.gbActions.Size = new System.Drawing.Size(232, 386);
             this.gbActions.TabIndex = 0;
             this.gbActions.TabStop = false;
             this.gbActions.Text = "Действия:";
@@ -268,7 +383,7 @@ namespace OnlineEquipmentSalesApp
             // btnFinishOrderCreating
             // 
             this.btnFinishOrderCreating.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnFinishOrderCreating.Location = new System.Drawing.Point(6, 199);
+            this.btnFinishOrderCreating.Location = new System.Drawing.Point(7, 307);
             this.btnFinishOrderCreating.Name = "btnFinishOrderCreating";
             this.btnFinishOrderCreating.Size = new System.Drawing.Size(214, 73);
             this.btnFinishOrderCreating.TabIndex = 4;
@@ -311,7 +426,7 @@ namespace OnlineEquipmentSalesApp
             this.gbBasket.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.gbBasket.Location = new System.Drawing.Point(3, 3);
             this.gbBasket.Name = "gbBasket";
-            this.gbBasket.Size = new System.Drawing.Size(767, 278);
+            this.gbBasket.Size = new System.Drawing.Size(767, 241);
             this.gbBasket.TabIndex = 4;
             this.gbBasket.TabStop = false;
             this.gbBasket.Text = "Корзина";
@@ -329,13 +444,12 @@ namespace OnlineEquipmentSalesApp
             this.dgvBasket.Name = "dgvBasket";
             this.dgvBasket.ReadOnly = true;
             this.dgvBasket.RowTemplate.Height = 25;
-            this.dgvBasket.Size = new System.Drawing.Size(746, 241);
+            this.dgvBasket.Size = new System.Drawing.Size(746, 207);
             this.dgvBasket.TabIndex = 0;
             // 
             // scMain
             // 
-            this.scMain.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.scMain.IsSplitterFixed = true;
+            this.scMain.Cursor = System.Windows.Forms.Cursors.HSplit;
             this.scMain.Location = new System.Drawing.Point(12, 12);
             this.scMain.Name = "scMain";
             this.scMain.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -347,15 +461,15 @@ namespace OnlineEquipmentSalesApp
             // scMain.Panel2
             // 
             this.scMain.Panel2.Controls.Add(this.scSettings);
-            this.scMain.Size = new System.Drawing.Size(776, 590);
-            this.scMain.SplitterDistance = 284;
+            this.scMain.Size = new System.Drawing.Size(776, 650);
+            this.scMain.SplitterDistance = 247;
             this.scMain.TabIndex = 5;
             // 
             // Form3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 611);
+            this.ClientSize = new System.Drawing.Size(800, 671);
             this.Controls.Add(this.scMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form3";
@@ -405,5 +519,15 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.NumericUpDown nudProductCount;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.DataGridView dgvBasket;
+        private System.Windows.Forms.TextBox tbOrderSum;
+        private System.Windows.Forms.Label lblOrderSum;
+        private System.Windows.Forms.TextBox tbProductDiscount;
+        private System.Windows.Forms.TextBox tbProductSum;
+        private System.Windows.Forms.Label lblProductDiscount;
+        private System.Windows.Forms.Label lblProductSum;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label lblProductPrice;
+        private System.Windows.Forms.TextBox tbOrderDiscount;
+        private System.Windows.Forms.Label lblOrderDiscount;
     }
 }

@@ -11,7 +11,7 @@ AS
 	FROM inserted
 	
 	IF @status = 12 -- статус "отменён
-	BEGIN		
+	BEGIN
 		DECLARE @warehouse INT, @product INT, @count INT, @suplier INT, @orderNum INT, @date DATE
 		DECLARE returnProduct_cursor CURSOR LOCAL FOR
 		SELECT warehouseNumber, productCode, -productCount, NULL, orderNumber, @transactionDate
@@ -32,8 +32,9 @@ AS
 	IF @status = 10 -- статус "готов к выдаче"
 	BEGIN
 		UPDATE Orders
-	SET statusCode = @status, deliveryDate = @transactionDate
-	RETURN
+	  SET statusCode = @status, deliveryDate = @transactionDate
+    WHERE number = @order;
+    RETURN;
 	END
 
 	UPDATE Orders

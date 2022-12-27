@@ -2,34 +2,6 @@ USE OnlineEquipmentSales;
 SET NOCOUNT ON;
 GO
 
--- создаём таблицу для сопоставления пользователя БД
--- и клиента интернет-магазина
-CREATE TABLE CustomersRegister(
-  username SYSNAME NOT NULL,
-  customerId INT NOT NULL,
-  CONSTRAINT PK_CustomersRegister PRIMARY KEY (username, customerId),
-  CONSTRAINT FK_CustomersRegister_customerId FOREIGN KEY (customerId)
-    REFERENCES Customers(id)
-);
-GO
-
-INSERT INTO CustomersRegister
-VALUES ('Customer', 4);
-GO
-
--- создаём ХП для доступа к регистру клиентов и устанавливаем разрешение
--- на запуск
-CREATE PROC sp_GetCustomerId
-  @username SYSNAME,
-  @customerId INT OUTPUT
-AS
-  SELECT @customerId = customerId
-  FROM CustomersRegister;
-GO
-
-GRANT EXECUTE ON sp_GetCustomerId TO Customer;
-GO
-
 -- представление с содержимым заказов (товар - количество - скидка)
 CREATE VIEW OrderProducts
 AS
@@ -54,7 +26,7 @@ AS
   WHERE [Номер заказа] = @orderNumber;
 GO
 
-GRANT EXECUTE ON sp_GetOrderProducts TO Customer;
+GRANT EXECUTE ON sp_GetOrderProducts TO Customer; -- ХП для доступа к представлению с содержимым заказов
 GO
 
 -- создание заказов
@@ -211,15 +183,6 @@ GO
 GRANT EXECUTE ON sp_GetProductTypes TO Customer;
 GO
 
--- представление "товар - тип товара"
---CREATE VIEW ProductTypesNames
---AS
---  SELECT p.[name] [Название товара],
---         pt.[name] [Тип товара]
---  FROM Products p JOIN ProductTypes pt
---    ON p.productTypeCode = pt.code;
---GO
-
 -- ХП для получения списка всех названий товаров указанного типа
 CREATE PROC sp_GetProductsOfType
   @typeCode SMALLINT = NULL
@@ -237,7 +200,7 @@ GRANT EXECUTE ON sp_GetProductsOfType TO Customer;
 GO
 
 -- ХП для получения адресов всех пунктов выдачи
-ALTER PROC sp_GetPickupPointsAddresses
+CREATE PROC sp_GetPickupPointsAddresses
 AS
   SELECT pp.number, c.[name] + ', ' + a.street + ', ' + a.building ppAddress
   FROM PickupPoints pp JOIN Addresses a ON pp.addressId = a.id
@@ -278,4 +241,76 @@ AS
 GO
 
 GRANT EXECUTE ON sp_GetPickupPointProductCount TO Customer;
+GO
+
+CREATE PROC sp_GetDefaultProductType
+  @productTypeCode SMALLINT OUTPUT 
+AS
+  SELECT @productTypeCode = code
+  FROM ProductTypes
+  WHERE [name] = 'Товар';
+GO
+
+GRANT EXECUTE ON sp_GetDefaultProductType TO Customer;
+GO
+
+-- ХП для получения названия типа указанного товара
+CREATE PROC sp_GetTypeOfProduct
+  @productCode INT,
+  @typeName NVARCHAR(300) OUTPUT
+AS
+  SELECT @typeName = pt.[name]
+  FROM Products p JOIN ProductTypes pt
+    ON p.productTypeCode = pt.code;
+GO
+
+GRANT EXECUTE ON sp_GetTypeOfProduct TO Customer;
+GO
+
+-- представление с информацией о товаре
+CREATE VIEW ProductsForCustomers
+AS
+  SELECT p.code [Код товара],
+         p.[name] [Название товара],
+         p.warranty [Гарантия],
+         p.maxDiscountPercentage [Максимальная скидка],
+         p.retailPrice [Розничная цена, руб.],
+         p.wholesalePrice [Оптовая цена, руб.],
+         p.wholesaleQuantity [Оптовое количество, шт.],
+         pt.[name] [Тип товара],
+         m.[name] [Производитель]
+  FROM Products p JOIN ProductTypes pt ON p.productTypeCode = pt.code
+    JOIN Makers m ON p.makerCode = m.code;
+GO
+
+-- ХП для доступа к этому представлению
+CREATE PROC sp_GetProductInfo
+  @productCode INT
+AS
+  SELECT *
+  FROM ProductsForCustomers
+  WHERE [Код товара] = @productCode;
+GO
+
+GRANT EXECUTE ON sp_GetProductInfo TO Customer;
+GO
+
+-- ХП для получения цены, скидки и стоимости товара
+CREATE PROC sp_GetProductOrderInfo
+  @productCode INT,
+  @productCount INT,
+  @orderDiscount TINYINT,
+  @productPrice MONEY OUTPUT,
+  @productDiscount TINYINT OUTPUT
+AS
+  SELECT @productPrice = CASE
+    WHEN @productCount >= wholesaleQuantity THEN wholesalePrice
+    ELSE retailPrice END,
+         @productDiscount = CASE
+    WHEN @orderDiscount > maxDiscountPercentage THEN maxDiscountPercentage
+    ELSE @orderDiscount END
+  FROM Products;
+GO
+
+GRANT EXECUTE ON sp_GetProductOrderInfo TO Customer;
 GO

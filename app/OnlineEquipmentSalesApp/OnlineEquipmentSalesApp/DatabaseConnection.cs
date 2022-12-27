@@ -209,20 +209,23 @@ namespace OnlineEquipmentSalesApp
             SqlParameter productCodeParam = new SqlParameter
             {
                 ParameterName = param1,
+                SqlDbType = SqlDbType.Int,
                 Value = productCode
             };
 
             SqlParameter pickupPointNumberParam = new SqlParameter
             {
                 ParameterName = param2,
+                SqlDbType = SqlDbType.SmallInt,
                 Value = pickupPointNumber
             };
 
             SqlParameter productCountParam = new SqlParameter
             {
                 ParameterName = param3,
+                SqlDbType = SqlDbType.Int,
+                Direction = ParameterDirection.Output
             };
-            productCountParam.Direction = ParameterDirection.Output;
 
             command.Parameters.Add(productCodeParam);
             command.Parameters.Add(pickupPointNumberParam);
@@ -230,6 +233,54 @@ namespace OnlineEquipmentSalesApp
 
             command.ExecuteNonQuery();
             return (int)command.Parameters[param3].Value;
+        }
+
+        public short GetDefaultProductType()
+        {
+            string spName = "sp_GetDefaultProductType",
+                   param1 = "@productTypeCode";
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            SqlParameter productTypeCodeParam = new SqlParameter
+            {
+                ParameterName = param1,
+                SqlDbType = SqlDbType.SmallInt
+            };
+            productTypeCodeParam.Direction = ParameterDirection.Output;
+            command.Parameters.Add(productTypeCodeParam);
+
+            command.ExecuteNonQuery();
+            return (short)command.Parameters[param1].Value;
+        }
+
+        public string GetTypeOfProduct(int productCode)
+        {
+            string spName = "sp_GetTypeOfProduct",
+                   param1 = "@productCode",
+                   param2 = "@typeName";
+
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            SqlParameter productCodeParam = new SqlParameter
+            {
+                ParameterName = param1,
+                SqlDbType = SqlDbType.Int,
+                Value = productCode
+            };
+
+            SqlParameter typeNameParam = new SqlParameter
+            {
+                ParameterName = param2,
+                SqlDbType = SqlDbType.NVarChar,
+                Size = 300,
+                Direction = ParameterDirection.Output
+            };
+
+            command.ExecuteNonQuery();
+            return command.Parameters[param2].Value.ToString();
         }
     }
 }

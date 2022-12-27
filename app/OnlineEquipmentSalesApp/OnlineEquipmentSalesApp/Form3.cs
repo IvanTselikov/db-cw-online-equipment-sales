@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace OnlineEquipmentSalesApp
 {
@@ -35,6 +36,12 @@ namespace OnlineEquipmentSalesApp
             // заполняем элементы ComboBox
             SqlDataReader reader = Form1.DatabaseConnection.GetProductTypes();
             FillComboBoxItems(cbProductType, reader);
+            // по умолчанию - все товары
+            int defaultProductType = Form1.DatabaseConnection.GetDefaultProductType();
+            cbProductType.SelectedItem = cbProductType.Items
+                .Cast<KeyValueCbItem>()
+                .Where(item => item.Key == defaultProductType)
+                .ToArray()[0];
 
             reader = Form1.DatabaseConnection.GetProductsOfType();
             FillComboBoxItems(cbProductName, reader);
@@ -48,8 +55,8 @@ namespace OnlineEquipmentSalesApp
             // инициализация таблицы с корзиной
             dgvBasket.Columns.Add("type", "Тип товара");
             dgvBasket.Columns.Add("name", "Товар");
-            dgvBasket.Columns.Add("count", "Количество");
-            dgvBasket.Columns.Add("name", "Количество на складах, шт.");
+            dgvBasket.Columns.Add("countDesired", "Количество");
+            dgvBasket.Columns.Add("countAvailable", "Количество на складах, шт.");
 
             dgvBasket.Rows.Add(null, null, null, null);
             dgvBasket.Rows[0].Selected = true;
@@ -62,7 +69,7 @@ namespace OnlineEquipmentSalesApp
             {
                 while (reader.Read())
                 {
-                    KeyValueCbItem item = new KeyValueCbItem((int)reader.GetValue(0),
+                    KeyValueCbItem item = new KeyValueCbItem(Convert.ToInt32(reader.GetValue(0)),
                                                              reader.GetValue(1).ToString());
                     cb.Items.Add(item);
                 }
@@ -92,7 +99,8 @@ namespace OnlineEquipmentSalesApp
             if (selectedTypeIndex != this.selectedTypeIndex)
             {
                 // изменяем содержимое ComboBox на список товаров указанного типа
-                SqlDataReader reader = Form1.DatabaseConnection.GetProductsOfType(cb.SelectedItem.ToString());
+                SqlDataReader reader = Form1.DatabaseConnection.GetProductsOfType(
+                    (cb.SelectedItem as KeyValueCbItem).Key);
                 FillComboBoxItems(cbProductName, reader);
                 this.selectedTypeIndex = selectedTypeIndex;
             }
@@ -103,17 +111,35 @@ namespace OnlineEquipmentSalesApp
         {
             if (cbProductName.SelectedItem != null)
             {
+                // добавляем/изменяем товар в корзине
                 int productCode = (cbProductName.SelectedItem as KeyValueCbItem).Key;
-                int? pickupPointCode = null;
+                short? pickupPointCode = null;
                 if (cbPickupPoint.SelectedItem != null)
                 {
-                    pickupPointCode = (cbPickupPoint.SelectedItem as KeyValueCbItem).Key;
+                    pickupPointCode = (short)(cbPickupPoint.SelectedItem as KeyValueCbItem).Key;
                 }
-                int productCount = Form1.DatabaseConnection.GetPickupPointProductCount(
+                int countAvailable = Form1.DatabaseConnection.GetPickupPointProductCount(
                     productCode, pickupPointCode
                 );
 
+                string typeName = Form1.DatabaseConnection.GetTypeOfProduct(productCode);
+                string productName = (cbProductName.SelectedItem as KeyValueCbItem).Value;
+                int countDesired = (int)nudProductCount.Value;
+
+                dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].SetValues(
+                    typeName, productName, countDesired, countAvailable
+                );
             }
+            else
+            {
+                MessageBox.Show("Выберите товар указанного типа!", "Ошибка", MessageBoxButtons.OK);
+            }
+        }
+
+        private bool IsNewItem()
+        {
+            // добавляем новый товар, если выделена пустая строка
+            return dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].Cells[0].Value == null;
         }
     }
 }

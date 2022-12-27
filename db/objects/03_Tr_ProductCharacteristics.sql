@@ -107,5 +107,6 @@ DEALLOCATE crsr;
 DROP TABLE CopyTable;
 
 -- проверка получившегося типа
---SELECT pc.*, SQL_VARIANT_PROPERTY(pc.characteristicValue, 'basetype') valueType
+--SELECT pc.*, SQL_VARIANT_PROPERTY(
+--  pc.characteristicValue, 'basetype') valueType
 --FROM ProductCharacteristics pc;
