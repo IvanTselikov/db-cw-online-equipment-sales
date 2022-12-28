@@ -311,7 +311,8 @@ AS
          @productDiscount = CASE
     WHEN @orderDiscount > maxDiscountPercentage THEN maxDiscountPercentage
     ELSE @orderDiscount END
-  FROM Products;
+  FROM Products
+  WHERE code = @productCode;
 GO
 
 GRANT EXECUTE ON sp_GetProductOrderInfo TO Customer;

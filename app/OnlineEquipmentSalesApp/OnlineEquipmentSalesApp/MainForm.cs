@@ -46,6 +46,7 @@ namespace OnlineEquipmentSalesApp
                        productSumKey = "sum",
                        productDiscountKey = "discount";
 
+        private object defaultCBProductType; 
         private void MainForm_Load(object sender, EventArgs e)
         {
             // для вкладки "Просмотр заказов"
@@ -69,6 +70,7 @@ namespace OnlineEquipmentSalesApp
                 .Cast<KeyValueComboBoxItem>()
                 .Where(item => item.Key == defaultProductType)
                 .ToArray()[0];
+            defaultCBProductType = cbProductType.SelectedItem;
 
             reader = AuthorizationForm.DatabaseConnection.GetProductsOfType();
             FillComboBoxItems(cbProductName, reader);
@@ -349,19 +351,16 @@ namespace OnlineEquipmentSalesApp
             }
         }
 
-        private int selectedTypeIndex = -1;
         private void cbProductType_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox cb = sender as ComboBox;
+
             int selectedTypeIndex = cb.SelectedIndex;
-            //if (selectedTypeIndex != this.selectedTypeIndex)
-            //{
-                // изменяем содержимое ComboBox на список товаров указанного типа
-                SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetProductsOfType(
-                    (cb.SelectedItem as KeyValueComboBoxItem).Key);
-                FillComboBoxItems(cbProductName, reader);
-                this.selectedTypeIndex = selectedTypeIndex;
-            //}
+
+            // изменяем содержимое ComboBox на список товаров указанного типа
+            SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetProductsOfType(
+                (cb.SelectedItem as KeyValueComboBoxItem).Key);
+            FillComboBoxItems(cbProductName, reader);
         }
 
         private void btnSaveChanges_Click(object sender, EventArgs e)
@@ -391,10 +390,13 @@ namespace OnlineEquipmentSalesApp
                     productCode, countDesired, orderDiscount, out productPrice, out productDiscount
                 );
 
-                dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].SetValues(
-                    productCode, productName, countDesired, countAvailable, productPrice,
-                    productPrice * countDesired, productDiscount
-                );
+                if (dgvBasket.SelectedRows.Count < 2)
+                {
+                    dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].SetValues(
+                        productCode, productName, countDesired, countAvailable, productPrice,
+                        productPrice * countDesired, productDiscount
+                    );
+                }
 
                 if (countDesired > countAvailable)
                 {
@@ -445,12 +447,7 @@ namespace OnlineEquipmentSalesApp
                 dgvBasket.Rows.Add();
                 dgvBasket.Rows[dgvBasket.Rows.Count - 1].Selected = true;
 
-                cbProductType.Text = string.Empty;
-                cbProductName.Text = string.Empty;
-                nudProductCount.Value = 1;
-                tbProductSum.Text = "0";
-                tbProductDiscount.Text = "0";
-                dgvProductInfo.Rows.Clear();
+                EmptyProductInfo();
             }
         }
 
@@ -461,7 +458,10 @@ namespace OnlineEquipmentSalesApp
             {
                 foreach (DataGridViewRow row in dgvBasket.Rows)
                 {
-                    orderSum += decimal.Parse(row.Cells[productSumKey].Value.ToString());
+                    if (row.Cells[productSumKey].Value != null)
+                    {
+                        orderSum += decimal.Parse(row.Cells[productSumKey].Value.ToString());
+                    }
                 }
             }
             tbOrderSum.Text = orderSum.ToString();
@@ -483,7 +483,7 @@ namespace OnlineEquipmentSalesApp
                     }
                 }
             }
-            if (dgvBasket.CurrentCell != null
+            else if (dgvBasket.CurrentCell != null
                 && dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].Cells[productCodeKey].Value != null)
             {
                 warning += $"\n- {dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].Cells[productNameKey].Value}";
@@ -503,6 +503,10 @@ namespace OnlineEquipmentSalesApp
                     dgvBasket.Rows.Remove(row);
                 }
             }
+            if (dgvBasket.Rows.Count == 0)
+            {
+                dgvBasket.Rows.Add();
+            }
         }
 
         private void dgvBasket_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
@@ -517,7 +521,17 @@ namespace OnlineEquipmentSalesApp
 
         private void btnEmptyTrash_Click(object sender, EventArgs e)
         {
-            dgvBasket.Rows.Clear();
+            if (dgvBasket.Rows[0].Cells[productCodeKey].Value != null)
+            {
+                DialogResult result = MessageBox.Show(
+                    "Вы действительно хотите очистить корзину?", "Очистка корзины", MessageBoxButtons.YesNo
+                );
+                if (result == DialogResult.Yes)
+                {
+                    dgvBasket.Rows.Clear();
+                    dgvBasket.Rows.Add();
+                }
+            }
         }
 
         private void cbProductName_SelectedIndexChanged(object sender, EventArgs e)
@@ -550,23 +564,43 @@ namespace OnlineEquipmentSalesApp
 
         private void dgvBasket_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (dgvBasket.Rows[e.RowIndex].Cells[productCodeKey].Value != null)
+            if (e.RowIndex != -1)
             {
-                int selectedProductCode = (int)dgvBasket.Rows[e.RowIndex].Cells[productCodeKey].Value;
+                if (dgvBasket.Rows[e.RowIndex].Cells[productCodeKey].Value != null)
+                {
+                    int selectedProductCode = (int)dgvBasket.Rows[e.RowIndex].Cells[productCodeKey].Value;
 
-                string selectedProductTypeName = AuthorizationForm.DatabaseConnection.GetTypeOfProduct(selectedProductCode);
-                cbProductType.SelectedItem = cbProductType.Items
-                    .Cast<KeyValueComboBoxItem>()
-                    .Where(item => item.Value == selectedProductTypeName).ToArray()[0];
+                    string selectedProductTypeName = AuthorizationForm.DatabaseConnection.GetTypeOfProduct(selectedProductCode);
+                    cbProductType.SelectedItem = cbProductType.Items
+                        .Cast<KeyValueComboBoxItem>()
+                        .Where(item => item.Value == selectedProductTypeName).ToArray()[0];
 
-                cbProductName.SelectedItem = cbProductName.Items
-                    .Cast<KeyValueComboBoxItem>()
-                    .Where(item => item.Key == selectedProductCode).ToArray()[0];
+                    cbProductName.SelectedItem = cbProductName.Items
+                        .Cast<KeyValueComboBoxItem>()
+                        .Where(item => item.Key == selectedProductCode).ToArray()[0];
 
-                nudProductCount.Value = decimal.Parse(dgvBasket.Rows[e.RowIndex].Cells[productCountDesiredKey]
-                    .Value.ToString());
+                    nudProductCount.Value = decimal.Parse(dgvBasket.Rows[e.RowIndex].Cells[productCountDesiredKey]
+                        .Value.ToString());
+                }
+                else
+                {
+                    EmptyProductInfo();
+                }
             }
         }
+
+        private void EmptyProductInfo()
+        {
+            nudProductCount.Value = 1;
+            tbProductSum.Text = "0";
+            tbProductDiscount.Text = "0";
+            cbProductType.SelectedItem = defaultCBProductType;
+            cbProductName.Text = "";
+            tbProductDiscount.Text = "";
+            tbProductSum.Text = "";
+            dgvProductInfo.Rows.Clear();
+        }
+
 
         private void RecalculateProductSum()
         {
@@ -602,18 +636,21 @@ namespace OnlineEquipmentSalesApp
             int pickupPointNumber = (cbPickupPoint.SelectedItem as KeyValueComboBoxItem).Key;
             foreach (DataGridViewRow row in dgvBasket.Rows)
             {
-                int productCode = (int)row.Cells[productCodeKey].Value;
-                int productCountAvailable = AuthorizationForm.DatabaseConnection.GetPickupPointProductCount(
-                    productCode, pickupPointNumber
-                );
-                row.Cells[productCountAvailableKey].Value = productCountAvailable;
-                if ((int)row.Cells[productCountDesiredKey].Value > productCountAvailable)
+                if (row.Cells[productCodeKey].Value != null)
                 {
-                    HighlightRow(dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex], true);
-                }
-                else
-                {
-                    HighlightRow(dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex], false);
+                    int productCode = (int)row.Cells[productCodeKey].Value;
+                    int productCountAvailable = AuthorizationForm.DatabaseConnection.GetPickupPointProductCount(
+                        productCode, pickupPointNumber
+                    );
+                    row.Cells[productCountAvailableKey].Value = productCountAvailable;
+                    if ((int)row.Cells[productCountDesiredKey].Value > productCountAvailable)
+                    {
+                        HighlightRow(dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex], true);
+                    }
+                    else
+                    {
+                        HighlightRow(dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex], false);
+                    }
                 }
             }
         }
