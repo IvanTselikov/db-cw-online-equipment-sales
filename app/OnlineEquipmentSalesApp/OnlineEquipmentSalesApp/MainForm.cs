@@ -38,7 +38,15 @@ namespace OnlineEquipmentSalesApp
             }
         }
 
-        private void Form2_Load(object sender, EventArgs e)
+        private string productCodeKey = "code",
+                       productNameKey = "name",
+                       productCountDesiredKey = "countDesired",
+                       productCountAvailableKey = "countAvailable",
+                       productPriceKey = "price",
+                       productSumKey = "sum",
+                       productDiscountKey = "discount";
+
+        private void MainForm_Load(object sender, EventArgs e)
         {
             // для вкладки "Просмотр заказов"
             // выводим заказы
@@ -50,12 +58,49 @@ namespace OnlineEquipmentSalesApp
             FillDgv(dgvOrderProducts, reader);
 
 
+
+            // для вкладки "Оформление заказа"
+            // заполняем элементы ComboBox
+            reader = AuthorizationForm.DatabaseConnection.GetProductTypes();
+            FillComboBoxItems(cbProductType, reader);
+            // по умолчанию - все товары
+            int defaultProductType = AuthorizationForm.DatabaseConnection.GetDefaultProductType();
+            cbProductType.SelectedItem = cbProductType.Items
+                .Cast<KeyValueComboBoxItem>()
+                .Where(item => item.Key == defaultProductType)
+                .ToArray()[0];
+
+            reader = AuthorizationForm.DatabaseConnection.GetProductsOfType();
+            FillComboBoxItems(cbProductName, reader);
+
+            reader = AuthorizationForm.DatabaseConnection.GetPickupPointsAddresses();
+            FillComboBoxItems(cbPickupPoint, reader);
+
+            reader = AuthorizationForm.DatabaseConnection.GetPaymentMethods();
+            FillComboBoxItems(cbPaymentMethod, reader);
+
+            // инициализация таблицы с корзиной
+            dgvBasket.Columns.Add(productCodeKey, "Код товара");
+            dgvBasket.Columns.Add(productNameKey, "Название товара");
+            dgvBasket.Columns.Add(productCountDesiredKey, "Количество");
+            dgvBasket.Columns.Add(productCountAvailableKey, "Количество на складах, шт.");
+            dgvBasket.Columns.Add(productPriceKey, "Цена, руб.");
+            dgvBasket.Columns.Add(productSumKey, "Стоимость, руб.");
+            dgvBasket.Columns.Add(productDiscountKey, "Скидка, %");
+
+
+            dgvBasket.Rows.Add();
+            dgvBasket.Rows[0].Selected = true;
+
+            RecalculateOrderDiscount();
+
+
+
             // для вкладки "Поиск товаров по характеристикам"
             // заполняем элементы ComboBox
             reader = AuthorizationForm.DatabaseConnection.GetProductTypes();
             FillComboBoxItems(cbProductTypeSearch, reader);
             // по умолчанию - все товары
-            short defaultProductType = AuthorizationForm.DatabaseConnection.GetDefaultProductType();
             cbProductTypeSearch.SelectedItem = cbProductTypeSearch.Items
                 .Cast<KeyValueComboBoxItem>()
                 .Where(item => item.Key == defaultProductType)
@@ -304,7 +349,276 @@ namespace OnlineEquipmentSalesApp
             }
         }
 
-        private void Form2_FormClosed(object sender, FormClosedEventArgs e)
+        private int selectedTypeIndex = -1;
+        private void cbProductType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cb = sender as ComboBox;
+            int selectedTypeIndex = cb.SelectedIndex;
+            //if (selectedTypeIndex != this.selectedTypeIndex)
+            //{
+                // изменяем содержимое ComboBox на список товаров указанного типа
+                SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetProductsOfType(
+                    (cb.SelectedItem as KeyValueComboBoxItem).Key);
+                FillComboBoxItems(cbProductName, reader);
+                this.selectedTypeIndex = selectedTypeIndex;
+            //}
+        }
+
+        private void btnSaveChanges_Click(object sender, EventArgs e)
+        {
+            if (cbProductName.SelectedItem != null)
+            {
+                // добавляем/изменяем товар в корзине
+                int productCode = (cbProductName.SelectedItem as KeyValueComboBoxItem).Key;
+                short? pickupPointCode = null;
+                if (cbPickupPoint.SelectedItem != null)
+                {
+                    pickupPointCode = (short)(cbPickupPoint.SelectedItem as KeyValueComboBoxItem).Key;
+                }
+                int countAvailable = AuthorizationForm.DatabaseConnection.GetPickupPointProductCount(
+                    productCode, pickupPointCode
+                );
+
+                // string typeName = AuthorizationForm.DatabaseConnection.GetTypeOfProduct(productCode);
+                //string typeName = (cbProductType.SelectedItem as KeyValueComboBoxItem).Value;
+                string productName = (cbProductName.SelectedItem as KeyValueComboBoxItem).Value;
+                int countDesired = (int)nudProductCount.Value;
+
+                byte orderDiscount = byte.Parse(tbOrderDiscount.Text);
+                decimal productPrice;
+                byte productDiscount;
+                AuthorizationForm.DatabaseConnection.GetProductOrderInfo(
+                    productCode, countDesired, orderDiscount, out productPrice, out productDiscount
+                );
+
+                dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].SetValues(
+                    productCode, productName, countDesired, countAvailable, productPrice,
+                    productPrice * countDesired, productDiscount
+                );
+
+                if (countDesired > countAvailable)
+                {
+                    HighlightRow(dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex], true);
+                }
+                else
+                {
+                    HighlightRow(dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex], false);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите товар указанного типа!", "Ошибка", MessageBoxButtons.OK);
+            }
+        }
+
+        private void HighlightRow(DataGridViewRow row, bool paint)
+        {
+            if (paint)
+            {
+                row.Cells[productCountDesiredKey].Style.BackColor = Color.Orange;
+                row.Cells[productCountAvailableKey].Style.BackColor = Color.Orange;
+            }
+            else
+            {
+                row.Cells[productCountDesiredKey].Style.BackColor = Color.Empty;
+                row.Cells[productCountAvailableKey].Style.BackColor = Color.Empty;
+            }
+        }
+
+        private void dgvBasket_CellLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            int rowsCount = dgvBasket.Rows.Count;
+            if (dgvBasket.Rows[rowsCount - 1].Cells[productCodeKey] == null
+                && rowsCount > 1
+                && dgvBasket.CurrentCell.RowIndex != rowsCount - 1)
+            {
+                // удаляем строку для нового товара
+                dgvBasket.Rows.Remove(dgvBasket.Rows[rowsCount - 1]);
+            }
+        }
+
+        private void btnAddItem_Click(object sender, EventArgs e)
+        {
+            if (dgvBasket.Rows[dgvBasket.Rows.Count - 1].Cells[productCodeKey].Value != null)
+            {
+                // добавляем, если пустая строка для нового товара ещё не добавлена
+                dgvBasket.Rows.Add();
+                dgvBasket.Rows[dgvBasket.Rows.Count - 1].Selected = true;
+
+                cbProductType.Text = string.Empty;
+                cbProductName.Text = string.Empty;
+                nudProductCount.Value = 1;
+                tbProductSum.Text = "0";
+                tbProductDiscount.Text = "0";
+                dgvProductInfo.Rows.Clear();
+            }
+        }
+
+        private void dgvBasket_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            decimal orderSum = 0;
+            if (e.ColumnIndex == 5)
+            {
+                foreach (DataGridViewRow row in dgvBasket.Rows)
+                {
+                    orderSum += decimal.Parse(row.Cells[productSumKey].Value.ToString());
+                }
+            }
+            tbOrderSum.Text = orderSum.ToString();
+        }
+
+        private void btnRemoveItem_Click(object sender, EventArgs e)
+        {
+            string warning = "Вы действительно хотите удалить следующие товары из корзины?";
+            List<DataGridViewRow> rowsToRemove = new List<DataGridViewRow>();
+            if (dgvBasket.SelectedRows.Count > 0
+                && dgvBasket.SelectedRows[0].Cells[productCodeKey].Value != null)
+            {
+                foreach (DataGridViewRow row in dgvBasket.SelectedRows)
+                {
+                    if (row.Cells[productCodeKey].Value != null)
+                    {
+                        warning += $"\n- {row.Cells[productNameKey].Value}";
+                        rowsToRemove.Add(row);
+                    }
+                }
+            }
+            if (dgvBasket.CurrentCell != null
+                && dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].Cells[productCodeKey].Value != null)
+            {
+                warning += $"\n- {dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].Cells[productNameKey].Value}";
+                rowsToRemove.Add(dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex]);
+            }
+            else
+            {
+                MessageBox.Show("Выберите товар(-ы) для удаления!", "Удаление из корзины", MessageBoxButtons.OK);
+                return;
+            }
+
+            DialogResult result = MessageBox.Show(warning, "Удаление из корзины", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                foreach (DataGridViewRow row in dgvBasket.SelectedRows)
+                {
+                    dgvBasket.Rows.Remove(row);
+                }
+            }
+        }
+
+        private void dgvBasket_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
+        {
+            decimal orderSum = 0;
+            foreach (DataGridViewRow row in dgvBasket.Rows)
+            {
+                orderSum += decimal.Parse(row.Cells[productSumKey].Value.ToString());
+            }
+            tbOrderSum.Text = orderSum.ToString();
+        }
+
+        private void btnEmptyTrash_Click(object sender, EventArgs e)
+        {
+            dgvBasket.Rows.Clear();
+        }
+
+        private void cbProductName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int productCode = (cbProductName.SelectedItem as KeyValueComboBoxItem).Key;
+            SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetProductInfo(productCode);
+            FillProductInfoDgv(reader);
+
+            RecalculateProductSum();
+        }
+
+        private void FillProductInfoDgv(SqlDataReader reader)
+        {
+            if (dgvProductInfo.Columns.Count == 0)
+            {
+                dgvProductInfo.Columns.Add("characteristic", "Характеристика");
+                dgvProductInfo.Columns.Add("value", "Значение");
+            }
+            if (reader.HasRows)
+            {
+                dgvProductInfo.Rows.Clear();
+                reader.Read();
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    dgvProductInfo.Rows.Add(reader.GetName(i), reader.GetValue(i));
+                }
+            }
+            reader.Close();
+        }
+
+        private void dgvBasket_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (dgvBasket.Rows[e.RowIndex].Cells[productCodeKey].Value != null)
+            {
+                int selectedProductCode = (int)dgvBasket.Rows[e.RowIndex].Cells[productCodeKey].Value;
+
+                string selectedProductTypeName = AuthorizationForm.DatabaseConnection.GetTypeOfProduct(selectedProductCode);
+                cbProductType.SelectedItem = cbProductType.Items
+                    .Cast<KeyValueComboBoxItem>()
+                    .Where(item => item.Value == selectedProductTypeName).ToArray()[0];
+
+                cbProductName.SelectedItem = cbProductName.Items
+                    .Cast<KeyValueComboBoxItem>()
+                    .Where(item => item.Key == selectedProductCode).ToArray()[0];
+
+                nudProductCount.Value = decimal.Parse(dgvBasket.Rows[e.RowIndex].Cells[productCountDesiredKey]
+                    .Value.ToString());
+            }
+        }
+
+        private void RecalculateProductSum()
+        {
+            if (cbProductName.SelectedItem != null)
+            {
+                int productCode = (cbProductName.SelectedItem as KeyValueComboBoxItem).Key;
+                int productCount = (int)nudProductCount.Value;
+                byte orderDiscount = byte.Parse(tbOrderDiscount.Text);
+                decimal productPrice;
+                byte productDiscount;
+                AuthorizationForm.DatabaseConnection.GetProductOrderInfo(
+                    productCode, productCount, orderDiscount, out productPrice, out productDiscount
+                );
+                tbProductSum.Text = (productPrice * productCount).ToString();
+                tbProductDiscount.Text = productDiscount.ToString();
+            }
+        }
+
+        private void RecalculateOrderDiscount()
+        {
+            byte orderDiscount = AuthorizationForm.DatabaseConnection.GetCustomerDiscount();
+            tbOrderDiscount.Text = orderDiscount.ToString();
+        }
+
+        private void nudProductCount_ValueChanged(object sender, EventArgs e)
+        {
+            RecalculateProductSum();
+        }
+
+
+        private void cbPickupPoint_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int pickupPointNumber = (cbPickupPoint.SelectedItem as KeyValueComboBoxItem).Key;
+            foreach (DataGridViewRow row in dgvBasket.Rows)
+            {
+                int productCode = (int)row.Cells[productCodeKey].Value;
+                int productCountAvailable = AuthorizationForm.DatabaseConnection.GetPickupPointProductCount(
+                    productCode, pickupPointNumber
+                );
+                row.Cells[productCountAvailableKey].Value = productCountAvailable;
+                if ((int)row.Cells[productCountDesiredKey].Value > productCountAvailable)
+                {
+                    HighlightRow(dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex], true);
+                }
+                else
+                {
+                    HighlightRow(dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex], false);
+                }
+            }
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             parent.Close();
         }

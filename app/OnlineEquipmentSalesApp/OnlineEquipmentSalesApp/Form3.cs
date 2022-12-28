@@ -12,12 +12,12 @@ namespace OnlineEquipmentSalesApp
 {
     public partial class Form3 : Form
     {
-        private class KeyValueCbItem
+        private class KeyValueComboBoxItem
         {
             public int Key { get; }
             public string Value { get; }
 
-            public KeyValueCbItem(int key, string value)
+            public KeyValueComboBoxItem(int key, string value)
             {
                 this.Key = key;
                 this.Value = value;
@@ -39,7 +39,7 @@ namespace OnlineEquipmentSalesApp
             // по умолчанию - все товары
             int defaultProductType = AuthorizationForm.DatabaseConnection.GetDefaultProductType();
             cbProductType.SelectedItem = cbProductType.Items
-                .Cast<KeyValueCbItem>()
+                .Cast<KeyValueComboBoxItem>()
                 .Where(item => item.Key == defaultProductType)
                 .ToArray()[0];
 
@@ -69,7 +69,7 @@ namespace OnlineEquipmentSalesApp
             {
                 while (reader.Read())
                 {
-                    KeyValueCbItem item = new KeyValueCbItem(Convert.ToInt32(reader.GetValue(0)),
+                    KeyValueComboBoxItem item = new KeyValueComboBoxItem(Convert.ToInt32(reader.GetValue(0)),
                                                              reader.GetValue(1).ToString());
                     cb.Items.Add(item);
                 }
@@ -100,7 +100,7 @@ namespace OnlineEquipmentSalesApp
             {
                 // изменяем содержимое ComboBox на список товаров указанного типа
                 SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetProductsOfType(
-                    (cb.SelectedItem as KeyValueCbItem).Key);
+                    (cb.SelectedItem as KeyValueComboBoxItem).Key);
                 FillComboBoxItems(cbProductName, reader);
                 this.selectedTypeIndex = selectedTypeIndex;
             }
@@ -112,18 +112,18 @@ namespace OnlineEquipmentSalesApp
             if (cbProductName.SelectedItem != null)
             {
                 // добавляем/изменяем товар в корзине
-                int productCode = (cbProductName.SelectedItem as KeyValueCbItem).Key;
+                int productCode = (cbProductName.SelectedItem as KeyValueComboBoxItem).Key;
                 short? pickupPointCode = null;
                 if (cbPickupPoint.SelectedItem != null)
                 {
-                    pickupPointCode = (short)(cbPickupPoint.SelectedItem as KeyValueCbItem).Key;
+                    pickupPointCode = (short)(cbPickupPoint.SelectedItem as KeyValueComboBoxItem).Key;
                 }
                 int countAvailable = AuthorizationForm.DatabaseConnection.GetPickupPointProductCount(
                     productCode, pickupPointCode
                 );
 
                 string typeName = AuthorizationForm.DatabaseConnection.GetTypeOfProduct(productCode);
-                string productName = (cbProductName.SelectedItem as KeyValueCbItem).Value;
+                string productName = (cbProductName.SelectedItem as KeyValueComboBoxItem).Value;
                 int countDesired = (int)nudProductCount.Value;
 
                 dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].SetValues(

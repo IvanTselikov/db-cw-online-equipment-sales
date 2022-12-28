@@ -232,10 +232,12 @@ AS
     FROM ProductMovements
     WHERE productCode = @productCode;
   ELSE
-    SELECT @productCount = SUM(pm.productCount)
-    FROM Deliveries d JOIN ProductMovements pm
-      ON d.pickupPointNumber = @pickupPointNumber AND pm.productCode = @productCode
-        AND pm.warehouseNumber = d.warehouseNumber;
+    SELECT @productCount = SUM(productCount)
+    FROM ProductMovements
+    WHERE productCode = @productCode AND warehouseNumber IN
+      (SELECT DISTINCT warehouseNumber
+       FROM Deliveries
+       WHERE pickupPointNumber = @pickupPointNumber);
   IF @productCount IS NULL
     SET @productCount = 0;
 GO
@@ -260,8 +262,8 @@ CREATE PROC sp_GetTypeOfProduct
   @typeName NVARCHAR(300) OUTPUT
 AS
   SELECT @typeName = pt.[name]
-  FROM Products p JOIN ProductTypes pt
-    ON p.productTypeCode = pt.code;
+  FROM Products p JOIN ProductTypes pt ON p.productTypeCode = pt.code
+  WHERE p.code = @productCode;
 GO
 
 GRANT EXECUTE ON sp_GetTypeOfProduct TO Customer;
@@ -274,8 +276,8 @@ AS
          p.[name] [Название товара],
          p.warranty [Гарантия],
          p.maxDiscountPercentage [Максимальная скидка],
-         p.retailPrice [Розничная цена, руб.],
-         p.wholesalePrice [Оптовая цена, руб.],
+         CONVERT(VARCHAR(30), p.retailPrice, 1) [Розничная цена, руб.],
+         CONVERT(VARCHAR(30), p.wholesalePrice, 1) [Оптовая цена, руб.],
          p.wholesaleQuantity [Оптовое количество, шт.],
          pt.[name] [Тип товара],
          m.[name] [Производитель]
@@ -353,4 +355,8 @@ AS
 GO
 
 GRANT EXECUTE ON sp_GetCharacteristicDataType TO Customer;
+GO
+
+-- разрешение на выполнение ХП для вычисления скидки покупателя
+GRANT EXECUTE ON sp_GetCustomerDiscount TO Customer;
 GO

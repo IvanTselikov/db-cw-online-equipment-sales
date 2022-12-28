@@ -279,6 +279,9 @@ namespace OnlineEquipmentSalesApp
                 Direction = ParameterDirection.Output
             };
 
+            command.Parameters.Add(productCodeParam);
+            command.Parameters.Add(typeNameParam);
+
             command.ExecuteNonQuery();
             return command.Parameters[param2].Value.ToString();
         }
@@ -373,6 +376,119 @@ namespace OnlineEquipmentSalesApp
 
             command.ExecuteNonQuery();
             return (byte)command.Parameters[param2].Value;
+        }
+
+        public SqlDataReader GetProductInfo(int productCode)
+        {
+            string spName = "sp_GetProductInfo",
+                   param1 = "@productCode";
+
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            SqlParameter productCodeParam = new SqlParameter
+            {
+                ParameterName = param1,
+                Value = productCode,
+                SqlDbType = SqlDbType.Int
+            };
+
+            command.Parameters.Add(productCodeParam);
+
+            SqlDataReader reader = command.ExecuteReader();
+            return reader;
+        }
+
+        public byte GetCustomerDiscount()
+        {
+            string spName = "sp_GetCustomerDiscount",
+                   param1 = "@customerId",
+                   param2 = "@discount";
+
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            SqlParameter customerIdParam = new SqlParameter()
+            {
+                ParameterName = param1,
+                Value = this.GetCustomerId(),
+                SqlDbType = SqlDbType.Int
+            };
+            SqlParameter discountParam = new SqlParameter()
+            {
+                ParameterName = param2,
+                SqlDbType = SqlDbType.TinyInt,
+                Direction = ParameterDirection.Output
+            };
+
+            command.Parameters.Add(customerIdParam);
+            command.Parameters.Add(discountParam);
+
+            command.ExecuteNonQuery();
+
+            return (byte)command.Parameters[param2].Value;
+        }
+
+        public void GetProductOrderInfo(int productCode, int productCount, byte orderDiscount,
+                                        out decimal productPrice, out byte productDiscount)
+        {
+            string spName = "sp_GetProductOrderInfo",
+                   param1 = "@productCode",
+                   param2 = "@productCount",
+                   param3 = "@orderDiscount",
+                   param4 = "@productPrice",
+                   param5 = "@productDiscount";
+
+            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            SqlParameter productCodeParam = new SqlParameter()
+            {
+                ParameterName = param1,
+                Value = productCode,
+                SqlDbType = SqlDbType.Int
+            };
+            SqlParameter productCountParam = new SqlParameter()
+            {
+                ParameterName = param2,
+                Value = productCount,
+                SqlDbType = SqlDbType.Int
+            };
+            SqlParameter orderDiscountParam = new SqlParameter()
+            {
+                ParameterName = param3,
+                Value = orderDiscount,
+                SqlDbType = SqlDbType.TinyInt
+            };
+            SqlParameter productPriceParam = new SqlParameter()
+            {
+                ParameterName = param4,
+                SqlDbType = SqlDbType.Money,
+                Direction = ParameterDirection.Output
+            };
+            SqlParameter productDiscountParam = new SqlParameter()
+            {
+                ParameterName = param5,
+                SqlDbType = SqlDbType.TinyInt,
+                Direction = ParameterDirection.Output
+            };
+
+            command.Parameters.Add(productCodeParam);
+            command.Parameters.Add(productCountParam);
+            command.Parameters.Add(orderDiscountParam);
+            command.Parameters.Add(productPriceParam);
+            command.Parameters.Add(productDiscountParam);
+
+            command.ExecuteNonQuery();
+
+            productPrice = (decimal)command.Parameters[param4].Value;
+            productDiscount = (byte)command.Parameters[param5].Value;
         }
     }
 }

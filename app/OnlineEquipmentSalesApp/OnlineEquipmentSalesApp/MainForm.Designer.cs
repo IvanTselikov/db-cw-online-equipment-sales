@@ -415,6 +415,10 @@ namespace OnlineEquipmentSalesApp
             this.dgvBasket.RowTemplate.Height = 25;
             this.dgvBasket.Size = new System.Drawing.Size(1125, 197);
             this.dgvBasket.TabIndex = 0;
+            this.dgvBasket.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBasket_CellClick);
+            this.dgvBasket.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBasket_CellLeave);
+            this.dgvBasket.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBasket_CellValueChanged);
+            this.dgvBasket.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dgvBasket_UserDeletedRow);
             // 
             // scSettings
             // 
@@ -521,7 +525,7 @@ namespace OnlineEquipmentSalesApp
             this.tbProductSum.Location = new System.Drawing.Point(155, 149);
             this.tbProductSum.Name = "tbProductSum";
             this.tbProductSum.ReadOnly = true;
-            this.tbProductSum.Size = new System.Drawing.Size(75, 29);
+            this.tbProductSum.Size = new System.Drawing.Size(163, 29);
             this.tbProductSum.TabIndex = 15;
             this.tbProductSum.Text = "0";
             // 
@@ -568,6 +572,7 @@ namespace OnlineEquipmentSalesApp
             0,
             0,
             0});
+            this.nudProductCount.ValueChanged += new System.EventHandler(this.nudProductCount_ValueChanged);
             // 
             // cbProductName
             // 
@@ -579,6 +584,7 @@ namespace OnlineEquipmentSalesApp
             this.cbProductName.Name = "cbProductName";
             this.cbProductName.Size = new System.Drawing.Size(305, 29);
             this.cbProductName.TabIndex = 4;
+            this.cbProductName.SelectedIndexChanged += new System.EventHandler(this.cbProductName_SelectedIndexChanged);
             // 
             // btnSaveChanges
             // 
@@ -590,6 +596,7 @@ namespace OnlineEquipmentSalesApp
             this.btnSaveChanges.TabIndex = 2;
             this.btnSaveChanges.Text = "Сохранить изменения";
             this.btnSaveChanges.UseVisualStyleBackColor = true;
+            this.btnSaveChanges.Click += new System.EventHandler(this.btnSaveChanges_Click);
             // 
             // cbProductType
             // 
@@ -601,6 +608,7 @@ namespace OnlineEquipmentSalesApp
             this.cbProductType.Name = "cbProductType";
             this.cbProductType.Size = new System.Drawing.Size(305, 29);
             this.cbProductType.TabIndex = 3;
+            this.cbProductType.SelectedIndexChanged += new System.EventHandler(this.cbProductType_SelectedIndexChanged);
             // 
             // lblProductCount
             // 
@@ -671,6 +679,7 @@ namespace OnlineEquipmentSalesApp
             this.cbPickupPoint.Name = "cbPickupPoint";
             this.cbPickupPoint.Size = new System.Drawing.Size(306, 29);
             this.cbPickupPoint.TabIndex = 6;
+            this.cbPickupPoint.SelectedIndexChanged += new System.EventHandler(this.cbPickupPoint_SelectedIndexChanged);
             // 
             // lblPaymentMethod
             // 
@@ -757,6 +766,8 @@ namespace OnlineEquipmentSalesApp
             // 
             // btnFinishOrderCreating
             // 
+            this.btnFinishOrderCreating.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnFinishOrderCreating.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnFinishOrderCreating.Location = new System.Drawing.Point(7, 279);
             this.btnFinishOrderCreating.Name = "btnFinishOrderCreating";
@@ -785,6 +796,7 @@ namespace OnlineEquipmentSalesApp
             this.btnEmptyTrash.TabIndex = 3;
             this.btnEmptyTrash.Text = "Очистить корзину";
             this.btnEmptyTrash.UseVisualStyleBackColor = true;
+            this.btnEmptyTrash.Click += new System.EventHandler(this.btnEmptyTrash_Click);
             // 
             // tbOrderSum
             // 
@@ -807,6 +819,7 @@ namespace OnlineEquipmentSalesApp
             this.btnRemoveItem.TabIndex = 1;
             this.btnRemoveItem.Text = "Удалить товар";
             this.btnRemoveItem.UseVisualStyleBackColor = true;
+            this.btnRemoveItem.Click += new System.EventHandler(this.btnRemoveItem_Click);
             // 
             // lblOrderSum
             // 
@@ -829,6 +842,7 @@ namespace OnlineEquipmentSalesApp
             this.btnAddItem.TabIndex = 0;
             this.btnAddItem.Text = "Добавить новый товар";
             this.btnAddItem.UseVisualStyleBackColor = true;
+            this.btnAddItem.Click += new System.EventHandler(this.btnAddItem_Click);
             // 
             // tpSearch
             // 
@@ -992,8 +1006,8 @@ namespace OnlineEquipmentSalesApp
             this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultBounds;
             this.Text = "Интернет-магазин компьютерной техники";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
-            this.Load += new System.EventHandler(this.Form2_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabControl1.ResumeLayout(false);
             this.tpOrders.ResumeLayout(false);
             this.scOrders.Panel1.ResumeLayout(false);
