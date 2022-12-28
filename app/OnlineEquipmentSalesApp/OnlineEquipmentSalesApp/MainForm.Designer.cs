@@ -29,6 +29,7 @@ namespace OnlineEquipmentSalesApp
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpOrders = new System.Windows.Forms.TabPage();
             this.scOrders = new System.Windows.Forms.SplitContainer();
@@ -415,10 +416,8 @@ namespace OnlineEquipmentSalesApp
             this.dgvBasket.RowTemplate.Height = 25;
             this.dgvBasket.Size = new System.Drawing.Size(1125, 197);
             this.dgvBasket.TabIndex = 0;
-            this.dgvBasket.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBasket_CellClick);
-            this.dgvBasket.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBasket_CellLeave);
             this.dgvBasket.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvBasket_CellValueChanged);
-            this.dgvBasket.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.dgvBasket_UserDeletedRow);
+            this.dgvBasket.SelectionChanged += new System.EventHandler(this.dgvBasket_SelectionChanged);
             // 
             // scSettings
             // 
@@ -801,10 +800,10 @@ namespace OnlineEquipmentSalesApp
             // tbOrderSum
             // 
             this.tbOrderSum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbOrderSum.Location = new System.Drawing.Point(145, 174);
+            this.tbOrderSum.Location = new System.Drawing.Point(108, 174);
             this.tbOrderSum.Name = "tbOrderSum";
             this.tbOrderSum.ReadOnly = true;
-            this.tbOrderSum.Size = new System.Drawing.Size(75, 29);
+            this.tbOrderSum.Size = new System.Drawing.Size(112, 29);
             this.tbOrderSum.TabIndex = 11;
             this.tbOrderSum.Text = "0";
             // 
@@ -987,6 +986,14 @@ namespace OnlineEquipmentSalesApp
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvProductByCharacteristics.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvProductByCharacteristics.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvProductByCharacteristics.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvProductByCharacteristics.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.dgvProductByCharacteristics.Location = new System.Drawing.Point(12, 28);

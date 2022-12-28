@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Data.SqlClient; // NuGet Microsoft.Data.SqlClient
 using System.Data;
+using System.Collections.Generic;
 
 namespace OnlineEquipmentSalesApp
 {
@@ -31,7 +30,7 @@ namespace OnlineEquipmentSalesApp
                     this.sqlConnection.Open();
                     return true;
                 }
-                catch (SqlException failedLoginException) { }
+                catch (SqlException) { }
             }
             return false;
         }
@@ -44,48 +43,41 @@ namespace OnlineEquipmentSalesApp
             }
         }
 
-        public SqlConnection GetConnection()
-        {
-            return sqlConnection;
-        }
-
         public SqlDataReader GetCustomerOrders(DateTime? dateStart = null, DateTime? dateEnd = null)
         {
             if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                int customerId = GetCustomerId();
                 string spName = "sp_CustomerOrders",
                        param1 = "@customerId",
                        param2 = "@dateStart",
                        param3 = "@dateEnd";
 
-                SqlCommand command = new SqlCommand(spName, this.sqlConnection);
-                command.CommandType = CommandType.StoredProcedure;
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
                 SqlParameter customerIdParam = new SqlParameter
                 {
                     ParameterName = param1,
-                    Value = customerId
+                    Value = GetCustomerId(),
+                    SqlDbType = SqlDbType.Int
                 };
-                command.Parameters.Add(customerIdParam);
+                SqlParameter dateStartParam = new SqlParameter
+                {
+                    ParameterName = param2,
+                    Value = dateStart,
+                    SqlDbType = SqlDbType.DateTime
+                };
+                SqlParameter dateEndParam = new SqlParameter
+                {
+                    ParameterName = param3,
+                    Value = dateEnd,
+                    SqlDbType = SqlDbType.DateTime
+                };
 
-                if (dateStart != null)
-                {
-                    SqlParameter dateStartParam = new SqlParameter
-                    {
-                        ParameterName = param2,
-                        Value = dateStart
-                    };
-                    command.Parameters.Add(dateStartParam);
-                }
-                if (dateEnd != null)
-                {
-                    SqlParameter dateEndParam = new SqlParameter
-                    {
-                        ParameterName = param3,
-                        Value = dateEnd
-                    };
-                    command.Parameters.Add(dateEndParam);
-                }
+                command.Parameters.Add(customerIdParam);
+                command.Parameters.Add(dateStartParam);
+                command.Parameters.Add(dateEndParam);
 
                 SqlDataReader reader = command.ExecuteReader();
                 return reader;
@@ -98,397 +90,610 @@ namespace OnlineEquipmentSalesApp
 
         private int GetCustomerId()
         {
-            string spName = "sp_GetCustomerId",
-                       usernameString = "@username",
-                       customerIdString = "@customerId";
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
-            command.CommandType = CommandType.StoredProcedure;
-            SqlParameter usernameParam = new SqlParameter
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                ParameterName = usernameString,
-                Value = login
-            };
-            SqlParameter customerIdParam = new SqlParameter
+                string spName = "sp_GetCustomerId",
+                       param1 = "@username",
+                       param2 = "@customerId";
+
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter usernameParam = new SqlParameter
+                {
+                    ParameterName = param1,
+                    Value = login,
+                    SqlDbType = SqlDbType.NVarChar,
+                    Size = 128
+                };
+                SqlParameter customerIdParam = new SqlParameter
+                {
+                    ParameterName = param2,
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Output
+                };
+
+                command.Parameters.Add(usernameParam);
+                command.Parameters.Add(customerIdParam);
+
+                command.ExecuteNonQuery();
+
+                return (int)command.Parameters[param2].Value;
+            }
+            else
             {
-                ParameterName = customerIdString,
-                SqlDbType = SqlDbType.Int
-            };
-            customerIdParam.Direction = ParameterDirection.Output;
-            command.Parameters.Add(usernameParam);
-            command.Parameters.Add(customerIdParam);
-
-            command.ExecuteNonQuery();
-
-            return (int)command.Parameters[customerIdString].Value;
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public SqlDataReader GetOrderProducts(int? orderNumber = null)
         {
-            string spName = "sp_GetOrderProducts",
-                       param1 = "@orderNumber";
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
-            command.CommandType = CommandType.StoredProcedure;
-            SqlParameter orderNumberParam = new SqlParameter
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                ParameterName = param1,
-                Value = orderNumber
-            };
-            command.Parameters.Add(orderNumberParam);
+                string spName = "sp_GetOrderProducts",
+                       param1 = "@orderNumber";
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter orderNumberParam = new SqlParameter
+                {
+                    ParameterName = param1,
+                    Value = orderNumber,
+                    SqlDbType = SqlDbType.Int
+                };
+                command.Parameters.Add(orderNumberParam);
 
-            SqlDataReader reader = command.ExecuteReader();
-            return reader;
+                SqlDataReader reader = command.ExecuteReader();
+                return reader;
+            }
+            else
+            {
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public void CancelOrder(int orderNumber)
         {
-            string spName = "sp_CancelOrder",
-                   param1 = "@orderNumber";
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
-            command.CommandType = CommandType.StoredProcedure;
-            SqlParameter orderNumberParam = new SqlParameter
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                ParameterName = param1,
-                Value = orderNumber
-            };
-            command.Parameters.Add(orderNumberParam);
-            command.ExecuteNonQuery();
+                string spName = "sp_CancelOrder",
+                       param1 = "@orderNumber";
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter orderNumberParam = new SqlParameter
+                {
+                    ParameterName = param1,
+                    Value = orderNumber,
+                    SqlDbType = SqlDbType.Int
+                };
+                command.Parameters.Add(orderNumberParam);
+                command.ExecuteNonQuery();
+            }
+            else
+            {
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public SqlDataReader GetProductTypes()
         {
-            string spName = "sp_GetProductTypes";
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
-            command.CommandType = CommandType.StoredProcedure;
-            SqlDataReader reader = command.ExecuteReader();
-            return reader;
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
+            {
+                string spName = "sp_GetProductTypes";
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlDataReader reader = command.ExecuteReader();
+                return reader;
+            }
+            else
+            {
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
-        public SqlDataReader GetProductsOfType(int? typeCode = null)
+        public SqlDataReader GetProductsOfType(short? typeCode = null)
         {
-            string spName = "sp_GetProductsOfType",
-                   param1 = "@typeCode";
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
-            command.CommandType = CommandType.StoredProcedure;
-            SqlParameter typeNameParam = new SqlParameter
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                ParameterName = param1,
-                Value = typeCode
-            };
-            command.Parameters.Add(typeNameParam);
-            SqlDataReader reader = command.ExecuteReader();
-            return reader;
+                string spName = "sp_GetProductsOfType",
+                       param1 = "@typeCode";
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter typeCodeParam = new SqlParameter
+                {
+                    ParameterName = param1,
+                    Value = typeCode,
+                    SqlDbType = SqlDbType.SmallInt
+                };
+                command.Parameters.Add(typeCodeParam);
+                SqlDataReader reader = command.ExecuteReader();
+                return reader;
+            }
+            else
+            {
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public SqlDataReader GetPickupPointsAddresses()
         {
-            string spName = "sp_GetPickupPointsAddresses";
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
-            command.CommandType = CommandType.StoredProcedure;
-            SqlDataReader reader = command.ExecuteReader();
-            return reader;
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
+            {
+                string spName = "sp_GetPickupPointsAddresses";
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlDataReader reader = command.ExecuteReader();
+                return reader;
+            }
+            else
+            {
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public SqlDataReader GetPaymentMethods()
         {
-            string spName = "sp_GetPaymentMethods";
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
-            command.CommandType = CommandType.StoredProcedure;
-            SqlDataReader reader = command.ExecuteReader();
-            return reader;
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
+            {
+                string spName = "sp_GetPaymentMethods";
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection) 
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlDataReader reader = command.ExecuteReader();
+                return reader;
+            }
+            else
+            {
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public int GetPickupPointProductCount(int productCode, int? pickupPointNumber = null)
         {
-            string spName = "sp_GetPickupPointProductCount",
-                   param1 = "@productCode ",
-                   param2 = "@pickupPointNumber",
-                   param3 = "@productCount";
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
-            command.CommandType = CommandType.StoredProcedure;
-
-            SqlParameter productCodeParam = new SqlParameter
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                ParameterName = param1,
-                SqlDbType = SqlDbType.Int,
-                Value = productCode
-            };
+                string spName = "sp_GetPickupPointProductCount",
+                       param1 = "@productCode ",
+                       param2 = "@pickupPointNumber",
+                       param3 = "@productCount";
 
-            SqlParameter pickupPointNumberParam = new SqlParameter
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter productCodeParam = new SqlParameter
+                {
+                    ParameterName = param1,
+                    Value = productCode,
+                    SqlDbType = SqlDbType.Int
+                };
+                SqlParameter pickupPointNumberParam = new SqlParameter
+                {
+                    ParameterName = param2,
+                    Value = pickupPointNumber,
+                    SqlDbType = SqlDbType.SmallInt
+                };
+                SqlParameter productCountParam = new SqlParameter
+                {
+                    ParameterName = param3,
+                    SqlDbType = SqlDbType.Int,
+                    Direction = ParameterDirection.Output
+                };
+
+                command.Parameters.Add(productCodeParam);
+                command.Parameters.Add(pickupPointNumberParam);
+                command.Parameters.Add(productCountParam);
+
+                command.ExecuteNonQuery();
+                return (int)command.Parameters[param3].Value;
+            }
+            else
             {
-                ParameterName = param2,
-                SqlDbType = SqlDbType.SmallInt,
-                Value = pickupPointNumber
-            };
-
-            SqlParameter productCountParam = new SqlParameter
-            {
-                ParameterName = param3,
-                SqlDbType = SqlDbType.Int,
-                Direction = ParameterDirection.Output
-            };
-
-            command.Parameters.Add(productCodeParam);
-            command.Parameters.Add(pickupPointNumberParam);
-            command.Parameters.Add(productCountParam);
-
-            command.ExecuteNonQuery();
-            return (int)command.Parameters[param3].Value;
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public short GetDefaultProductType()
         {
-            string spName = "sp_GetDefaultProductType",
-                   param1 = "@productTypeCode";
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection);
-            command.CommandType = CommandType.StoredProcedure;
-            SqlParameter productTypeCodeParam = new SqlParameter
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                ParameterName = param1,
-                SqlDbType = SqlDbType.SmallInt
-            };
-            productTypeCodeParam.Direction = ParameterDirection.Output;
-            command.Parameters.Add(productTypeCodeParam);
+                string spName = "sp_GetDefaultProductType",
+                       param1 = "@productTypeCode";
 
-            command.ExecuteNonQuery();
-            return (short)command.Parameters[param1].Value;
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter productTypeCodeParam = new SqlParameter
+                {
+                    ParameterName = param1,
+                    SqlDbType = SqlDbType.SmallInt,
+                    Direction = ParameterDirection.Output
+                };
+
+                command.Parameters.Add(productTypeCodeParam);
+
+                command.ExecuteNonQuery();
+                return (short)command.Parameters[param1].Value;
+            }
+            else
+            {
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public string GetTypeOfProduct(int productCode)
         {
-            string spName = "sp_GetTypeOfProduct",
-                   param1 = "@productCode",
-                   param2 = "@typeName";
-
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                CommandType = CommandType.StoredProcedure
-            };
+                string spName = "sp_GetTypeOfProduct",
+                       param1 = "@productCode",
+                       param2 = "@typeName";
 
-            SqlParameter productCodeParam = new SqlParameter
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                SqlParameter productCodeParam = new SqlParameter
+                {
+                    ParameterName = param1,
+                    Value = productCode,
+                    SqlDbType = SqlDbType.Int
+                };
+
+                SqlParameter typeNameParam = new SqlParameter
+                {
+                    ParameterName = param2,
+                    SqlDbType = SqlDbType.NVarChar,
+                    Size = 300,
+                    Direction = ParameterDirection.Output
+                };
+
+                command.Parameters.Add(productCodeParam);
+                command.Parameters.Add(typeNameParam);
+
+                command.ExecuteNonQuery();
+                return command.Parameters[param2].Value.ToString();
+            }
+            else
             {
-                ParameterName = param1,
-                SqlDbType = SqlDbType.Int,
-                Value = productCode
-            };
-
-            SqlParameter typeNameParam = new SqlParameter
-            {
-                ParameterName = param2,
-                SqlDbType = SqlDbType.NVarChar,
-                Size = 300,
-                Direction = ParameterDirection.Output
-            };
-
-            command.Parameters.Add(productCodeParam);
-            command.Parameters.Add(typeNameParam);
-
-            command.ExecuteNonQuery();
-            return command.Parameters[param2].Value.ToString();
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public SqlDataReader GetCharacteristicsOfType(short typeCode)
         {
-            string spName = "sp_GetCharacteristicsOfType",
-                   param1 = "@typeCode";
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                CommandType = CommandType.StoredProcedure
-            };
-            SqlParameter typeCodeParam = new SqlParameter
-            {
-                ParameterName = param1,
-                Value = typeCode,
-                SqlDbType = SqlDbType.SmallInt
-            };
-            command.Parameters.Add(typeCodeParam);
+                string spName = "sp_GetCharacteristicsOfType",
+                       param1 = "@typeCode";
 
-            SqlDataReader reader = command.ExecuteReader();
-            return reader;
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter typeCodeParam = new SqlParameter
+                {
+                    ParameterName = param1,
+                    Value = typeCode,
+                    SqlDbType = SqlDbType.SmallInt
+                };
+
+                command.Parameters.Add(typeCodeParam);
+
+                SqlDataReader reader = command.ExecuteReader();
+                return reader;
+            }
+            else
+            {
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public SqlDataReader FindProductsByCharacteristic(short typeCode,
                                                           short characteristicCode,
                                                           object characteristicValue)
         {
-            string spName = "sp_FindProductByCharacteristic",
-                   param1 = "@typeCode",
-                   param2 = "@characteristic",
-                   param3 = "@value";
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                CommandType = CommandType.StoredProcedure
-            };
+                string spName = "sp_FindProductByCharacteristic",
+                       param1 = "@typeCode",
+                       param2 = "@characteristic",
+                       param3 = "@value";
 
-            SqlParameter typeCodeParam = new SqlParameter
-            {
-                ParameterName = param1,
-                Value = typeCode,
-                SqlDbType = SqlDbType.SmallInt
-            };
-            SqlParameter characteristicCodeParam = new SqlParameter
-            {
-                ParameterName = param2,
-                Value = characteristicCode,
-                SqlDbType = SqlDbType.SmallInt                
-            };
-            SqlParameter characteristicValueParam = new SqlParameter
-            {
-                ParameterName = param3,
-                Value = characteristicValue,
-                SqlDbType = SqlDbType.Variant
-            };
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter typeCodeParam = new SqlParameter
+                {
+                    ParameterName = param1,
+                    Value = typeCode,
+                    SqlDbType = SqlDbType.SmallInt
+                };
+                SqlParameter characteristicCodeParam = new SqlParameter
+                {
+                    ParameterName = param2,
+                    Value = characteristicCode,
+                    SqlDbType = SqlDbType.SmallInt
+                };
+                SqlParameter characteristicValueParam = new SqlParameter
+                {
+                    ParameterName = param3,
+                    Value = characteristicValue,
+                    SqlDbType = SqlDbType.Variant
+                };
 
-            command.Parameters.Add(typeCodeParam);
-            command.Parameters.Add(characteristicCodeParam);
-            command.Parameters.Add(characteristicValueParam);
+                command.Parameters.Add(typeCodeParam);
+                command.Parameters.Add(characteristicCodeParam);
+                command.Parameters.Add(characteristicValueParam);
 
-            SqlDataReader reader = command.ExecuteReader();
-            return reader;
+                SqlDataReader reader = command.ExecuteReader();
+                return reader;
+            }
+            else
+            {
+                throw new Exception("Соединение не установлено!");
+            }
         }
     
         public byte GetCharacteristicDataType(short characteristicCode)
         {
-            string spName = "sp_GetCharacteristicDataType",
-                   param1 = "@characteristicCode",
-                   param2 = "@dataTypeCode";
-
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                CommandType = CommandType.StoredProcedure
-            };
+                string spName = "sp_GetCharacteristicDataType",
+                       param1 = "@characteristicCode",
+                       param2 = "@dataTypeCode";
 
-            SqlParameter characteristicCodeParam = new SqlParameter
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter characteristicCodeParam = new SqlParameter
+                {
+                    ParameterName = param1,
+                    Value = characteristicCode,
+                    SqlDbType = SqlDbType.SmallInt
+                };
+                SqlParameter dataTypeCodeParam = new SqlParameter
+                {
+                    ParameterName = param2,
+                    SqlDbType = SqlDbType.TinyInt,
+                    Direction = ParameterDirection.Output
+                };
+
+                command.Parameters.Add(characteristicCodeParam);
+                command.Parameters.Add(dataTypeCodeParam);
+
+                command.ExecuteNonQuery();
+                return (byte)command.Parameters[param2].Value;
+            }
+            else
             {
-                ParameterName = param1,
-                Value = characteristicCode,
-                SqlDbType = SqlDbType.SmallInt
-            };
-
-            SqlParameter dataTypeCodeParam = new SqlParameter
-            {
-                ParameterName = param2,
-                SqlDbType = SqlDbType.TinyInt,
-                Direction = ParameterDirection.Output
-            };
-
-            command.Parameters.Add(characteristicCodeParam);
-            command.Parameters.Add(dataTypeCodeParam);
-
-            command.ExecuteNonQuery();
-            return (byte)command.Parameters[param2].Value;
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public SqlDataReader GetProductInfo(int productCode)
         {
-            string spName = "sp_GetProductInfo",
-                   param1 = "@productCode";
-
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                CommandType = CommandType.StoredProcedure
-            };
+                string spName = "sp_GetProductInfo",
+                       param1 = "@productCode";
 
-            SqlParameter productCodeParam = new SqlParameter
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter productCodeParam = new SqlParameter
+                {
+                    ParameterName = param1,
+                    Value = productCode,
+                    SqlDbType = SqlDbType.Int
+                };
+
+                command.Parameters.Add(productCodeParam);
+
+                SqlDataReader reader = command.ExecuteReader();
+                return reader;
+            }
+            else
             {
-                ParameterName = param1,
-                Value = productCode,
-                SqlDbType = SqlDbType.Int
-            };
-
-            command.Parameters.Add(productCodeParam);
-
-            SqlDataReader reader = command.ExecuteReader();
-            return reader;
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public byte GetCustomerDiscount()
         {
-            string spName = "sp_GetCustomerDiscount",
-                   param1 = "@customerId",
-                   param2 = "@discount";
-
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
             {
-                CommandType = CommandType.StoredProcedure
-            };
+                string spName = "sp_GetCustomerDiscount",
+                       param1 = "@customerId",
+                       param2 = "@discount";
 
-            SqlParameter customerIdParam = new SqlParameter()
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter customerIdParam = new SqlParameter()
+                {
+                    ParameterName = param1,
+                    Value = GetCustomerId(),
+                    SqlDbType = SqlDbType.Int
+                };
+                SqlParameter discountParam = new SqlParameter()
+                {
+                    ParameterName = param2,
+                    SqlDbType = SqlDbType.TinyInt,
+                    Direction = ParameterDirection.Output
+                };
+
+                command.Parameters.Add(customerIdParam);
+                command.Parameters.Add(discountParam);
+
+                command.ExecuteNonQuery();
+                return (byte)command.Parameters[param2].Value;
+            }
+            else
             {
-                ParameterName = param1,
-                Value = this.GetCustomerId(),
-                SqlDbType = SqlDbType.Int
-            };
-            SqlParameter discountParam = new SqlParameter()
-            {
-                ParameterName = param2,
-                SqlDbType = SqlDbType.TinyInt,
-                Direction = ParameterDirection.Output
-            };
-
-            command.Parameters.Add(customerIdParam);
-            command.Parameters.Add(discountParam);
-
-            command.ExecuteNonQuery();
-
-            return (byte)command.Parameters[param2].Value;
+                throw new Exception("Соединение не установлено!");
+            }
         }
 
         public void GetProductOrderInfo(int productCode, int productCount, byte orderDiscount,
                                         out decimal productPrice, out byte productDiscount)
         {
-            string spName = "sp_GetProductOrderInfo",
-                   param1 = "@productCode",
-                   param2 = "@productCount",
-                   param3 = "@orderDiscount",
-                   param4 = "@productPrice",
-                   param5 = "@productDiscount";
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
+            {
+                string spName = "sp_GetProductOrderInfo",
+                       param1 = "@productCode",
+                       param2 = "@productCount",
+                       param3 = "@orderDiscount",
+                       param4 = "@productPrice",
+                       param5 = "@productDiscount";
 
-            SqlCommand command = new SqlCommand(spName, this.sqlConnection)
-            {
-                CommandType = CommandType.StoredProcedure
-            };
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter productCodeParam = new SqlParameter()
+                {
+                    ParameterName = param1,
+                    Value = productCode,
+                    SqlDbType = SqlDbType.Int
+                };
+                SqlParameter productCountParam = new SqlParameter()
+                {
+                    ParameterName = param2,
+                    Value = productCount,
+                    SqlDbType = SqlDbType.Int
+                };
+                SqlParameter orderDiscountParam = new SqlParameter()
+                {
+                    ParameterName = param3,
+                    Value = orderDiscount,
+                    SqlDbType = SqlDbType.TinyInt
+                };
+                SqlParameter productPriceParam = new SqlParameter()
+                {
+                    ParameterName = param4,
+                    SqlDbType = SqlDbType.Money,
+                    Direction = ParameterDirection.Output
+                };
+                SqlParameter productDiscountParam = new SqlParameter()
+                {
+                    ParameterName = param5,
+                    SqlDbType = SqlDbType.TinyInt,
+                    Direction = ParameterDirection.Output
+                };
 
-            SqlParameter productCodeParam = new SqlParameter()
-            {
-                ParameterName = param1,
-                Value = productCode,
-                SqlDbType = SqlDbType.Int
-            };
-            SqlParameter productCountParam = new SqlParameter()
-            {
-                ParameterName = param2,
-                Value = productCount,
-                SqlDbType = SqlDbType.Int
-            };
-            SqlParameter orderDiscountParam = new SqlParameter()
-            {
-                ParameterName = param3,
-                Value = orderDiscount,
-                SqlDbType = SqlDbType.TinyInt
-            };
-            SqlParameter productPriceParam = new SqlParameter()
-            {
-                ParameterName = param4,
-                SqlDbType = SqlDbType.Money,
-                Direction = ParameterDirection.Output
-            };
-            SqlParameter productDiscountParam = new SqlParameter()
-            {
-                ParameterName = param5,
-                SqlDbType = SqlDbType.TinyInt,
-                Direction = ParameterDirection.Output
-            };
+                command.Parameters.Add(productCodeParam);
+                command.Parameters.Add(productCountParam);
+                command.Parameters.Add(orderDiscountParam);
+                command.Parameters.Add(productPriceParam);
+                command.Parameters.Add(productDiscountParam);
 
-            command.Parameters.Add(productCodeParam);
-            command.Parameters.Add(productCountParam);
-            command.Parameters.Add(orderDiscountParam);
-            command.Parameters.Add(productPriceParam);
-            command.Parameters.Add(productDiscountParam);
+                command.ExecuteNonQuery();
 
-            command.ExecuteNonQuery();
+                productPrice = (decimal)command.Parameters[param4].Value;
+                productDiscount = (byte)command.Parameters[param5].Value;
+            }
+            else
+            {
+                throw new Exception("Соединение не установлено!");
+            }
+        }
 
-            productPrice = (decimal)command.Parameters[param4].Value;
-            productDiscount = (byte)command.Parameters[param5].Value;
+        public class Product
+        {
+            public int Code { get; set; }
+            public int Count { get; set; }
+
+            public Product(int code, int count)
+            {
+                Code = code;
+                Count = count;
+            }
+        }
+
+        public void CreateOrder(short pickupPointNumber,
+                                byte paymentMethodCode,
+                                List<Product> products,
+                                DateTime? deliveryDate = null,
+                                short? employeeId = null)
+        {
+            if (sqlConnection != null && sqlConnection.State == ConnectionState.Open)
+            {
+                string spName = "sp_CreateOrder",
+                       param1 = "@customerId",
+                       param2 = "@pickupPointNumber",
+                       param3 = "@paymentMethodCode",
+                       param4 = "@products",
+                       param5 = "@deliveryDate",
+                       param6 = "@employeeId";
+
+                SqlCommand command = new SqlCommand(spName, this.sqlConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                SqlParameter productCodeParam = new SqlParameter()
+                {
+                    ParameterName = param1,
+                    Value = productCode,
+                    SqlDbType = SqlDbType.Int
+                };
+                SqlParameter productCountParam = new SqlParameter()
+                {
+                    ParameterName = param2,
+                    Value = productCount,
+                    SqlDbType = SqlDbType.Int
+                };
+                SqlParameter orderDiscountParam = new SqlParameter()
+                {
+                    ParameterName = param3,
+                    Value = orderDiscount,
+                    SqlDbType = SqlDbType.TinyInt
+                };
+                SqlParameter productPriceParam = new SqlParameter()
+                {
+                    ParameterName = param4,
+                    SqlDbType = SqlDbType.Money,
+                    Direction = ParameterDirection.Output
+                };
+                SqlParameter productDiscountParam = new SqlParameter()
+                {
+                    ParameterName = param5,
+                    SqlDbType = SqlDbType.TinyInt,
+                    Direction = ParameterDirection.Output
+                };
+
+                command.Parameters.Add(productCodeParam);
+                command.Parameters.Add(productCountParam);
+                command.Parameters.Add(orderDiscountParam);
+                command.Parameters.Add(productPriceParam);
+                command.Parameters.Add(productDiscountParam);
+
+                command.ExecuteNonQuery();
+
+                productPrice = (decimal)command.Parameters[param4].Value;
+                productDiscount = (byte)command.Parameters[param5].Value;
+            }
+            else
+            {
+                throw new Exception("Соединение не установлено!");
+            }
         }
     }
 }

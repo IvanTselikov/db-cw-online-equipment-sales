@@ -361,3 +361,6 @@ GO
 -- разрешение на выполнение ХП для вычисления скидки покупателя
 GRANT EXECUTE ON sp_GetCustomerDiscount TO Customer;
 GO
+
+DELETE FROM Deliveries
+WHERE warehouseNumber = 1 AND pickupPointNumber = 3;
