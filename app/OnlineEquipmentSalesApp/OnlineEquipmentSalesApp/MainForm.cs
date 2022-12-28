@@ -263,6 +263,7 @@ namespace OnlineEquipmentSalesApp
 
         private void FillComboBoxItems(ComboBox cb, SqlDataReader reader)
         {
+            KeyValueComboBoxItem selectedItem = cb.SelectedItem as KeyValueComboBoxItem;
             cb.Items.Clear();
             if (reader.HasRows)
             {
@@ -277,7 +278,7 @@ namespace OnlineEquipmentSalesApp
             }
             reader.Close();
 
-            if (cb.SelectedItem is KeyValueComboBoxItem selectedItem)
+            if (selectedItem != null)
             {
                 // чтобы выбранный элемент не пришлось выбирать заново
                 KeyValueComboBoxItem[] copiesOfSelected = cb.Items.Cast<KeyValueComboBoxItem>()
@@ -730,20 +731,21 @@ namespace OnlineEquipmentSalesApp
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            if (cbProductTypeSearch.SelectedItem == null)
+            if (!(cbProductTypeSearch.SelectedItem is KeyValueComboBoxItem productType))
             {
                 MessageBox.Show("Выберите тип товара!", "Ошибка", MessageBoxButtons.OK);
             }
-            else if (cbCharacteristicName.SelectedItem == null)
+            else if (!(cbCharacteristicName.SelectedItem is KeyValueComboBoxItem productCharacteristic))
             {
                 MessageBox.Show("Выберите характеристику, соответствующую указанному типу товара!", "Ошибка", MessageBoxButtons.OK);
             }
             else
             {
-                KeyValueComboBoxItem productType = cbProductTypeSearch.SelectedItem as KeyValueComboBoxItem;
                 short productTypeCode = (short)productType.Key;
-                short characteristicCode = (short)productType.Key;
-                byte dataTypeCode = AuthorizationForm.DatabaseConnection.GetCharacteristicDataType(characteristicCode);
+                short characteristicCode = (short)productCharacteristic.Key;
+                byte dataTypeCode = AuthorizationForm.DatabaseConnection.GetCharacteristicDataType(
+                    characteristicCode
+                );
                 object characteristicValue = null;
                 switch (dataTypeCode)
                 {
