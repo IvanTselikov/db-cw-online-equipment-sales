@@ -648,47 +648,62 @@ namespace OnlineEquipmentSalesApp
                 {
                     CommandType = CommandType.StoredProcedure
                 };
-                SqlParameter productCodeParam = new SqlParameter()
+                SqlParameter customerIdParam = new SqlParameter()
                 {
                     ParameterName = param1,
-                    Value = productCode,
+                    Value = GetCustomerId(),
                     SqlDbType = SqlDbType.Int
                 };
-                SqlParameter productCountParam = new SqlParameter()
+                SqlParameter pickupPointNumberParam = new SqlParameter()
                 {
                     ParameterName = param2,
-                    Value = productCount,
-                    SqlDbType = SqlDbType.Int
+                    Value = pickupPointNumber,
+                    SqlDbType = SqlDbType.SmallInt
                 };
-                SqlParameter orderDiscountParam = new SqlParameter()
+                SqlParameter paymentMethodCodeParam = new SqlParameter()
                 {
                     ParameterName = param3,
-                    Value = orderDiscount,
+                    Value = paymentMethodCode,
                     SqlDbType = SqlDbType.TinyInt
                 };
-                SqlParameter productPriceParam = new SqlParameter()
+
+                DataTable productsTable = new DataTable();
+                productsTable.Columns.Add("productCode");
+                productsTable.Columns.Add("productCount");
+
+                foreach (Product p in products)
+                {
+                    productsTable.Rows.Add(p.Code, p.Count);
+                }
+
+                SqlParameter productsParam = new SqlParameter()
                 {
                     ParameterName = param4,
-                    SqlDbType = SqlDbType.Money,
-                    Direction = ParameterDirection.Output
+                    Value = productsTable,
+                    SqlDbType = SqlDbType.Structured,
+                    TypeName = "dbo.ProductCount"
                 };
-                SqlParameter productDiscountParam = new SqlParameter()
+                SqlParameter deliveryDateParam = new SqlParameter()
                 {
                     ParameterName = param5,
-                    SqlDbType = SqlDbType.TinyInt,
-                    Direction = ParameterDirection.Output
+                    Value = deliveryDate,
+                    SqlDbType = SqlDbType.DateTime
+                };
+                SqlParameter employeeIdParam = new SqlParameter()
+                {
+                    ParameterName = param6,
+                    Value = employeeId,
+                    SqlDbType = SqlDbType.SmallInt
                 };
 
-                command.Parameters.Add(productCodeParam);
-                command.Parameters.Add(productCountParam);
-                command.Parameters.Add(orderDiscountParam);
-                command.Parameters.Add(productPriceParam);
-                command.Parameters.Add(productDiscountParam);
+                command.Parameters.Add(customerIdParam);
+                command.Parameters.Add(pickupPointNumberParam);
+                command.Parameters.Add(paymentMethodCodeParam);
+                command.Parameters.Add(productsParam);
+                command.Parameters.Add(deliveryDateParam);
+                command.Parameters.Add(employeeIdParam);
 
                 command.ExecuteNonQuery();
-
-                productPrice = (decimal)command.Parameters[param4].Value;
-                productDiscount = (byte)command.Parameters[param5].Value;
             }
             else
             {

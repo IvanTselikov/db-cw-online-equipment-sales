@@ -364,3 +364,14 @@ GO
 
 DELETE FROM Deliveries
 WHERE warehouseNumber = 1 AND pickupPointNumber = 3;
+
+
+GRANT EXECUTE ON TYPE :: ProductCount TO Customer;
+GO
+
+-- исправление ошибки: заменить тип данных характеристики
+-- "„астота процессора" с "см" на "г√ц"
+UPDATE Characteristics
+SET unitCode = 2
+WHERE code = 9;
+GO

@@ -486,7 +486,7 @@ namespace OnlineEquipmentSalesApp
             RecalculateOrderSum();
         }
 
-        private void btnEmptyTrash_Click(object sender, EventArgs e)
+        private void btnEmptyBasket_Click(object sender, EventArgs e)
         {
             if (dgvBasket.Rows[0].Cells[productCodeKey].Value != null)
             {
@@ -495,10 +495,16 @@ namespace OnlineEquipmentSalesApp
                 );
                 if (result == DialogResult.Yes)
                 {
-                    dgvBasket.Rows.Clear();
-                    dgvBasket.Rows.Add();
+                    EmptyBasket();
                 }
             }
+            
+        }
+
+        private void EmptyBasket()
+        {
+            dgvBasket.Rows.Clear();
+            dgvBasket.Rows.Add();
             RecalculateOrderSum();
         }
 
@@ -608,21 +614,101 @@ namespace OnlineEquipmentSalesApp
         {
             // пересчитываем для каждого товара количество из доступных
             // для выбранного пункта выдачи складов
-            int pickupPointNumber = (cbPickupPoint.SelectedItem as KeyValueComboBoxItem).Key;
-            foreach (DataGridViewRow row in dgvBasket.Rows)
+            if (cbPickupPoint.SelectedItem is KeyValueComboBoxItem pickupPoint)
             {
-                if (row.Cells[productCodeKey].Value != null)
+                int pickupPointNumber = pickupPoint.Key;
+                foreach (DataGridViewRow row in dgvBasket.Rows)
                 {
-                    int productCode = (int)row.Cells[productCodeKey].Value;
-                    int productCountAvailable = AuthorizationForm.DatabaseConnection.GetPickupPointProductCount(
-                        productCode, pickupPointNumber
+                    if (row.Cells[productCodeKey].Value != null)
+                    {
+                        int productCode = (int)row.Cells[productCodeKey].Value;
+                        int productCountAvailable = AuthorizationForm.DatabaseConnection.GetPickupPointProductCount(
+                            productCode, pickupPointNumber
+                        );
+
+                        row.Cells[productCountAvailableKey].Value = productCountAvailable;
+                        HighlightRow(
+                            dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex],
+                            ((int)row.Cells[productCountDesiredKey].Value > productCountAvailable)
+                        );
+                    }
+                }
+            }
+        }
+
+        private void btnFinishOrderCreating_Click(object sender, EventArgs e)
+        {
+            if (!(cbPickupPoint.SelectedItem is KeyValueComboBoxItem pickupPoint))
+            {
+                MessageBox.Show("Выберите пункт выдачи заказа!", "Ошибка", MessageBoxButtons.OK);
+            }
+            else if (!(cbPaymentMethod.SelectedItem is KeyValueComboBoxItem paymentMethod))
+            {
+                MessageBox.Show("Выберите способ оплаты!", "Ошибка", MessageBoxButtons.OK);
+            }
+            else
+            {
+                List<DatabaseConnection.Product> products = new List<DatabaseConnection.Product>();
+                foreach (DataGridViewRow row in dgvBasket.Rows)
+                {
+                    if (row.Cells[productCodeKey].Value != null)
+                    {
+                        int productCode = int.Parse(row.Cells[productCodeKey].Value.ToString());
+                        int productCount = int.Parse(row.Cells[productCountDesiredKey].Value.ToString());
+                        DatabaseConnection.Product product = new DatabaseConnection.Product(
+                            productCode, productCount
+                        );
+                        products.Add(product);
+                    }
+                }
+
+                if (products.Count == 0)
+                {
+                    MessageBox.Show("Выберите товары для покупки!", "Ошибка", MessageBoxButtons.OK);
+                }
+                else
+                {
+                    DialogResult result = MessageBox.Show(
+                        "Вы уверены, что хотите совершить покупку?",
+                        "Оформление заказа",
+                        MessageBoxButtons.YesNo
                     );
 
-                    row.Cells[productCountAvailableKey].Value = productCountAvailable;
-                    HighlightRow(
-                        dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex],
-                        ((int)row.Cells[productCountDesiredKey].Value > productCountAvailable)
-                    );
+                    if (result == DialogResult.Yes)
+                    {
+                        short pickupPointNumber = (short)pickupPoint.Key;
+                        byte paymentMethodCode = (byte)paymentMethod.Key;
+
+                        try
+                        {
+                            AuthorizationForm.DatabaseConnection.CreateOrder(
+                                pickupPointNumber, paymentMethodCode, products
+                            );
+
+                            MessageBox.Show(
+                                "Заказ успешно оформлен!", "Оформление заказа", MessageBoxButtons.OK
+                            );
+
+                            // очищаем настройки заказа
+
+                            EmptyBasket();
+
+                            cbPickupPoint.SelectedIndex = -1;
+                            cbPickupPoint.Text = string.Empty;
+
+                            cbPaymentMethod.SelectedIndex = -1;
+                            cbPaymentMethod.Text = string.Empty;
+
+                            // обновляем таблицу с заказами на вкладке "Заказы"
+
+                            SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetCustomerOrders();
+                            FillDgv(dgvOrders, reader);
+                        }
+                        catch (SqlException ex)
+                        {
+                            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK);
+                        }
+                    }
                 }
             }
         }

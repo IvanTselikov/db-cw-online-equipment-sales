@@ -29,7 +29,6 @@ namespace OnlineEquipmentSalesApp
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpOrders = new System.Windows.Forms.TabPage();
             this.scOrders = new System.Windows.Forms.SplitContainer();
@@ -77,7 +76,7 @@ namespace OnlineEquipmentSalesApp
             this.tbOrderDiscount = new System.Windows.Forms.TextBox();
             this.btnFinishOrderCreating = new System.Windows.Forms.Button();
             this.lblOrderDiscount = new System.Windows.Forms.Label();
-            this.btnEmptyTrash = new System.Windows.Forms.Button();
+            this.btnEmptyBasket = new System.Windows.Forms.Button();
             this.tbOrderSum = new System.Windows.Forms.TextBox();
             this.btnRemoveItem = new System.Windows.Forms.Button();
             this.lblOrderSum = new System.Windows.Forms.Label();
@@ -739,7 +738,7 @@ namespace OnlineEquipmentSalesApp
             this.gbActions.Controls.Add(this.tbOrderDiscount);
             this.gbActions.Controls.Add(this.btnFinishOrderCreating);
             this.gbActions.Controls.Add(this.lblOrderDiscount);
-            this.gbActions.Controls.Add(this.btnEmptyTrash);
+            this.gbActions.Controls.Add(this.btnEmptyBasket);
             this.gbActions.Controls.Add(this.tbOrderSum);
             this.gbActions.Controls.Add(this.btnRemoveItem);
             this.gbActions.Controls.Add(this.lblOrderSum);
@@ -774,6 +773,7 @@ namespace OnlineEquipmentSalesApp
             this.btnFinishOrderCreating.TabIndex = 4;
             this.btnFinishOrderCreating.Text = "Оформить заказ";
             this.btnFinishOrderCreating.UseVisualStyleBackColor = true;
+            this.btnFinishOrderCreating.Click += new System.EventHandler(this.btnFinishOrderCreating_Click);
             // 
             // lblOrderDiscount
             // 
@@ -784,18 +784,18 @@ namespace OnlineEquipmentSalesApp
             this.lblOrderDiscount.TabIndex = 13;
             this.lblOrderDiscount.Text = "С уч. скидки, %:";
             // 
-            // btnEmptyTrash
+            // btnEmptyBasket
             // 
-            this.btnEmptyTrash.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.btnEmptyBasket.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEmptyTrash.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btnEmptyTrash.Location = new System.Drawing.Point(6, 107);
-            this.btnEmptyTrash.Name = "btnEmptyTrash";
-            this.btnEmptyTrash.Size = new System.Drawing.Size(214, 33);
-            this.btnEmptyTrash.TabIndex = 3;
-            this.btnEmptyTrash.Text = "Очистить корзину";
-            this.btnEmptyTrash.UseVisualStyleBackColor = true;
-            this.btnEmptyTrash.Click += new System.EventHandler(this.btnEmptyTrash_Click);
+            this.btnEmptyBasket.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btnEmptyBasket.Location = new System.Drawing.Point(6, 107);
+            this.btnEmptyBasket.Name = "btnEmptyBasket";
+            this.btnEmptyBasket.Size = new System.Drawing.Size(214, 33);
+            this.btnEmptyBasket.TabIndex = 3;
+            this.btnEmptyBasket.Text = "Очистить корзину";
+            this.btnEmptyBasket.UseVisualStyleBackColor = true;
+            this.btnEmptyBasket.Click += new System.EventHandler(this.btnEmptyBasket_Click);
             // 
             // tbOrderSum
             // 
@@ -986,14 +986,6 @@ namespace OnlineEquipmentSalesApp
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvProductByCharacteristics.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvProductByCharacteristics.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvProductByCharacteristics.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvProductByCharacteristics.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.dgvProductByCharacteristics.Location = new System.Drawing.Point(12, 28);
@@ -1100,7 +1092,7 @@ namespace OnlineEquipmentSalesApp
         private System.Windows.Forms.Label lblOrderSum;
         private System.Windows.Forms.GroupBox gbActions;
         private System.Windows.Forms.Button btnFinishOrderCreating;
-        private System.Windows.Forms.Button btnEmptyTrash;
+        private System.Windows.Forms.Button btnEmptyBasket;
         private System.Windows.Forms.Button btnRemoveItem;
         private System.Windows.Forms.Button btnAddItem;
         private System.Windows.Forms.SplitContainer scSearch;
