@@ -76,7 +76,9 @@ AS
 
     -- перебираем каждый из указанных товаров
     DECLARE crsr CURSOR FOR
-    SELECT * FROM @products;
+    SELECT productCode, SUM(productCount) productCount
+    FROM @products
+    GROUP BY productCode;
 
     OPEN crsr;
 

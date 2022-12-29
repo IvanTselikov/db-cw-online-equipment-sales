@@ -324,7 +324,6 @@ namespace OnlineEquipmentSalesApp
         private void btnSaveChanges_Click(object sender, EventArgs e)
         {
             // сохраняем новый товар/изменения старого в корзине
-
             if (cbProductName.SelectedItem is KeyValueComboBoxItem product)
             {
                 // формируем строку для добавления в корзину:
@@ -332,45 +331,58 @@ namespace OnlineEquipmentSalesApp
                 // - цена - стоимость - скидка:
                 int productCode = product.Key;
 
-                string productName = product.Value;
-
-                int countDesired = (int)nudProductCount.Value;
-
-                short? pickupPointCode = null;
-                if (cbPickupPoint.SelectedItem is KeyValueComboBoxItem pickupPoint)
+                // проверяем, не добавлен ли уже этот товар в корзину
+                int selectedRowIndex = dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].Index;
+                if (dgvBasket.Rows
+                    .Cast<DataGridViewRow>()
+                    .Any(row => row.Index != selectedRowIndex
+                        && row.Cells[productCodeKey].Value != null
+                        && (int)row.Cells[productCodeKey].Value == productCode))
                 {
-                    pickupPointCode = (short)pickupPoint.Key;
+                    MessageBox.Show("Указанный товар уже присутствует в корзине!", "Ошибка", MessageBoxButtons.OK);
                 }
-                int countAvailable = AuthorizationForm.DatabaseConnection.GetPickupPointProductCount(
-                    productCode, pickupPointCode
-                );
-
-                byte orderDiscount = byte.Parse(tbOrderDiscount.Text);
-                AuthorizationForm.DatabaseConnection.GetProductOrderInfo(
-                    productCode, countDesired, orderDiscount,
-                    out decimal productPrice,
-                    out byte productDiscount
-                );
-
-                decimal productSum = productPrice * countDesired;
-
-                if (dgvBasket.SelectedRows.Count < 2)
+                else
                 {
-                    // добавляем/изменяем только одну строку
-                    dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].SetValues(
-                        productCode, productName, countDesired, countAvailable, productPrice.ToString("N"),
-                        productSum.ToString("N"), productDiscount
+                    string productName = product.Value;
+
+                    int countDesired = (int)nudProductCount.Value;
+
+                    short? pickupPointCode = null;
+                    if (cbPickupPoint.SelectedItem is KeyValueComboBoxItem pickupPoint)
+                    {
+                        pickupPointCode = (short)pickupPoint.Key;
+                    }
+                    int countAvailable = AuthorizationForm.DatabaseConnection.GetPickupPointProductCount(
+                        productCode, pickupPointCode
                     );
-                }
 
-                // если желаемое количество товара превосходит его количество на доступных складах,
-                // выделяем для клиента эту строку
-                HighlightRow(dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex], countDesired > countAvailable);
+                    byte orderDiscount = byte.Parse(tbOrderDiscount.Text);
+                    AuthorizationForm.DatabaseConnection.GetProductOrderInfo(
+                        productCode, countDesired, orderDiscount,
+                        out decimal productPrice,
+                        out byte productDiscount
+                    );
+
+                    decimal productSum = productPrice * countDesired;
+
+                    if (dgvBasket.SelectedRows.Count < 2)
+                    {
+                        // добавляем/изменяем только одну строку
+                        dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex].SetValues(
+                            productCode, productName, countDesired, countAvailable, productPrice.ToString("N"),
+                            productSum.ToString("N"), productDiscount
+                        );
+                    }
+
+                    // если желаемое количество товара превосходит его количество на доступных складах,
+                    // выделяем для клиента эту строку
+                    HighlightRow(dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex], countDesired > countAvailable);
+                }
             }
             else
             {
                 MessageBox.Show("Выберите товар указанного типа!", "Ошибка", MessageBoxButtons.OK);
-            }
+            }                
         }
 
         private void HighlightRow(DataGridViewRow row, bool paint)
@@ -634,7 +646,7 @@ namespace OnlineEquipmentSalesApp
 
                         row.Cells[productCountAvailableKey].Value = productCountAvailable;
                         HighlightRow(
-                            dgvBasket.Rows[dgvBasket.CurrentCell.RowIndex],
+                            row,
                             ((int)row.Cells[productCountDesiredKey].Value > productCountAvailable)
                         );
                     }
