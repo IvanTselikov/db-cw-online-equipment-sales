@@ -1,11 +1,17 @@
+-- “риггер на таблицу ProductTypeCharacteristics
+-- (У—одержит характеристики, не присущие родительскому типу (т.е. только новые)Ф)
 USE OnlineEquipmentSales
 GO
+
+-- ѕќƒ√ќ“ќ¬ ј
 
 -- необходимо ограничение дл€ ProductTypes: "¬ качестве родительского типа не может быть указан сам этот тип"
 ALTER TABLE ProductTypes
 ADD CONSTRAINT CK_ProductTypes_parentTypeCode
 CHECK (code <> parentTypeCode);
 GO
+
+-- “–»√√≈–
 
 CREATE TRIGGER tr_ProductTypeChildControl
 ON ProductTypeCharacteristics

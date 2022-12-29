@@ -245,6 +245,7 @@ GO
 GRANT EXECUTE ON sp_GetPickupPointProductCount TO Customer;
 GO
 
+
 CREATE PROC sp_GetDefaultProductType
   @productTypeCode SMALLINT OUTPUT 
 AS
@@ -267,34 +268,6 @@ AS
 GO
 
 GRANT EXECUTE ON sp_GetTypeOfProduct TO Customer;
-GO
-
--- представление с информацией о товаре
-CREATE VIEW ProductsForCustomers
-AS
-  SELECT p.code [Код товара],
-         p.[name] [Название товара],
-         p.warranty [Гарантия],
-         p.maxDiscountPercentage [Максимальная скидка],
-         CONVERT(VARCHAR(30), p.retailPrice, 1) [Розничная цена, руб.],
-         CONVERT(VARCHAR(30), p.wholesalePrice, 1) [Оптовая цена, руб.],
-         p.wholesaleQuantity [Оптовое количество, шт.],
-         pt.[name] [Тип товара],
-         m.[name] [Производитель]
-  FROM Products p JOIN ProductTypes pt ON p.productTypeCode = pt.code
-    JOIN Makers m ON p.makerCode = m.code;
-GO
-
--- ХП для доступа к этому представлению
-CREATE PROC sp_GetProductInfo
-  @productCode INT
-AS
-  SELECT *
-  FROM ProductsForCustomers
-  WHERE [Код товара] = @productCode;
-GO
-
-GRANT EXECUTE ON sp_GetProductInfo TO Customer;
 GO
 
 -- ХП для получения цены, скидки и стоимости товара
@@ -346,6 +319,7 @@ GO
 GRANT EXECUTE ON sp_GetCharacteristicsOfType TO Customer;
 GO
 
+-- ХП, возвращающая тип данных характеристики
 CREATE PROC sp_GetCharacteristicDataType
   @characteristicCode SMALLINT,
   @dataTypeCode TINYINT OUTPUT
@@ -356,6 +330,18 @@ AS
 GO
 
 GRANT EXECUTE ON sp_GetCharacteristicDataType TO Customer;
+GO
+
+-- ХП для получения информации о товаре
+CREATE PROC sp_GetProductInfo
+  @productCode INT
+AS
+  SELECT *
+  FROM ProductsForCustomers pfc
+  WHERE [Код товара] = @productCode;
+GO
+
+GRANT EXECUTE ON sp_GetProductInfo TO Customer;
 GO
 
 -- разрешение на выполнение ХП для вычисления скидки покупателя
