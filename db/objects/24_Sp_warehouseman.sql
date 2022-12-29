@@ -27,4 +27,3 @@ GO
 -- опнбепйю
 --DECLARE @th DATETIME = DATEADD(d, -3, GETDATE());
 --EXEC sp_GetUnclaimedProducts 1, @th;
-

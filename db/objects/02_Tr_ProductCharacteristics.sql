@@ -37,3 +37,16 @@ AS
   -- добавляемая характеристика не соответствует ни типу товара, ни "предкам" типа
   RAISERROR('Невозможно добавить/изменить характеристику для товара, т.к. она не соответствует типу данного товара.', 16, 10);
   ROLLBACK TRAN;
+GO
+
+-- ПРОВЕРКА
+--SELECT pt.name [тип]
+--FROM Products p JOIN ProductTypes pt ON p.productTypeCode = pt.code
+--WHERE p.code = 11;
+
+--SELECT name [хар]
+--FROM Characteristics
+--WHERE code = 15;
+
+--INSERT INTO ProductCharacteristics
+--VALUES (11, 15, 4);

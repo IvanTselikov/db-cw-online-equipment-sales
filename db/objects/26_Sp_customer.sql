@@ -1,6 +1,8 @@
 USE OnlineEquipmentSales;
 GO
 
+-- ПОДГОТОВКА
+
 -- представление с информацией о товаре
 CREATE VIEW ProductsForCustomers
 AS
@@ -16,6 +18,8 @@ AS
   FROM Products p JOIN ProductTypes pt ON p.productTypeCode = pt.code
     JOIN Makers m ON p.makerCode = m.code;
 GO
+
+-- ПРОЦЕДУРА
 
 CREATE PROCEDURE sp_FindProductByCharacteristic
   @typeCode SMALLINT, @characteristic SMALLINT, @value SQL_VARIANT

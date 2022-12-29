@@ -1,6 +1,8 @@
 USE OnlineEquipmentSales;
 GO
 
+-- ПОДГОТОВКА
+
 -- т.к. скидка привязана к заказу, а не к клиенту (у клиента она меняется
 -- с течением времени, у заказа - нет), то хранить скидку в таблице Customers
 -- нецелесообразно
@@ -63,6 +65,8 @@ AS
 	SET discountPrc = @discount
 	WHERE number = @order
 GO
+
+-- ТРИГГЕРЫ
 
 --4 --7
 CREATE TRIGGER tr_MovementControl
@@ -173,3 +177,14 @@ AS
 		SET sum = @orderSum
 		WHERE number = @order
 	END
+
+
+-- ПРОВЕРКА
+
+--UPDATE ProductMovements
+--SET supplierCode = 1
+--WHERE productCount < 0;
+
+--UPDATE ProductMovements
+--SET supplierCode = 1
+--WHERE orderNumber IS NOT NULL;

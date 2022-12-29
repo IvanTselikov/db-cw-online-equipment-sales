@@ -1,6 +1,8 @@
 USE OnlineEquipmentSales;
 GO
 
+-- ПОДГОТОВКА
+
 -- необходима таблица, хранящая даты повышений/понижений/увольнений/найма сотрудников:
 CREATE TABLE EmployeeAssignments(
   id INT PRIMARY KEY IDENTITY,
@@ -35,6 +37,7 @@ AS
 GO
 
 -- КОД ХП
+
 CREATE PROC sp_GetRequiredExperience
   @postCode TINYINT,
   @interval TINYINT = 1, -- 0 - в днях, 1 - в месяцах, 2 - в годах
@@ -70,6 +73,7 @@ ON EmployeeAssignments (newPostCode, employeeId)
 INCLUDE (assignmentDate);
 
 -- ПРОВЕРКА
+
 -- заполним таблицу EmployeeAssignments временными данными
 --INSERT INTO EmployeeAssignments
 --SELECT  1, 	NULL,	1,	CONVERT(DATETIME, '25.01.2022', 104)

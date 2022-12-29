@@ -13,5 +13,3 @@ CREATE PROCEDURE sp_MaxRevenueMonth AS
 	SELECT month, year, revenuePerMonth
 	FROM OrderSumsPerMonth
 	WHERE revenuePerMonth = (SELECT MAX(revenuePerMonth) from OrderSumsPerMonth)
-
-  exec sp_MaxRevenueMonth

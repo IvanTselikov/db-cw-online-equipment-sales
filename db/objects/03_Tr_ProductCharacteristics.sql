@@ -2,6 +2,8 @@ USE OnlineEquipmentSales
 SET NOCOUNT ON;
 GO
 
+-- ПОДГОТОВКА
+
 -- меняем тип столбца characteristicValue таблицы ProductCharacteristics с nvarchar на sql_variant;
 -- перед этим очищаем таблицу, предварительно сохранив данные из неё в копию
 CREATE TABLE CopyTable(
@@ -28,6 +30,8 @@ DROP COLUMN characteristicValue;
 ALTER TABLE ProductCharacteristics
 ADD characteristicValue SQL_VARIANT NOT NULL;
 GO
+
+-- ТРИГГЕР
 
 -- триггер для конвертации типов
 CREATE TRIGGER tr_ConvertProductCharacteristicType
@@ -106,7 +110,19 @@ DEALLOCATE crsr;
 -- удаляем временную таблицу
 DROP TABLE CopyTable;
 
--- проверка получившегося типа
---SELECT pc.*, SQL_VARIANT_PROPERTY(
---  pc.characteristicValue, 'basetype') valueType
---FROM ProductCharacteristics pc;
+-- ПРОВЕРКА
+
+--DELETE FROM ProductCharacteristics
+--WHERE productCode = 11 AND characteristicCode = 1;
+
+--INSERT INTO ProductCharacteristics
+--VALUES (11, 1, 5);
+
+---- проверка получившегося типа
+--SELECT pc.*,
+--       dt.name [Ожидаемый тип],
+--       SQL_VARIANT_PROPERTY(pc.characteristicValue, 'basetype') [Действит тип]
+--FROM ProductCharacteristics pc
+--  JOIN Characteristics c ON pc.characteristicCode = c.code
+--  JOIN DataTypes dt ON c.dataTypeCode = dt.code
+--WHERE pc.characteristicCode = 1 AND pc.productCode = 11;

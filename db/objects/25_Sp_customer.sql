@@ -1,6 +1,8 @@
 USE OnlineEquipmentSales;
 GO
 
+-- ПОДГОТОВКА
+
 -- создаём представление для отображения заказов для клиентов
 CREATE VIEW OrdersForCustomers
 AS
@@ -22,6 +24,8 @@ AS
     JOIN OrderStatuses os ON o.statusCode = os.code
     JOIN PaymentMethods pm ON o.paymentMethodCode = pm.code;
 GO
+
+-- ПРОЦЕДУРА
 
 CREATE PROC sp_CustomerOrders
   @customerId INT,

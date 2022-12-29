@@ -5,6 +5,6 @@ if "%1"=="" (
 ) else (
     sqlcmd -E -S %1 -Q "RESTORE DATABASE OnlineEquipmentSales FROM DISK='OnlineEquipmentSales.bak'"
     cd objects
-    for %%G in (*.sql) do sqlcmd /S %1 /d OnlineEquipmentSales -E -i"%%G"
+    for %%G in (*.sql) do sqlcmd /S "%1" /d OnlineEquipmentSales -E -i"%%G"
 )
 pause

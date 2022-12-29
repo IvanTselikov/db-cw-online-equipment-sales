@@ -19,3 +19,8 @@ AS
 		RAISERROR('Движение не может быть создано. Не хватает товара на складе', 16, 1)
 		ROLLBACK TRAN
 	END
+
+-- ПРОВЕРКА
+
+--UPDATE ProductMovements
+--SET productCount = -10000000;

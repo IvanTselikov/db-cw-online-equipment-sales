@@ -1,6 +1,8 @@
 USE OnlineEquipmentSales
 GO
 
+-- ПОДГОТОВКА
+
 -- значения в столбце deliveryDate таблицы Orders могут быть null,
 -- т.к. значения по умолчанию для них рассчитываются системой при срабатывании триггера
 -- в соответствии с бизнес-правилами; поэтому убираем ограничение NOT NULL:
@@ -34,6 +36,8 @@ CHECK ([sum] >= 0);
 CREATE TYPE ProductCount
 AS TABLE(productCode INT, productCount INT);
 GO
+
+-- ПРОЦЕДУРА
 
 CREATE PROC sp_CreateOrder
   @customerId INT,
@@ -180,6 +184,7 @@ CREATE INDEX IX_ProductMovements_warehouseNumber_productCode
 ON ProductMovements (warehouseNumber, productCode);
 
 -- ПРОВЕРКА
+
 --DECLARE @products AS ProductCount; -- табличная переменная для хранения товаров,
 --                                   -- которые нужно купить в рамках заказа
 --INSERT INTO @products
