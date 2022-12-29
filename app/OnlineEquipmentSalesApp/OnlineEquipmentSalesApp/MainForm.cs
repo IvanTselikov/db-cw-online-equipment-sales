@@ -162,6 +162,11 @@ namespace OnlineEquipmentSalesApp
         private DateTime? dateStart = null, dateEnd = null;
         private void btnSearchOrders_Click(object sender, EventArgs e)
         {
+            RefreshOrdersDgv();
+        }
+
+        private void RefreshOrdersDgv(bool force = false)
+        {
             // выполняем поиск заказов в выбранный период
             DateTime? dateStart = null, dateEnd = null;
 
@@ -169,16 +174,16 @@ namespace OnlineEquipmentSalesApp
             {
                 if (cbOrdersStart.Checked)
                 {
-                    dateStart = dtpOrdersStart.Value;
+                    dateStart = dtpOrdersStart.Value.Date;
                 }
                 if (cbOrdersEnd.Checked)
                 {
-                    dateEnd = dtpOrdersEnd.Value;
+                    dateEnd = dtpOrdersEnd.Value.Date;
                 }
             }
 
             // выполняем запрос, только если параметры поиска поменялись
-            if (dateStart != this.dateStart || dateEnd != this.dateEnd)
+            if (dateStart != this.dateStart || dateEnd != this.dateEnd || force)
             {
                 try
                 {
@@ -701,9 +706,7 @@ namespace OnlineEquipmentSalesApp
                             cbPaymentMethod.Text = string.Empty;
 
                             // обновляем таблицу с заказами на вкладке "Заказы"
-
-                            SqlDataReader reader = AuthorizationForm.DatabaseConnection.GetCustomerOrders();
-                            FillDgv(dgvOrders, reader);
+                            RefreshOrdersDgv(true);
                         }
                         catch (SqlException ex)
                         {
